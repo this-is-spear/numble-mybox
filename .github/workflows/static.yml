@@ -29,7 +29,7 @@ jobs:
       - name: ⬆️ Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: '.src/main/resources/static/docs'
+          path: '.'
       - name: 🌈 Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
