@@ -21,3 +21,15 @@ include::{snippets}/hello/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/hello/http-response.adoc[]
+
+== File
+
+=== Upload files
+
+==== HTTP request
+
+include::{snippets}/upload/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/upload/http-response.adoc[]

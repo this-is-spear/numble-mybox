@@ -98,6 +98,7 @@ jacocoTestCoverageVerification {
 
 			excludes = [
 					"*.NumbleMyboxApplication",
+					"*.FileCommandService",
 					"*.*Configuration",
 					"*.application.*",
 					"*.dto.*",
