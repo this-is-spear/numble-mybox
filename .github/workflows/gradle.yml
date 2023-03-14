@@ -37,7 +37,7 @@ jobs:
       with:
         username: ${{secrets.DOCKERHUB_USERNAME}}
         password: ${{secrets.DOCKERHUB_TOKEN}}
-    - name: 🌏 build and release to DockerHub
+    - name: 🌏 Build and release to DockerHub
       env:
         NAME: ${{secrets.DOCKERHUB_USERNAME}}
         REPO: ${{secrets.DOCKERHUB_REPO}}
