@@ -17,6 +17,8 @@ import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import hello.numblemybox.mybox.application.FileCommandService;
+import hello.numblemybox.mybox.application.FileQueryService;
+import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.ui.FileController;
 import reactor.core.publisher.Mono;
 
@@ -29,6 +31,9 @@ public class FileDocument {
 
 	@MockBean
 	private FileCommandService fileCommandService;
+
+	@MockBean
+	private FileQueryService fileQueryService;
 
 	@Test
 	void upload() {
@@ -50,6 +55,20 @@ public class FileDocument {
 			.expectBody()
 			.consumeWith(
 				WebTestClientRestDocumentation.document("upload")
+			);
+	}
+
+	@Test
+	void getOne() {
+		String filename = "test.txt";
+		when(fileQueryService.getFile(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
+
+		this.webTestClient.get().uri("/mybox/files/{fileName}", filename)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.consumeWith(
+				WebTestClientRestDocumentation.document("getOne")
 			);
 	}
 }

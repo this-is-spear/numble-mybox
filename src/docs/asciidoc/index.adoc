@@ -33,3 +33,13 @@ include::{snippets}/upload/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/upload/http-response.adoc[]
+
+=== Get file
+
+==== HTTP request
+
+include::{snippets}/getOne/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/getOne/http-response.adoc[]
