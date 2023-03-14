@@ -1,5 +1,5 @@
 FROM amazoncorretto:17
-
+LABEL maintainer="rjsckdd12@gmail.com"
 COPY build/libs/*SNAPSHOT.jar app.jar
 
 ENV USE_PROFILE dep
