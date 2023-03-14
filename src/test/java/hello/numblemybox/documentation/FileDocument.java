@@ -35,10 +35,12 @@ public class FileDocument {
 		when(fileCommandService.upload(any())).thenReturn(Mono.empty());
 
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
-		builder.part("image1", getFileOne(강아지_사진))
-			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file1\"");
-		builder.part("image2", getFileOne(테니스장_사진))
-			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file2\"");
+		builder.part("image1", getFileOne(인사_문장))
+			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file1\"")
+			.contentType(MediaType.TEXT_PLAIN);
+		builder.part("image2", getFileOne(끝맺음_문장))
+			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file2\"")
+			.contentType(MediaType.TEXT_PLAIN);
 
 		this.webTestClient.post().uri("/mybox/upload")
 			.contentType(MediaType.MULTIPART_FORM_DATA)

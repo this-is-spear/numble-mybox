@@ -2,8 +2,6 @@ package hello.numblemybox.integration;
 
 import static hello.numblemybox.stubs.FileStubs.*;
 
-import java.io.File;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,14 +53,14 @@ class FileAcceptanceTest {
 			.expectBody();
 	}
 
-	private WebTestClient.ResponseSpec 파일_업로드_요청(File... files) {
+	private WebTestClient.ResponseSpec 파일_업로드_요청(Object... files) {
 		final var builder = new MultipartBodyBuilder();
 		final var requestPartName = "files";
 
-		for (File file : files) {
-			builder.part("image", file)
+		for (int i = 0; i < files.length; i++) {
+			builder.part("image", files[i])
 				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, file.getName()));
+					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, "image" + i));
 		}
 
 		if (files.length == 0) {
