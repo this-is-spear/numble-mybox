@@ -1,10 +1,8 @@
 package hello.numblemybox.documentation;
 
+import static hello.numblemybox.stubs.FileStubs.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +35,9 @@ public class FileDocument {
 		when(fileCommandService.upload(any())).thenReturn(Mono.empty());
 
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
-		builder.part("image1", getFileOne("test-image1.png"))
+		builder.part("image1", getFileOne(강아지_사진))
 			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file1\"");
-		builder.part("image2", getFileOne("test-image2.jpg"))
+		builder.part("image2", getFileOne(테니스장_사진))
 			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file2\"");
 
 		this.webTestClient.post().uri("/mybox/upload")
@@ -51,17 +49,5 @@ public class FileDocument {
 			.consumeWith(
 				WebTestClientRestDocumentation.document("upload")
 			);
-	}
-
-	private File getFileOne(String filename) {
-		return new File(
-			String.valueOf(
-				Objects.requireNonNull(
-					this.getClass()
-						.getClassLoader()
-						.getResource(String.format("upload/%s", filename))
-				).getFile()
-			)
-		);
 	}
 }

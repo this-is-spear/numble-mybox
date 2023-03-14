@@ -1,7 +1,8 @@
 package hello.numblemybox.integration;
 
+import static hello.numblemybox.stubs.FileStubs.*;
+
 import java.io.File;
-import java.util.Objects;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @WebFluxTest
 class FileAcceptanceTest {
 
-	private static final String 강아지_사진 = "test-image1.png";
-	private static final String 테니스장_사진 = "test-image2.jpg";
 	@Autowired
 	private WebTestClient webTestClient;
 
@@ -76,17 +75,5 @@ class FileAcceptanceTest {
 			.contentType(MediaType.MULTIPART_FORM_DATA)
 			.bodyValue(builder.build())
 			.exchange();
-	}
-
-	private File getFileOne(String filename) {
-		return new File(
-			String.valueOf(
-				Objects.requireNonNull(
-					this.getClass()
-						.getClassLoader()
-						.getResource(String.format("upload/%s", filename))
-				).getFile()
-			)
-		);
 	}
 }
