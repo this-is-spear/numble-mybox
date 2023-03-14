@@ -1,0 +1,13 @@
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 3.6.1
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port : 21770
+      username : this-is-spear
+      password : dontGuess
