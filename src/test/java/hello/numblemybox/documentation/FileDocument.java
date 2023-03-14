@@ -20,6 +20,7 @@ import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FileQueryService;
 import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.ui.FileController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @AutoConfigureRestDocs
@@ -69,6 +70,24 @@ public class FileDocument {
 			.expectBody()
 			.consumeWith(
 				WebTestClientRestDocumentation.document("getOne")
+			);
+	}
+
+	@Test
+	void getAll() {
+		when(fileQueryService.getFiles()).thenReturn(
+			Flux.just(
+				new FileResponse("image", "png", 2_000_000L),
+				new FileResponse("profile", "jpg", 3_000_000L)
+			)
+		);
+
+		this.webTestClient.get().uri("/mybox/files")
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.consumeWith(
+				WebTestClientRestDocumentation.document("getAll")
 			);
 	}
 }

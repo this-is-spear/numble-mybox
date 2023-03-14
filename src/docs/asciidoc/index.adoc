@@ -43,3 +43,13 @@ include::{snippets}/getOne/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/getOne/http-response.adoc[]
+
+=== Get files
+
+==== HTTP request
+
+include::{snippets}/getAll/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/getAll/http-response.adoc[]

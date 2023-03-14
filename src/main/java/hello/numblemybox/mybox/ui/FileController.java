@@ -44,4 +44,12 @@ public class FileController {
 	public Mono<FileResponse> getFile(@PathVariable String filename) {
 		return fileQueryService.getFile(filename);
 	}
+
+	@GetMapping(
+		value = "files",
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public Flux<FileResponse> getFiles() {
+		return fileQueryService.getFiles();
+	}
 }
