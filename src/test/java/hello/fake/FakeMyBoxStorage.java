@@ -1,12 +1,11 @@
 package hello.fake;
 
+import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.codec.multipart.FilePart;
@@ -18,27 +17,23 @@ import reactor.core.publisher.Mono;
 
 public class FakeMyBoxStorage implements MyBoxStorage {
 
-	public static final Path PATH = Paths.get("./src/test/resources/upload");
-
 	@Override
 	public Mono<Void> uploadFiles(Flux<FilePart> partFlux) {
 		return partFlux
-			.flatMap(filePart -> filePart.transferTo(PATH.resolve(filePart.filename())))
+			.flatMap(filePart -> filePart.transferTo(업로드할_사진의_경로.resolve(filePart.filename())))
 			.then();
 	}
 
 	@Override
 	public Mono<File> getFile(String filename) {
-		return Mono.just(PATH.resolve(filename).toFile());
+		return Mono.just(업로드할_사진의_경로.resolve(filename).toFile());
 	}
 
 	@Test
 	void uploadFile() throws IOException {
-		String filename = "ElvisPresley.png";
-		FilePartStub filePart = new FilePartStub(
-			Paths.get("/Users/keonchanglee/Downloads").resolve(filename));
+		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
 		uploadFiles(Flux.just(filePart)).subscribe();
-		assertThat(Files.exists(PATH.resolve(filename))).isTrue();
-		Files.delete(PATH.resolve(filename));
+		assertThat(Files.exists(업로드할_사진의_경로.resolve(업로드할_사진))).isTrue();
+		Files.delete(업로드할_사진의_경로.resolve(업로드할_사진));
 	}
 }
