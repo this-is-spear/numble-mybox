@@ -27,7 +27,7 @@ class FileAcceptanceTest {
 		var 파일_업로드_요청 = 파일_업로드_요청(getFileOne(강아지_사진));
 		파일_업로드_요청.expectStatus().isOk();
 
-		var 파일_조회_요청 = 파일_조회_요청();
+		var 파일_조회_요청 = 파일_조회_요청(강아지_사진);
 		파일_조회_요청.jsonPath("$.name").isEqualTo(강아지_사진);
 	}
 
@@ -45,8 +45,16 @@ class FileAcceptanceTest {
 		파일_조회_요청.jsonPath("$.[*].name.length()").isEqualTo(2);
 	}
 
+	private WebTestClient.BodyContentSpec 파일_조회_요청(String filename) {
+		return webTestClient.get().uri("/mybox/local/files/{filename}", filename)
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody();
+	}
+
 	private WebTestClient.BodyContentSpec 파일_조회_요청() {
-		return webTestClient.get().uri("/mybox/local/files/{filename}", 강아지_사진)
+		return webTestClient.get().uri("/mybox/local/files")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
