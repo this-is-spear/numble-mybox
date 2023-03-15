@@ -48,7 +48,7 @@ public class FileDocument {
 			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file2\"")
 			.contentType(MediaType.TEXT_PLAIN);
 
-		this.webTestClient.post().uri("/mybox/upload")
+		this.webTestClient.post().uri("/mybox/local/upload")
 			.contentType(MediaType.MULTIPART_FORM_DATA)
 			.bodyValue(builder.build())
 			.exchange()
@@ -64,7 +64,7 @@ public class FileDocument {
 		String filename = "test.txt";
 		when(fileQueryService.getFile(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
 
-		this.webTestClient.get().uri("/mybox/files/{fileName}", filename)
+		this.webTestClient.get().uri("/mybox/local/files/{fileName}", filename)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
@@ -82,7 +82,7 @@ public class FileDocument {
 			)
 		);
 
-		this.webTestClient.get().uri("/mybox/files")
+		this.webTestClient.get().uri("/mybox/local/files")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()

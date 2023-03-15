@@ -46,7 +46,7 @@ class FileAcceptanceTest {
 	}
 
 	private WebTestClient.BodyContentSpec 파일_조회_요청() {
-		return webTestClient.get().uri("/mybox/files/{filename}", 강아지_사진)
+		return webTestClient.get().uri("/mybox/local/files/{filename}", 강아지_사진)
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
@@ -69,7 +69,7 @@ class FileAcceptanceTest {
 					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, 강아지_사진));
 		}
 
-		return webTestClient.post().uri("/mybox/upload")
+		return webTestClient.post().uri("/mybox/local/upload")
 			.contentType(MediaType.MULTIPART_FORM_DATA)
 			.bodyValue(builder.build())
 			.exchange();
