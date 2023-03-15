@@ -38,7 +38,7 @@ public class FileDocument {
 
 	@Test
 	void upload() {
-		when(fileCommandService.upload(any())).thenReturn(Mono.empty());
+		when(fileCommandService.uploadInLocal(any())).thenReturn(Mono.empty());
 
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
 		builder.part("image1", getFileOne(인사_문장))
@@ -62,7 +62,7 @@ public class FileDocument {
 	@Test
 	void getOne() {
 		String filename = "test.txt";
-		when(fileQueryService.getFile(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
+		when(fileQueryService.getFileInLocal(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
 
 		this.webTestClient.get().uri("/mybox/local/files/{fileName}", filename)
 			.exchange()
@@ -75,7 +75,7 @@ public class FileDocument {
 
 	@Test
 	void getAll() {
-		when(fileQueryService.getFiles()).thenReturn(
+		when(fileQueryService.getFilesInLocal()).thenReturn(
 			Flux.just(
 				new FileResponse("image", "png", 2_000_000L),
 				new FileResponse("profile", "jpg", 3_000_000L)

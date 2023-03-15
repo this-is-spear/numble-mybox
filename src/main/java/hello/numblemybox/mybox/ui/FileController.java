@@ -33,7 +33,7 @@ public class FileController {
 		@RequestPart("files") Flux<FilePart> partFlux
 	) {
 		return partFlux.log()
-			.publish(fileCommandService::upload)
+			.publish(fileCommandService::uploadInLocal)
 			.log()
 			.then();
 	}
@@ -43,7 +43,7 @@ public class FileController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Mono<FileResponse> getFile(@PathVariable String filename) {
-		return fileQueryService.getFile(filename);
+		return fileQueryService.getFileInLocal(filename);
 	}
 
 	@GetMapping(
@@ -51,6 +51,6 @@ public class FileController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Flux<FileResponse> getFiles() {
-		return fileQueryService.getFiles();
+		return fileQueryService.getFilesInLocal();
 	}
 }

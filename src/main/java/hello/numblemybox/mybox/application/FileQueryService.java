@@ -9,11 +9,11 @@ import reactor.core.publisher.Mono;
 @Service
 public class FileQueryService {
 
-	public Mono<FileResponse> getFile(String filename) {
+	public Mono<FileResponse> getFileInLocal(String filename) {
 		return null;
 	}
 
-	public Flux<FileResponse> getFiles() {
+	public Flux<FileResponse> getFilesInLocal() {
 		return null;
 	}
 }
