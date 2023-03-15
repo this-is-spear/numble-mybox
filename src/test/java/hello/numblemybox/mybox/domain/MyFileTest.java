@@ -49,16 +49,6 @@ class MyFileTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = "dsf.DF")
-	@DisplayName("파일 이름에 특수문자(.)는 들어갈 수 없다.")
-	void myFile_nameIsNotContainsSpecialCharacters(String 특수문자가_포함된_파일_이름) {
-		assertThatThrownBy(
-			() -> new MyFile(파일_식별자, 특수문자가_포함된_파일_이름, 파일_주인_식별자, 파일_크기, 파일_확장자)
-		).isInstanceOf(InvalidFilenameException.class)
-			.hasMessage("특수문자(.)는 들어갈 수 없습니다.");
-	}
-
-	@ParameterizedTest
 	@ValueSource(strings = {"asdljk1asd32kdf", "sdjkasdfl3nfddsf"})
 	@DisplayName("파일 이름 크기가 10 글자보다 크면 예외가 발생한다.")
 	void myFile_nameShouldBeRule(String 큰_길이_파일_이름) {

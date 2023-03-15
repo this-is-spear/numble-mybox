@@ -44,10 +44,6 @@ public final class MyFile {
 			throw InvalidFilenameException.tooShort();
 		}
 
-		if (filename.contains(".")) {
-			throw InvalidFilenameException.containsSpecialCharacters();
-		}
-
 		if (filename.length() > 10) {
 			throw InvalidFilenameException.tooLong();
 		}
