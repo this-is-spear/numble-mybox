@@ -1,5 +1,8 @@
 package hello.numblemybox.mybox.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,6 +18,10 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class MyFile {
+	private static final long MAXIMUM_SIZE = 2_000_000L;
+	private static final int MAXIMUM_LENGTH = 20;
+	private static final int MINIMUM_LENGTH = 2;
+	private static final List<String> LIMITED_EXTENSION = Arrays.asList("sh", "exe");
 	@Id
 	@EqualsAndHashCode.Include
 	@ToString.Include
@@ -40,23 +47,23 @@ public final class MyFile {
 	}
 
 	private void ensureFilename(String filename) {
-		if (filename == null || filename.isBlank() || filename.length() < 2) {
+		if (filename == null || filename.isBlank() || filename.length() < MINIMUM_LENGTH) {
 			throw InvalidFilenameException.tooShort();
 		}
 
-		if (filename.length() > 20) {
+		if (filename.length() > MAXIMUM_LENGTH) {
 			throw InvalidFilenameException.tooLong();
 		}
 	}
 
 	private void ensureSize(Long size) {
-		if (size > 2_000_000L) {
+		if (size > MAXIMUM_SIZE) {
 			throw InvalidSizeException.tooLarge();
 		}
 	}
 
 	private void ensureExtension(String extension) {
-		if (extension.equals("sh") || extension.equals("exe")) {
+		if (LIMITED_EXTENSION.contains(extension)) {
 			throw InvalidExtensionException.invalidExtension();
 		}
 	}

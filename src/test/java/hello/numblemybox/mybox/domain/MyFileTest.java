@@ -10,8 +10,8 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import hello.numblemybox.mybox.exception.InvalidExtensionException;
-import hello.numblemybox.mybox.exception.InvalidSizeException;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
+import hello.numblemybox.mybox.exception.InvalidSizeException;
 
 class MyFileTest {
 
@@ -24,7 +24,7 @@ class MyFileTest {
 	@Test
 	@DisplayName("식별자, 파일의 이름, 파일 소유자, 크기, 파일 확장자 정보를 가진다.")
 	void myFile_create() {
-		MyFile file = assertDoesNotThrow(
+		var file = assertDoesNotThrow(
 			() -> new MyFile(파일_식별자, 파일_이름, 파일_주인_식별자, 파일_크기, 파일_확장자)
 		);
 
