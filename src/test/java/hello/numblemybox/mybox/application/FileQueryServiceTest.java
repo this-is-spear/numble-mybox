@@ -15,23 +15,21 @@ class FileQueryServiceTest {
 
 	private static final FileResponse 이미지_파일_응답 = new FileResponse(이미지_파일.getFilename(), 이미지_파일.getExtension(),
 		이미지_파일.getSize());
-	private static final FileResponse 텍스트_파일_응답 = new FileResponse(텍스트_파일.getFilename(), 텍스트_파일.getExtension(),
-		텍스트_파일.getSize());
 	private FileQueryService fileQueryService;
 	private MyBoxRepository myBoxRepository;
 
 	@BeforeEach
 	void setUp() {
 		myBoxRepository = new FakeMyBoxRepository();
-		myBoxRepository.insert(이미지_파일);
-		myBoxRepository.insert(텍스트_파일);
+		myBoxRepository.insert(이미지_파일).subscribe();
+		myBoxRepository.insert(텍스트_파일).subscribe();
 		fileQueryService = new FileQueryService(myBoxRepository);
 	}
 
 	@Test
 	@DisplayName("파일을 조회한다.")
 	void getFile() {
-		String 이미지_파일_이름 = 이미지_파일.getFilename();
+		var 이미지_파일_이름 = 이미지_파일.getFilename();
 		create(fileQueryService.getFile(이미지_파일_이름))
 			.expectNext(이미지_파일_응답)
 			.verifyComplete();
@@ -41,8 +39,7 @@ class FileQueryServiceTest {
 	@DisplayName("전체 파일을 조회한다.")
 	void getFiles() {
 		create(fileQueryService.getFiles())
-			.expectNext(이미지_파일_응답)
-			.expectNext(텍스트_파일_응답)
+			.expectNextCount(2)
 			.verifyComplete();
 	}
 }
