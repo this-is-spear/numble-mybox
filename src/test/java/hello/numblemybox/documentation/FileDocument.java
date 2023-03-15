@@ -38,7 +38,7 @@ public class FileDocument {
 
 	@Test
 	void upload() {
-		when(fileCommandService.uploadInLocal(any())).thenReturn(Mono.empty());
+		when(fileCommandService.upload(any())).thenReturn(Mono.empty());
 
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
 		builder.part("image1", getFileOne(인사_문장))
@@ -48,7 +48,7 @@ public class FileDocument {
 			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file2\"")
 			.contentType(MediaType.TEXT_PLAIN);
 
-		this.webTestClient.post().uri("/mybox/local/upload")
+		this.webTestClient.post().uri("/mybox/upload")
 			.contentType(MediaType.MULTIPART_FORM_DATA)
 			.bodyValue(builder.build())
 			.exchange()
@@ -62,9 +62,9 @@ public class FileDocument {
 	@Test
 	void getOne() {
 		String filename = "test.txt";
-		when(fileQueryService.getFileInLocal(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
+		when(fileQueryService.getFile(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
 
-		this.webTestClient.get().uri("/mybox/local/files/{fileName}", filename)
+		this.webTestClient.get().uri("/mybox/files/{fileName}", filename)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
@@ -75,14 +75,14 @@ public class FileDocument {
 
 	@Test
 	void getAll() {
-		when(fileQueryService.getFilesInLocal()).thenReturn(
+		when(fileQueryService.getFiles()).thenReturn(
 			Flux.just(
 				new FileResponse("image", "png", 2_000_000L),
 				new FileResponse("profile", "jpg", 3_000_000L)
 			)
 		);
 
-		this.webTestClient.get().uri("/mybox/local/files")
+		this.webTestClient.get().uri("/mybox/files")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()

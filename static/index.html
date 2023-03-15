@@ -500,26 +500,26 @@ hello friends!</code></pre>
 <h4 id="_http_request_2"><a class="link" href="#_http_request_2">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /mybox/local/upload HTTP/1.1
-Content-Type: multipart/form-data;boundary=l_wMLHTnrRo-BtIzvhrjKiyCuzaA1KlI6y; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /mybox/upload HTTP/1.1
+Content-Type: multipart/form-data;boundary=_PJ-m97O-EmAKBMzXCEP0YSSdtc7a_Nr9e; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Host: localhost:8080
 Content-Length: 374
 
---l_wMLHTnrRo-BtIzvhrjKiyCuzaA1KlI6y
+--_PJ-m97O-EmAKBMzXCEP0YSSdtc7a_Nr9e
 Content-disposition: form-data; name="files"; filename="file1"
 Content-Type: text/plain
 Content-Length: 18
 
 안뇽 친구들!
 
---l_wMLHTnrRo-BtIzvhrjKiyCuzaA1KlI6y
+--_PJ-m97O-EmAKBMzXCEP0YSSdtc7a_Nr9e
 Content-disposition: form-data; name="files"; filename="file2"
 Content-Type: text/plain
 Content-Length: 12
 
 반가워!!
 
---l_wMLHTnrRo-BtIzvhrjKiyCuzaA1KlI6y--</code></pre>
+--_PJ-m97O-EmAKBMzXCEP0YSSdtc7a_Nr9e--</code></pre>
 </div>
 </div>
 </div>
@@ -538,7 +538,7 @@ Content-Length: 12
 <h4 id="_http_request_3"><a class="link" href="#_http_request_3">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/local/files/test.txt HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/files/test.txt HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -562,7 +562,7 @@ Content-Length: 44
 <h4 id="_http_request_4"><a class="link" href="#_http_request_4">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/local/files HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/files HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>

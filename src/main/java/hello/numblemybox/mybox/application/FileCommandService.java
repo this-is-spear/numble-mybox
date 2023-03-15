@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class FileCommandService {
 
-	public Mono<Void> uploadInLocal(Flux<FilePart> filePart) {
+	public Mono<Void> upload(Flux<FilePart> filePart) {
 		return Mono.empty();
 	}
 }
