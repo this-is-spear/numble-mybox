@@ -5,12 +5,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class FileStubs {
+import hello.numblemybox.mybox.domain.MyFile;
+
+public final class FileStubs {
 
 	public static final String 강아지_사진 = "test-image1.png";
 	public static final String 테니스장_사진 = "test-image2.jpg";
 	public static final String 인사_문장 = "test-text1.txt";
 	public static final String 끝맺음_문장 = "test-text2.txt";
+	public static final MyFile 이미지_파일 = new MyFile(null, "image", "rjsckdd12@gmail.com", 1_000_000L, "png");
+	public static final MyFile 텍스트_파일 = new MyFile(null, "text", "rjsckdd12@gmail.com", 10_000L, "txt");
 
 	public static byte[] getFileOne(String filename) {
 		try {

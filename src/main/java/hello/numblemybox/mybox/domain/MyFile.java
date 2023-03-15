@@ -1,16 +1,21 @@
 package hello.numblemybox.mybox.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import hello.numblemybox.mybox.exception.InvalidExtensionException;
-import hello.numblemybox.mybox.exception.InvalidSizeException;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
+import hello.numblemybox.mybox.exception.InvalidSizeException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
+@Document
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class MyFile {
+	@Id
 	@EqualsAndHashCode.Include
 	@ToString.Include
 	String id;
