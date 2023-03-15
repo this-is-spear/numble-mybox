@@ -33,9 +33,6 @@ public class FileController {
 		@RequestPart("files") Flux<FilePart> partFlux
 	) {
 		return partFlux.log()
-			.flatMap(filePart -> {
-				filePart.headers().getContentLength()
-			})
 			.publish(fileCommandService::upload)
 			.log()
 			.then();
