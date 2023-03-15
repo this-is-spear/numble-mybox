@@ -44,7 +44,7 @@ public final class MyFile {
 			throw InvalidFilenameException.tooShort();
 		}
 
-		if (filename.length() > 10) {
+		if (filename.length() > 20) {
 			throw InvalidFilenameException.tooLong();
 		}
 	}

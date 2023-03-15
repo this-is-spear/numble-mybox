@@ -49,13 +49,13 @@ class MyFileTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"asdljk1asd32kdf", "sdjkasdfl3nfddsf"})
-	@DisplayName("파일 이름 크기가 10 글자보다 크면 예외가 발생한다.")
+	@ValueSource(strings = {"asdljasdfdsdfsafsfsk1asd32kdf", "sdjkasdfl3sadfsdfsfs,l23nfddsf"})
+	@DisplayName("파일 이름 크기가 20 글자보다 크면 예외가 발생한다.")
 	void myFile_nameShouldBeRule(String 큰_길이_파일_이름) {
 		assertThatThrownBy(
 			() -> new MyFile(파일_식별자, 큰_길이_파일_이름, 파일_주인_식별자, 파일_크기, 파일_확장자)
 		).isInstanceOf(InvalidFilenameException.class)
-			.hasMessage("10 글자를 넘길 수 없습니다.");
+			.hasMessage("20 글자를 넘길 수 없습니다.");
 	}
 
 	@ParameterizedTest

@@ -6,12 +6,8 @@ public final class InvalidFilenameException extends MyFileException {
 		super(message);
 	}
 
-	public static InvalidFilenameException containsSpecialCharacters() {
-		throw new InvalidFilenameException("특수문자(.)는 들어갈 수 없습니다.");
-	}
-
 	public static InvalidFilenameException tooLong() {
-		throw new InvalidFilenameException("10 글자를 넘길 수 없습니다.");
+		throw new InvalidFilenameException("20 글자를 넘길 수 없습니다.");
 	}
 
 	public static InvalidFilenameException tooShort() {
