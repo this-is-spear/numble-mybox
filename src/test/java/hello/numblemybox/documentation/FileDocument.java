@@ -41,11 +41,11 @@ public class FileDocument {
 		when(fileCommandService.upload(any())).thenReturn(Mono.empty());
 
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
-		builder.part("image1", getFileOne(인사_문장))
-			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file1\"")
+		builder.part("image1.png", getFileOne(인사_문장))
+			.header("Content-disposition", "form-data; name=\"files\"; filename=\"image1.png\"")
 			.contentType(MediaType.TEXT_PLAIN);
-		builder.part("image2", getFileOne(끝맺음_문장))
-			.header("Content-disposition", "form-data; name=\"files\"; filename=\"file2\"")
+		builder.part("image2.jpg", getFileOne(끝맺음_문장))
+			.header("Content-disposition", "form-data; name=\"files\"; filename=\"image2.jpg\"")
 			.contentType(MediaType.TEXT_PLAIN);
 
 		this.webTestClient.post().uri("/mybox/upload")
