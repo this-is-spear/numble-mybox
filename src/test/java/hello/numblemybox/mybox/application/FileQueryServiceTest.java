@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import hello.fake.FakeMyBoxRepository;
+import hello.numblemybox.fake.FakeMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.dto.FileResponse;
 

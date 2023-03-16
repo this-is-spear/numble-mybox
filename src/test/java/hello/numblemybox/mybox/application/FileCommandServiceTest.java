@@ -12,8 +12,8 @@ import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import hello.fake.FakeMyBoxRepository;
-import hello.fake.FakeMyBoxStorage;
+import hello.numblemybox.fake.FakeMyBoxRepository;
+import hello.numblemybox.fake.FakeMyBoxStorage;
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Flux;

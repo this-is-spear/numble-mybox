@@ -1,4 +1,4 @@
-package hello.fake;
+package hello.numblemybox.fake;
 
 import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
