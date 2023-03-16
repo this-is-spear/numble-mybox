@@ -19,4 +19,7 @@ public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, Lo
 
 	@Override
 	Flux<MyFile> findAll();
+
+	@Override
+	Mono<Void> deleteAll();
 }
