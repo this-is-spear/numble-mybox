@@ -22,6 +22,6 @@ class LocalMyBoxStorageTest {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
 		localMyBoxStorage.uploadFiles(Flux.just(filePart)).subscribe();
 		assertThat(Files.exists(LOCAL_PATH.resolve(업로드할_사진))).isTrue();
-		Files.delete(LOCAL_PATH.resolve(업로드할_사진));
+		Files.deleteIfExists(LOCAL_PATH.resolve(업로드할_사진));
 	}
 }
