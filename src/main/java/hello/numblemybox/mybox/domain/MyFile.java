@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * 파일과 관련된 문서는 <a href="https://github.com/this-is-spear/numble-mybox/issues/2">링크</a>에서 확인할 수 있습니다.
+ */
 @Getter
 @Document
 @ToString(onlyExplicitlyIncluded = true)

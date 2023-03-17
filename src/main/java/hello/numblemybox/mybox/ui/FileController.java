@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * 컨트롤러와 관련된 문서는 <a href="https://github.com/this-is-spear/numble-mybox/issues/2">링크</a>에서 확인할 수 있습니다.
+ */
 @RestController
 @RequestMapping("mybox")
 @RequiredArgsConstructor
