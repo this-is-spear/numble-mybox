@@ -33,25 +33,23 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var fileMono = myBoxStorage.getPath().flatMap(
-						path -> {
-							Mono<Void> findFile = myBoxRepository.findByFilename(file.filename())
-								.flatMap(myFile -> {
-									if (myFile != null) {
-										return Mono.error(InvalidFilenameException.alreadyFilename());
-									}
-									return Mono.empty();
-								});
+					var findFile = myBoxRepository.findByFilename(file.filename())
+						.flatMap(
+							myFile -> {
+								if (myFile != null) {
+									return Mono.error(InvalidFilenameException.alreadyFilename());
+								}
+								return Mono.empty();
+							}
+						).then();
 
-							Mono<MyFile> mono = Mono.just(
-								new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
-									getExtension(file)));
-							Mono<Void> insertFile = mono.flatMap(myBoxRepository::insert).then();
-							return Mono.when(findFile, insertFile);
-						}
+					var fileMono = myBoxStorage.getPath().flatMap(
+						path -> Mono.just(
+							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+								getExtension(file))).flatMap(myBoxRepository::insert).then()
 					);
-					var uploadFile = myBoxStorage.uploadFile(Mono.just(file));
-					return Mono.when(fileMono, uploadFile);
+					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
+					return Mono.when(findFile, fileMono, uploadFile);
 				}
 			)
 			.then();
