@@ -1,5 +1,6 @@
 package hello.numblemybox.mybox.application;
 
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
@@ -33,23 +34,25 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var findFile = myBoxRepository.findByFilename(file.filename())
-						.flatMap(myFile -> {
-							if (myFile != null) {
-								return Mono.error(InvalidFilenameException.alreadyFilename());
-							}
-							return Mono.empty();
-						});
-
 					var fileMono = myBoxStorage.getPath().flatMap(
-						path -> Mono.just(
-							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
-								getExtension(file)))
-					);
+						path -> {
+							Mono<Void> findFile = myBoxRepository.findByFilename(file.filename())
+								.flatMap(myFile -> {
+									if (myFile != null) {
+										return Mono.error(InvalidFilenameException.alreadyFilename());
+									}
+									return Mono.empty();
+								});
 
+							Mono<MyFile> mono = Mono.just(
+								new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+									getExtension(file)));
+							Mono<Void> insertFile = mono.flatMap(myBoxRepository::insert).then();
+							return Mono.when(findFile, insertFile);
+						}
+					);
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file));
-					var insertFile = fileMono.flatMap(myBoxRepository::insert).then();
-					return Mono.when(findFile, insertFile, uploadFile);
+					return Mono.when(fileMono, uploadFile);
 				}
 			)
 			.then();
