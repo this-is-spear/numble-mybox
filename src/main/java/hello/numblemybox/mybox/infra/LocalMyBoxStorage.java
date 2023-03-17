@@ -16,6 +16,11 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
 
 	@Override
+	public Mono<String> getPath() {
+		return Mono.just(LOCAL_PATH.toString());
+	}
+
+	@Override
 	public Mono<Void> uploadFiles(Flux<FilePart> partFlux) {
 		return partFlux
 			.flatMap(filePart -> filePart.transferTo(LOCAL_PATH.resolve(filePart.filename())))

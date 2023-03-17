@@ -29,10 +29,14 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var myFile = new MyFile(null, file.filename(), ADMIN, file.headers().getContentLength(),
-						getExtension(file));
+					Mono<MyFile> fileMono = myBoxStorage.getPath().flatMap(
+						path -> Mono.just(
+							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+								getExtension(file)))
+					);
+
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file));
-					var insert = myBoxRepository.insert(myFile);
+					var insert = fileMono.flatMap(myBoxRepository::insert).then();
 					return Mono.when(insert, uploadFile);
 				}
 			)

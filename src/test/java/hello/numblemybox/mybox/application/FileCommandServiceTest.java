@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,8 +62,8 @@ class FileCommandServiceTest {
 	@DisplayName("업로드하려는 파일과 같은 이름의 파일이 이미 저장되어 있으면 예외가 발생한다.")
 	void upload_NotExistFile() {
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		myBoxRepository.insert(new MyFile(null, 사진.filename(), ADMIN,
-			사진.headers().getContentLength(), 사진.filename().split("\\.")[1]))
+		myBoxRepository.insert(new MyFile(null, 사진.filename(), ADMIN, 업로드할_사진의_경로.toString(),
+				사진.headers().getContentLength(), 사진.filename().split("\\.")[1]))
 			.subscribe();
 
 		create(fileCommandService.upload(Flux.just(사진)))

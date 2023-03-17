@@ -18,8 +18,8 @@ public final class FakeMyBoxRepository implements MyBoxRepository {
 	@Override
 	public Mono<MyFile> insert(MyFile entity) {
 		String id = UUID.randomUUID().toString();
-		MyFile storedMyFile = new MyFile(id, entity.getFilename(), entity.getUsername(), entity.getSize(),
-			entity.getExtension());
+		MyFile storedMyFile = new MyFile(id, entity.getFilename(), entity.getUsername(), entity.getPath(),
+			entity.getSize(), entity.getExtension());
 		map.put(id, storedMyFile);
 		return Mono.just(storedMyFile);
 	}

@@ -18,6 +18,11 @@ import reactor.core.publisher.Mono;
 public class FakeMyBoxStorage implements MyBoxStorage {
 
 	@Override
+	public Mono<String> getPath() {
+		return Mono.just(업로드할_사진의_경로.toString());
+	}
+
+	@Override
 	public Mono<Void> uploadFiles(Flux<FilePart> partFlux) {
 		return partFlux
 			.flatMap(filePart -> filePart.transferTo(업로드할_사진의_경로.resolve(filePart.filename())))
