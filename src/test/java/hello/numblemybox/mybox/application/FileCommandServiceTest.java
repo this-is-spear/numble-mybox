@@ -85,4 +85,19 @@ class FileCommandServiceTest {
 
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 	}
+
+	@Test
+	@DisplayName("ID를 입력받아 파일을 다운로드한다.")
+	void downloadFileById() throws IOException {
+		// given
+		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
+		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
+
+		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", 테스트할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg");
+
+		myBoxRepository.insert(myFile)
+			.subscribe(entity -> create(fileCommandService.downloadFileById(entity.getId()))
+				.expectNextCount(1)
+				.verifyComplete());
+	}
 }

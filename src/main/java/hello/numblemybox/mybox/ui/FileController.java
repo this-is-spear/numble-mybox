@@ -45,7 +45,7 @@ public class FileController {
 		produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
 	)
 	public Mono<ResponseEntity<InputStreamResource>> downloadFile(@PathVariable String id) {
-		return fileCommandService.downloadFileById(Mono.just(id))
+		return fileCommandService.downloadFileById(id)
 			.map(fileResponse -> ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION,
 					String.format("attachment; filename=\"%s\"", fileResponse.filename()))

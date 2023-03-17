@@ -60,7 +60,13 @@ public class FileCommandService {
 		return file.filename().split("\\.")[1];
 	}
 
-	public Mono<LoadedFileResponse> downloadFileById(Mono<String> id) {
-		return Mono.empty();
+	public Mono<LoadedFileResponse> downloadFileById(String id) {
+		var filename = myBoxRepository.findById(id)
+			.map(MyFile::getFilename);
+		var inputStreamMono = myBoxStorage
+			.downloadFile(filename);
+
+		return Mono.zip(filename, inputStreamMono)
+			.map(objects -> new LoadedFileResponse(objects.getT1(), objects.getT2()));
 	}
 }

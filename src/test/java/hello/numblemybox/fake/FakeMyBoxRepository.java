@@ -37,4 +37,12 @@ public final class FakeMyBoxRepository implements MyBoxRepository {
 	public Flux<MyFile> findAll() {
 		return Mono.just(map.values()).flatMapIterable(myFiles -> myFiles);
 	}
+
+	@Override
+	public Mono<MyFile> findById(String id) {
+		if (map.containsKey(id)) {
+			return Mono.just(map.get(id));
+		}
+		return Mono.empty();
+	}
 }
