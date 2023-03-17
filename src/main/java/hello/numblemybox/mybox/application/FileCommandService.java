@@ -57,16 +57,20 @@ public class FileCommandService {
 	}
 
 	private String getExtension(FilePart file) {
-		return file.filename().split("\\.")[1];
+		return file.headers().getContentType().toString();
 	}
 
 	public Mono<LoadedFileResponse> downloadFileById(String id) {
-		var filename = myBoxRepository.findById(id)
-			.map(MyFile::getFilename);
+		var fileMono = myBoxRepository.findById(id);
+		var filename = fileMono.map(MyFile::getFilename);
 		var inputStreamMono = myBoxStorage
 			.downloadFile(filename);
 
-		return Mono.zip(filename, inputStreamMono)
-			.map(objects -> new LoadedFileResponse(objects.getT1(), objects.getT2()));
+		return Mono.zip(fileMono, inputStreamMono)
+			.map(objects -> new LoadedFileResponse(
+				objects.getT1().getFilename(),
+				objects.getT2(),
+				objects.getT1().getExtension())
+			);
 	}
 }

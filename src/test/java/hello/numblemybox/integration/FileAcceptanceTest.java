@@ -2,12 +2,16 @@ package hello.numblemybox.integration;
 
 import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +35,14 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	private MyBoxMongoRepository myBoxRepository;
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws IOException {
+		deleteFiles();
 		myBoxRepository.deleteAll().subscribe();
+	}
+
+	@AfterAll
+	static void afterAll() throws IOException {
+		deleteFiles();
 	}
 
 	/**
@@ -44,10 +54,7 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	 */
 	@Test
 	@Order(1)
-	void 파일을_업로드하고_조회한다() throws IOException {
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
+	void 파일을_업로드하고_조회한다() {
 
 		파일_업로드_요청(그냥_문장);
 
@@ -58,9 +65,6 @@ class FileAcceptanceTest extends SpringBootTemplate {
 
 		var 파일_조회_요청2 = 파일_조회_요청();
 
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 		파일_조회_요청2.jsonPath("$.size()").isEqualTo(3);
 	}
 
@@ -71,25 +75,28 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	 */
 	@Test
 	@Order(3)
-	@Disabled
 	void 업로드한_파일을_다운로드한다() throws IOException {
-		// given
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
-
 		// when
 		파일_업로드_요청(인사_문장);
 
 		// then
 		var 파일_조회_요청 = 파일_조회_요청(인사_문장);
 		var response = getValue(파일_조회_요청.returnResult().getResponseBody(), FileResponse.class);
-
 		var 파일_다운로드_요청 = 파일_다운로드_요청(response.id());
-		var 파일_내용 = getValue(파일_다운로드_요청.returnResult().getResponseBody(), String.class);
+		var responseBody = 파일_다운로드_요청.returnResult().getResponseBody();
+
+		assertNotNull(responseBody);
+
+		var 파일_내용 = getString(responseBody);
 
 		assertThat(파일_내용).isEqualTo(
-			getValue(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(인사_문장)), String.class)
+			getString(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(인사_문장)))
 		);
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
+	}
+
+	private String getString(byte[] responseBody) throws IOException {
+		var reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(responseBody)));
+		return reader.readLine();
 	}
 
 	private <T> T getValue(byte[] data, Class<T> t) throws IOException {
@@ -97,7 +104,7 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	}
 
 	private WebTestClient.BodyContentSpec 파일_다운로드_요청(String id) {
-		return webTestClient.post().uri("/mybox/files/{id}/download", id)
+		return webTestClient.post().uri("/mybox/{id}/download", id)
 			.contentType(MediaType.APPLICATION_OCTET_STREAM)
 			.exchange()
 			.expectStatus().isOk()
@@ -125,16 +132,18 @@ class FileAcceptanceTest extends SpringBootTemplate {
 		final var requestPartName = "files";
 
 		for (int i = 0; i < filenames.length; i++) {
-			String filename = filenames[i];
+			var filename = filenames[i];
 			builder.part("image", getFileOne(filename))
 				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename));
+					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename))
+				.contentType(MediaType.TEXT_PLAIN);
 		}
 
 		if (filenames.length == 0) {
-			builder.part("image", getFileOne(끝맺음_문장))
+			builder.part("text", getFileOne(끝맺음_문장))
 				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, 끝맺음_문장));
+					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, 끝맺음_문장))
+				.contentType(MediaType.TEXT_PLAIN);
 		}
 
 		return webTestClient.post().uri("/mybox/upload")
@@ -142,5 +151,11 @@ class FileAcceptanceTest extends SpringBootTemplate {
 			.bodyValue(builder.build())
 			.exchange()
 			.expectStatus().isOk();
+	}
+
+	private static void deleteFiles() throws IOException {
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 	}
 }

@@ -21,8 +21,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FileQueryService;
-import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.dto.FileResponse;
+import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.ui.FileController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -102,7 +102,9 @@ public class FileDocument {
 
 		when(fileCommandService.downloadFileById(any())).thenReturn(
 			Mono.just(new LoadedFileResponse("test.txt",
-				new ByteArrayInputStream("hellloooooo my name is tis".getBytes(StandardCharsets.UTF_8))))
+				new ByteArrayInputStream("hellloooooo my name is tis".getBytes(StandardCharsets.UTF_8)),
+				MediaType.TEXT_PLAIN_VALUE)
+			)
 		);
 
 		this.webTestClient.post().uri("/mybox/{id}/download", id)

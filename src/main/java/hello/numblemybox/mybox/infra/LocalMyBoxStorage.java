@@ -2,11 +2,13 @@ package hello.numblemybox.mybox.infra;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,34 +46,11 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 			.publishOn(Schedulers.boundedElastic())
 			.map(name -> {
 					try {
-						var channel = AsynchronousFileChannel.open(LOCAL_PATH.resolve(name));
-						var buffer = ByteBuffer.allocate(CAPACITY);
-						channel.read(buffer, 0, buffer, getHandler(channel));
-						return new ByteArrayInputStream(buffer.array());
+						return Files.newInputStream(LOCAL_PATH.resolve(name));
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
 				}
 			);
-	}
-
-	private CompletionHandler<Integer, ByteBuffer> getHandler(AsynchronousFileChannel channel) {
-		return new CompletionHandler<>() {
-			@Override
-			public void completed(Integer result, ByteBuffer attachment) {
-				try {
-					if (channel.isOpen()) {
-						channel.close();
-					}
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-
-			@Override
-			public void failed(Throwable exc, ByteBuffer attachment) {
-				exc.printStackTrace();
-			}
-		};
 	}
 }

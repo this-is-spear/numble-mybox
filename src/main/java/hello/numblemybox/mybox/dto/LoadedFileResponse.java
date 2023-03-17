@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 public record LoadedFileResponse(
 	String filename,
-	InputStream inputStream
+	InputStream inputStream,
+	String extension
 ) {
 }
