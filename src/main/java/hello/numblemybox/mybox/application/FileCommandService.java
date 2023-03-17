@@ -1,5 +1,7 @@
 package hello.numblemybox.mybox.application;
 
+import java.util.Objects;
+
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +59,7 @@ public class FileCommandService {
 	}
 
 	private String getExtension(FilePart file) {
-		return file.headers().getContentType().toString();
+		return Objects.requireNonNull(file.headers().getContentType()).toString();
 	}
 
 	public Mono<LoadedFileResponse> downloadFileById(String id) {

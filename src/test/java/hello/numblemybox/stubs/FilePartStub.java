@@ -11,6 +11,7 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -34,8 +35,10 @@ public class FilePartStub implements FilePart {
 	@Override
 	public HttpHeaders headers() {
 		MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-		valueMap.add("content-length", "128");
+		valueMap.add(HttpHeaders.CONTENT_LENGTH, "128");
 		valueMap.add("name", "text.txt");
+		valueMap.add(HttpHeaders.CONTENT_DISPOSITION, "filename=\"text.txt\"");
+		valueMap.add(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE);
 		return new HttpHeaders(valueMap);
 	}
 
