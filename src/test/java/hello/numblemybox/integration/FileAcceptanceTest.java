@@ -1,11 +1,13 @@
 package hello.numblemybox.integration;
 
 import static hello.numblemybox.stubs.FileStubs.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import hello.numblemybox.SpringBootTemplate;
+import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.infra.MyBoxMongoRepository;
 
 class FileAcceptanceTest extends SpringBootTemplate {
-
+	@Autowired
+	private ObjectMapper OBJECT_MAPPER;
 	@Autowired
 	private WebTestClient webTestClient;
 
@@ -62,6 +68,46 @@ class FileAcceptanceTest extends SpringBootTemplate {
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 		파일_조회_요청.jsonPath("$.size()").isEqualTo(2);
+	}
+
+	/**
+	 * @Fact 사용자는 업로드한 파일을 다운로드할 수 있다.
+	 * @When 사용자가 파일을 업로드하면
+	 * @Then 파일을 다운로드할 수 있다.
+	 */
+	@Test
+	@Order(3)
+	@Disabled
+	void 업로드한_파일을_다운로드한다() throws IOException {
+		// given
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
+
+		// when
+		파일_업로드_요청(인사_문장);
+
+		// then
+		var 파일_조회_요청 = 파일_조회_요청(인사_문장);
+		var response = getValue(파일_조회_요청.returnResult().getResponseBody(), FileResponse.class);
+
+		var 파일_다운로드_요청 = 파일_다운로드_요청(response.id());
+		var 파일_내용 = getValue(파일_다운로드_요청.returnResult().getResponseBody(), String.class);
+
+		assertThat(파일_내용).isEqualTo(
+			getValue(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(인사_문장)), String.class)
+		);
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
+	}
+
+	private <T> T getValue(byte[] data, Class<T> t) throws IOException {
+		return OBJECT_MAPPER.readValue(data, t);
+	}
+
+	private WebTestClient.BodyContentSpec 파일_다운로드_요청(String id) {
+		return webTestClient.post().uri("/mybox/files/{id}/download", id)
+			.contentType(MediaType.APPLICATION_OCTET_STREAM)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody();
 	}
 
 	private WebTestClient.BodyContentSpec 파일_조회_요청(String filename) {

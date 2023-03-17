@@ -24,7 +24,7 @@ public class FileQueryService {
 	 */
 	public Mono<FileResponse> getFile(String filename) {
 		return myBoxRepository.findByFilename(filename).flatMap(myFile -> Mono.just(
-			new FileResponse(myFile.getFilename(), myFile.getExtension(), myFile.getSize())
+			new FileResponse(myFile.getId(), myFile.getFilename(), myFile.getExtension(), myFile.getSize())
 		));
 	}
 
@@ -35,7 +35,7 @@ public class FileQueryService {
 	 */
 	public Flux<FileResponse> getFiles() {
 		return myBoxRepository.findAll().flatMap(myFile -> Flux.just(
-			new FileResponse(myFile.getFilename(), myFile.getExtension(), myFile.getSize())
+			new FileResponse(myFile.getId(), myFile.getFilename(), myFile.getExtension(), myFile.getSize())
 		));
 	}
 }
