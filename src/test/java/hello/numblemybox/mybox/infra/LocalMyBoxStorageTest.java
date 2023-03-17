@@ -12,21 +12,11 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.stubs.FilePartStub;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 class LocalMyBoxStorageTest {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
 	LocalMyBoxStorage localMyBoxStorage = new LocalMyBoxStorage();
-
-	@Test
-	void uploadFiles() throws IOException {
-		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		create(localMyBoxStorage.uploadFiles(Flux.just(filePart)))
-			.verifyComplete();
-		assertThat(Files.exists(LOCAL_PATH.resolve(업로드할_사진))).isTrue();
-		Files.deleteIfExists(LOCAL_PATH.resolve(업로드할_사진));
-	}
 
 	@Test
 	void uploadFile() throws IOException {

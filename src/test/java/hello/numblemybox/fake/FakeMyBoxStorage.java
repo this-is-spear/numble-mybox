@@ -12,7 +12,6 @@ import org.springframework.http.codec.multipart.FilePart;
 
 import hello.numblemybox.mybox.application.MyBoxStorage;
 import hello.numblemybox.stubs.FilePartStub;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class FakeMyBoxStorage implements MyBoxStorage {
@@ -20,13 +19,6 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 	@Override
 	public Mono<String> getPath() {
 		return Mono.just(업로드할_사진의_경로.toString());
-	}
-
-	@Override
-	public Mono<Void> uploadFiles(Flux<FilePart> partFlux) {
-		return partFlux
-			.flatMap(filePart -> filePart.transferTo(업로드할_사진의_경로.resolve(filePart.filename())))
-			.then();
 	}
 
 	@Override
@@ -44,8 +36,8 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 	@Test
 	void uploadFile() throws IOException {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		uploadFiles(Flux.just(filePart)).subscribe();
+		uploadFile(Mono.just(filePart)).subscribe();
 		assertThat(Files.exists(업로드할_사진의_경로.resolve(업로드할_사진))).isTrue();
-		Files.delete(업로드할_사진의_경로.resolve(업로드할_사진));
+		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 	}
 }
