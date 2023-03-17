@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,6 +35,7 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	 * @Then 스토리지 안에 파일을 조회할 수 있다.
 	 */
 	@Test
+	@Order(1)
 	void 파일을_업로드하고_조회한다() throws IOException {
 		var 파일_업로드_요청 = 파일_업로드_요청(인사_문장);
 		파일_업로드_요청.expectStatus().isOk();
@@ -49,7 +51,10 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	 * @Then 스토리지 안에 파일을 조회할 수 있다.
 	 */
 	@Test
+	@Order(2)
 	void 파일을_여러개_업로드하고_조회한다() throws IOException {
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 		var 파일_업로드_요청 = 파일_업로드_요청(끝맺음_문장, 인사_문장);
 		파일_업로드_요청.expectStatus().isOk();
 
@@ -80,9 +85,10 @@ class FileAcceptanceTest extends SpringBootTemplate {
 		final var requestPartName = "files";
 
 		for (int i = 0; i < filenames.length; i++) {
-			builder.part("image", getFileOne(filenames[i]))
+			String filename = filenames[i];
+			builder.part("image", getFileOne(filename))
 				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filenames[i]));
+					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename));
 		}
 
 		if (filenames.length == 0) {

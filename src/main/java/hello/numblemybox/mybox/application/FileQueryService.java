@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * 사용자의 파일을 조회할 수 있는 기능을 모았습니다.
+ * 서비스와 관련된 문서는 <a href="https://github.com/this-is-spear/numble-mybox/issues/2">링크</a>에서 확인할 수 있습니다.
  */
 @Service
 @RequiredArgsConstructor

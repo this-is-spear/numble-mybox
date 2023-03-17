@@ -5,11 +5,15 @@ import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+/**
+ * 서비스와 관련된 문서는 <a href="https://github.com/this-is-spear/numble-mybox/issues/2">링크</a>에서 확인할 수 있습니다.
+ */
 @Service
 @RequiredArgsConstructor
 public class FileCommandService {
@@ -29,11 +33,23 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var myFile = new MyFile(null, file.filename(), ADMIN, file.headers().getContentLength(),
-						getExtension(file));
-					var uploadFile = myBoxStorage.uploadFile(Mono.just(file));
-					var insert = myBoxRepository.insert(myFile);
-					return Mono.when(insert, uploadFile);
+					var findFile = myBoxRepository.findByFilename(file.filename())
+						.flatMap(
+							myFile -> {
+								if (myFile != null) {
+									return Mono.error(InvalidFilenameException.alreadyFilename());
+								}
+								return Mono.empty();
+							}
+						).then();
+
+					var fileMono = myBoxStorage.getPath().flatMap(
+						path -> Mono.just(
+							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+								getExtension(file))).flatMap(myBoxRepository::insert).then()
+					);
+					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
+					return Mono.when(findFile, fileMono, uploadFile);
 				}
 			)
 			.then();
