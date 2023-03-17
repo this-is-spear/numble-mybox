@@ -11,4 +11,6 @@ public interface MyBoxStorage {
 	Mono<Void> uploadFiles(Flux<FilePart> partFlux);
 
 	Mono<File> getFile(String filename);
+
+	Mono<Void> uploadFile(Mono<FilePart> file);
 }

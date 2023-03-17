@@ -3,6 +3,7 @@ package hello.numblemybox.fake;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
@@ -25,9 +26,11 @@ public final class FakeMyBoxRepository implements MyBoxRepository {
 
 	@Override
 	public Mono<MyFile> findByFilename(String filename) {
-		return Mono.just(map.values().stream()
+		Optional<MyFile> first = map.values().stream()
 			.filter(myFile -> Objects.equals(filename, myFile.getFilename()))
-			.findFirst().get());
+			.findFirst();
+
+		return first.map(Mono::just).orElseGet(Mono::empty);
 	}
 
 	@Override

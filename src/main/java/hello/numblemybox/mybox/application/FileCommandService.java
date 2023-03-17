@@ -8,6 +8,7 @@ import hello.numblemybox.mybox.domain.MyFile;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +24,19 @@ public class FileCommandService {
 	 *
 	 * @param filePart 업로드하려는 파일 데이터
 	 */
-	public Mono<Void> upload(FilePart filePart) {
-		var myFile = new MyFile(null, filePart.filename(), ADMIN, filePart.headers().getContentLength(),
-			getExtension(filePart));
-		myBoxStorage.uploadFiles(Flux.just(filePart)).subscribe();
-		myBoxRepository.insert(myFile).subscribe();
-		return Mono.empty();
+	public Mono<Void> upload(Flux<FilePart> filePart) {
+		return filePart
+			.publishOn(Schedulers.boundedElastic())
+			.flatMap(
+				file -> {
+					var myFile = new MyFile(null, file.filename(), ADMIN, file.headers().getContentLength(),
+						getExtension(file));
+					var uploadFile = myBoxStorage.uploadFile(Mono.just(file));
+					var insert = myBoxRepository.insert(myFile);
+					return Mono.when(insert, uploadFile);
+				}
+			)
+			.then();
 	}
 
 	private String getExtension(FilePart file) {

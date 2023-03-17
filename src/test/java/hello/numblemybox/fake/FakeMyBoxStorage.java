@@ -29,6 +29,13 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 		return Mono.just(업로드할_사진의_경로.resolve(filename).toFile());
 	}
 
+	@Override
+	public Mono<Void> uploadFile(Mono<FilePart> partMono) {
+		return partMono.flatMap(
+			filePart -> filePart.transferTo(업로드할_사진의_경로.resolve(filePart.filename()))
+		).then();
+	}
+
 	@Test
 	void uploadFile() throws IOException {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));

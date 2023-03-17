@@ -31,7 +31,7 @@ public class FileController {
 	public Mono<Void> uploadFiles(
 		@RequestPart("files") Flux<FilePart> partFlux
 	) {
-		return partFlux.flatMap(fileCommandService::upload).then();
+		return partFlux.publish(fileCommandService::upload).then();
 	}
 
 	@GetMapping(
