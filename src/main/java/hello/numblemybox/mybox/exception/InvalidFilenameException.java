@@ -13,4 +13,8 @@ public final class InvalidFilenameException extends MyFileException {
 	public static InvalidFilenameException tooShort() {
 		throw new InvalidFilenameException("파일 이름이 너무 짧거나 비어 있습니다.");
 	}
+
+	public static InvalidFilenameException alreadyFilename() {
+		throw new InvalidFilenameException("저장소에 이미 같은 이름의 파일이 있습니다.");
+	}
 }

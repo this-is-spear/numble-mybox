@@ -80,9 +80,10 @@ class FileAcceptanceTest extends SpringBootTemplate {
 		final var requestPartName = "files";
 
 		for (int i = 0; i < filenames.length; i++) {
-			builder.part("image", getFileOne(filenames[i]))
+			String filename = filenames[i];
+			builder.part("image", getFileOne(filename))
 				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filenames[i]));
+					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename));
 		}
 
 		if (filenames.length == 0) {
