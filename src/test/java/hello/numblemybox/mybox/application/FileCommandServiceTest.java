@@ -35,12 +35,8 @@ class FileCommandServiceTest {
 		fileCommandService = new FileCommandService(myBoxStorage, myBoxRepository);
 	}
 
-	/*
-		 1. 파일의 메타데이터를 식별한다.
-		 2. 파일 시스템에 업로드한다.
-		 3. 파일 정보를 저장한다.
-	 */
 	@Test
+	@DisplayName("이미지를 업로드한다.")
 	void upload() throws IOException {
 		// given
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
@@ -73,6 +69,7 @@ class FileCommandServiceTest {
 	}
 
 	@Test
+	@DisplayName("파일의 정보를 조회한다.")
 	void getFile() throws IOException {
 		// given
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
