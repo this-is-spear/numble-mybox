@@ -21,3 +21,35 @@ include::{snippets}/hello/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/hello/http-response.adoc[]
+
+== File
+
+=== Upload files
+
+==== HTTP request
+
+include::{snippets}/upload/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/upload/http-response.adoc[]
+
+=== Get file
+
+==== HTTP request
+
+include::{snippets}/getOne/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/getOne/http-response.adoc[]
+
+=== Get files
+
+==== HTTP request
+
+include::{snippets}/getAll/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/getAll/http-response.adoc[]
