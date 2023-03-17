@@ -20,7 +20,7 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
-	private static final int CAPACITY = 1024 * 1024 * 10;
+	private static final int CAPACITY = 1024 * 1024 * 20;
 
 	@Override
 	public Mono<String> getPath() {
@@ -46,29 +46,32 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 					try {
 						var channel = AsynchronousFileChannel.open(LOCAL_PATH.resolve(name));
 						var buffer = ByteBuffer.allocate(CAPACITY);
-						channel.read(buffer, 0, buffer, new CompletionHandler<>() {
-							@Override
-							public void completed(Integer result, ByteBuffer attachment) {
-								try {
-									if (channel.isOpen()) {
-										channel.close();
-									}
-								} catch (IOException e) {
-									throw new RuntimeException(e);
-								}
-							}
-
-							@Override
-							public void failed(Throwable exc, ByteBuffer attachment) {
-								exc.printStackTrace();
-							}
-						});
-
+						channel.read(buffer, 0, buffer, getHandler(channel));
 						return new ByteArrayInputStream(buffer.array());
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
 				}
 			);
+	}
+
+	private CompletionHandler<Integer, ByteBuffer> getHandler(AsynchronousFileChannel channel) {
+		return new CompletionHandler<>() {
+			@Override
+			public void completed(Integer result, ByteBuffer attachment) {
+				try {
+					if (channel.isOpen()) {
+						channel.close();
+					}
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			@Override
+			public void failed(Throwable exc, ByteBuffer attachment) {
+				exc.printStackTrace();
+			}
+		};
 	}
 }
