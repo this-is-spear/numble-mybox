@@ -1,6 +1,7 @@
 package hello.numblemybox.mybox.application;
 
 import java.io.File;
+import java.io.InputStream;
 
 import org.springframework.http.codec.multipart.FilePart;
 
@@ -30,4 +31,12 @@ public interface MyBoxStorage {
 	 * @return Void
 	 */
 	Mono<Void> uploadFile(Mono<FilePart> file);
+
+	/**
+	 * 저장소에 있는 파일을 다운로드합니다.
+	 *
+	 * @param filename 저장된 파일 이름
+	 * @return 파일 내부 정보
+	 */
+	Mono<InputStream> downloadFile(Mono<String> filename);
 }
