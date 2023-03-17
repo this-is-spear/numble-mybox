@@ -1,10 +1,13 @@
 package hello.numblemybox.mybox.application;
 
+import java.util.Objects;
+
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -56,6 +59,20 @@ public class FileCommandService {
 	}
 
 	private String getExtension(FilePart file) {
-		return file.filename().split("\\.")[1];
+		return Objects.requireNonNull(file.headers().getContentType()).toString();
+	}
+
+	public Mono<LoadedFileResponse> downloadFileById(String id) {
+		var fileMono = myBoxRepository.findById(id);
+		var filename = fileMono.map(MyFile::getFilename);
+		var inputStreamMono = myBoxStorage
+			.downloadFile(filename);
+
+		return Mono.zip(fileMono, inputStreamMono)
+			.map(objects -> new LoadedFileResponse(
+				objects.getT1().getFilename(),
+				objects.getT2(),
+				objects.getT1().getExtension())
+			);
 	}
 }

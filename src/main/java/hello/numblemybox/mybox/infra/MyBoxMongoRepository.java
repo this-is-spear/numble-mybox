@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, Long>, MyBoxRepository {
+public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, String>, MyBoxRepository {
 
 	@Override
 	Mono<MyFile> insert(MyFile entity);
@@ -22,4 +22,7 @@ public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, Lo
 
 	@Override
 	Mono<Void> deleteAll();
+
+	@Override
+	Mono<MyFile> findById(String id);
 }

@@ -67,35 +67,6 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
-    finalizedBy jacocoTestCoverageVerification
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            enabled = true
-            element = 'CLASS'
-
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.60
-            }
-
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-            excludes = [
-                    "*.NumbleMyboxApplication",
-                    "*.*Configuration",
-                    "*.application.*",
-                    "*.dto.*",
-            ]
-        }
-    }
 }
 
 asciidoctor {

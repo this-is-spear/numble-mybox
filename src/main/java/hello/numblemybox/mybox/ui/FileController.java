@@ -1,6 +1,9 @@
 package hello.numblemybox.mybox.ui;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +38,20 @@ public class FileController {
 		@RequestPart("files") Flux<FilePart> partFlux
 	) {
 		return partFlux.publish(fileCommandService::upload).then();
+	}
+
+	@PostMapping(
+		value = "/{id}/download",
+		produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+	)
+	public Mono<ResponseEntity<InputStreamResource>> downloadFile(@PathVariable String id) {
+		return fileCommandService.downloadFileById(id)
+			.map(fileResponse -> ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION,
+					String.format("attachment; filename=\"%s\"", fileResponse.filename()))
+				.header(HttpHeaders.CONTENT_TYPE, fileResponse.extension())
+				.body(new InputStreamResource(fileResponse.inputStream()))
+			);
 	}
 
 	@GetMapping(

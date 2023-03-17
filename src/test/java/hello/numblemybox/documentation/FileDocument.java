@@ -4,6 +4,9 @@ import static hello.numblemybox.stubs.FileStubs.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FileQueryService;
 import hello.numblemybox.mybox.dto.FileResponse;
+import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.ui.FileController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -62,7 +66,8 @@ public class FileDocument {
 	@Test
 	void getOne() {
 		String filename = "test.txt";
-		when(fileQueryService.getFile(filename)).thenReturn(Mono.just(new FileResponse("test", "txt", 128L)));
+		when(fileQueryService.getFile(filename)).thenReturn(
+			Mono.just(new FileResponse("a1s23df", "test", "txt", 128L)));
 
 		this.webTestClient.get().uri("/mybox/files/{fileName}", filename)
 			.exchange()
@@ -77,8 +82,8 @@ public class FileDocument {
 	void getAll() {
 		when(fileQueryService.getFiles()).thenReturn(
 			Flux.just(
-				new FileResponse("image", "png", 2_000_000L),
-				new FileResponse("profile", "jpg", 3_000_000L)
+				new FileResponse("CMS13fa", "image", "png", 2_000_000L),
+				new FileResponse("ADM342KD", "profile", "jpg", 3_000_000L)
 			)
 		);
 
@@ -88,6 +93,27 @@ public class FileDocument {
 			.expectBody()
 			.consumeWith(
 				WebTestClientRestDocumentation.document("getAll")
+			);
+	}
+
+	@Test
+	void download() {
+		String id = "641440b0f4647553d5c7942t";
+
+		when(fileCommandService.downloadFileById(any())).thenReturn(
+			Mono.just(new LoadedFileResponse("test.txt",
+				new ByteArrayInputStream("hellloooooo my name is tis".getBytes(StandardCharsets.UTF_8)),
+				MediaType.TEXT_PLAIN_VALUE)
+			)
+		);
+
+		this.webTestClient.post().uri("/mybox/{id}/download", id)
+			.contentType(MediaType.APPLICATION_OCTET_STREAM)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.consumeWith(
+				WebTestClientRestDocumentation.document("download")
 			);
 	}
 }

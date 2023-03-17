@@ -22,7 +22,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class MyFile {
-	private static final long MAXIMUM_SIZE = 2_000_000L;
+	private static final long MAXIMUM_SIZE = 20_000_000L;
 	private static final int MAXIMUM_LENGTH = 20;
 	private static final int MINIMUM_LENGTH = 2;
 	private static final List<String> LIMITED_EXTENSION = Arrays.asList("sh", "exe");
