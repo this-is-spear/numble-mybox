@@ -17,6 +17,7 @@ public interface MyBoxStorage {
 
 	/**
 	 * 파일 정보를 조회한다. 이름에 맞는 파일 정보가 없으면 예외가 발생합니다.
+	 *
 	 * @param filename 파일 이름
 	 * @return 원본 파일
 	 */
@@ -24,6 +25,7 @@ public interface MyBoxStorage {
 
 	/**
 	 * 파일을 저장소에서 업로드합니다.
+	 *
 	 * @param file 원본 파일
 	 * @return Void
 	 */

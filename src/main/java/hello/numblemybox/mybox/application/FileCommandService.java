@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -57,5 +58,9 @@ public class FileCommandService {
 
 	private String getExtension(FilePart file) {
 		return file.filename().split("\\.")[1];
+	}
+
+	public Mono<LoadedFileResponse> downloadFileById(Mono<String> id) {
+		return Mono.empty();
 	}
 }

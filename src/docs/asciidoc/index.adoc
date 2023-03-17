@@ -53,3 +53,14 @@ include::{snippets}/getAll/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/getAll/http-response.adoc[]
+
+=== Download
+
+
+==== HTTP request
+
+include::{snippets}/download/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/download/http-response.adoc[]

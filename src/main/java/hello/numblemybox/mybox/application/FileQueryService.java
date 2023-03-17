@@ -3,6 +3,7 @@ package hello.numblemybox.mybox.application;
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.dto.FileResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
