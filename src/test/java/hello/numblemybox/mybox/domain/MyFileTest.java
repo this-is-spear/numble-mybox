@@ -62,7 +62,7 @@ class MyFileTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(longs = {3_000_000L, 40_000_000L})
+	@ValueSource(longs = {30_000_000L, 40_000_000L})
 	@DisplayName("크기는 20MB 이상이면 예외가 발생한다.")
 	void myFile_sizeNotOver20MB(Long 너무_큰_파일_크기) {
 		assertThatThrownBy(
