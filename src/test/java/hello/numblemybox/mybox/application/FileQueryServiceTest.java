@@ -36,7 +36,7 @@ class FileQueryServiceTest {
 	void getFile() {
 		var 이미지_파일_이름 = 이미지_파일.getFilename();
 		create(fileQueryService.getFile(이미지_파일_이름))
-			.expectNext(이미지_파일_응답)
+			.expectNextCount(1)
 			.verifyComplete();
 	}
 

@@ -21,6 +21,7 @@ import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 class FileCommandServiceTest {
 
@@ -51,7 +52,7 @@ class FileCommandServiceTest {
 		assertThat(Files.exists(업로드할_사진의_경로.resolve(업로드할_사진))).isTrue();
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 
-		create(myBoxRepository.findByFilename(사진.filename()))
+		StepVerifier.create(myBoxRepository.findByFilename(사진.filename()))
 			.expectNextMatches(myFile -> Objects.equals(사진.filename(), myFile.getFilename()))
 			.verifyComplete();
 	}

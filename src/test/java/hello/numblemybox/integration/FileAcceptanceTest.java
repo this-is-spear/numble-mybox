@@ -36,38 +36,32 @@ class FileAcceptanceTest extends SpringBootTemplate {
 	}
 
 	/**
-	 * @Fact 파일 한 개를 업로드하고 파일의 정보를 조회할 수 있다.
+	 * @Fact 파일 한 개를 업로드하면 하나의 파일의 정보를 조회할 수 있고, 파일 두 개를 업로드하면 세 개의 파일 정보를 조회할 수 있다.
 	 * @When 파일 한 개를 업로드하면
+	 * @Then 스토리지 안에 파일을 조회할 수 있다.
+	 * @When 파일 두 개를 업로드하면
 	 * @Then 스토리지 안에 파일을 조회할 수 있다.
 	 */
 	@Test
 	@Order(1)
 	void 파일을_업로드하고_조회한다() throws IOException {
-		var 파일_업로드_요청 = 파일_업로드_요청(인사_문장);
-		파일_업로드_요청.expectStatus().isOk();
-
-		var 파일_조회_요청 = 파일_조회_요청(인사_문장);
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
-		파일_조회_요청.jsonPath("$.name").isEqualTo(인사_문장);
-	}
-
-	/**
-	 * @Fact 사용자는 파일 두 개를 업로드하고 파일들의 정보를 조회할 수 있다.
-	 * @When 파일 두 개를 업로드하면
-	 * @Then 스토리지 안에 파일을 조회할 수 있다.
-	 */
-	@Test
-	@Order(2)
-	void 파일을_여러개_업로드하고_조회한다() throws IOException {
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
-		var 파일_업로드_요청 = 파일_업로드_요청(끝맺음_문장, 인사_문장);
-		파일_업로드_요청.expectStatus().isOk();
 
-		var 파일_조회_요청 = 파일_조회_요청();
+		파일_업로드_요청(그냥_문장);
+
+		var 파일_조회_요청1 = 파일_조회_요청(그냥_문장);
+		파일_조회_요청1.jsonPath("$.name").isEqualTo(그냥_문장);
+
+		파일_업로드_요청(끝맺음_문장, 인사_문장);
+
+		var 파일_조회_요청2 = 파일_조회_요청();
+
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
-		파일_조회_요청.jsonPath("$.size()").isEqualTo(2);
+		파일_조회_요청2.jsonPath("$.size()").isEqualTo(3);
 	}
 
 	/**
@@ -146,6 +140,7 @@ class FileAcceptanceTest extends SpringBootTemplate {
 		return webTestClient.post().uri("/mybox/upload")
 			.contentType(MediaType.MULTIPART_FORM_DATA)
 			.bodyValue(builder.build())
-			.exchange();
+			.exchange()
+			.expectStatus().isOk();
 	}
 }

@@ -10,7 +10,7 @@ import hello.numblemybox.mybox.domain.MyFile;
 
 public final class FileStubs {
 
-	public static final String 강아지_사진 = "test-image1.png";
+	public static final String 그냥_문장 = "test-text3.txt";
 	public static final String 인사_문장 = "test-text1.txt";
 	public static final String 끝맺음_문장 = "test-text2.txt";
 	public static final Path 테스트할_사진의_경로 = Paths.get("./src/test/resources/test-image");
