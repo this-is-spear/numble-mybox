@@ -64,16 +64,18 @@ class FileCommandServiceTest {
 	void upload_NotExistFile() {
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
 		myBoxRepository.insert(new MyFile(null, 사진.filename(), ADMIN,
-			사진.headers().getContentLength(), 사진.filename().split("\\.")[1]));
+			사진.headers().getContentLength(), 사진.filename().split("\\.")[1]))
+			.subscribe();
 
-		fileCommandService.upload(Flux.just(사진));
+		create(fileCommandService.upload(Flux.just(사진)))
+			.verifyComplete();
 	}
 
 	@Test
 	void getFile() throws IOException {
 		// given
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		myBoxStorage.uploadFiles(Flux.just(사진)).subscribe();
+		create(myBoxStorage.uploadFiles(Flux.just(사진))).verifyComplete();
 
 		// when & then
 		create(myBoxStorage.getFile(업로드할_사진))

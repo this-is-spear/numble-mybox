@@ -2,6 +2,7 @@ package hello.numblemybox.mybox.infra;
 
 import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
+import static reactor.test.StepVerifier.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +21,8 @@ class LocalMyBoxStorageTest {
 	@Test
 	void uploadFile() throws IOException {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		localMyBoxStorage.uploadFiles(Flux.just(filePart)).subscribe();
+		create(localMyBoxStorage.uploadFiles(Flux.just(filePart)))
+			.verifyComplete();
 		assertThat(Files.exists(LOCAL_PATH.resolve(업로드할_사진))).isTrue();
 		Files.deleteIfExists(LOCAL_PATH.resolve(업로드할_사진));
 	}
