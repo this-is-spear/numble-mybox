@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,15 +30,23 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					Mono<MyFile> fileMono = myBoxStorage.getPath().flatMap(
+					var findFile = myBoxRepository.findByFilename(file.filename())
+						.flatMap(myFile -> {
+							if (myFile != null) {
+								return Mono.error(InvalidFilenameException.alreadyFilename());
+							}
+							return Mono.empty();
+						});
+
+					var fileMono = myBoxStorage.getPath().flatMap(
 						path -> Mono.just(
 							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
 								getExtension(file)))
 					);
 
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file));
-					var insert = fileMono.flatMap(myBoxRepository::insert).then();
-					return Mono.when(insert, uploadFile);
+					var insertFile = fileMono.flatMap(myBoxRepository::insert).then();
+					return Mono.when(findFile, insertFile, uploadFile);
 				}
 			)
 			.then();

@@ -17,6 +17,7 @@ import hello.numblemybox.fake.FakeMyBoxRepository;
 import hello.numblemybox.fake.FakeMyBoxStorage;
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -64,7 +65,8 @@ class FileCommandServiceTest {
 			.subscribe();
 
 		create(fileCommandService.upload(Flux.just(사진)))
-			.verifyComplete();
+			.expectError(InvalidFilenameException.class)
+			.verify();
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 	}
 
