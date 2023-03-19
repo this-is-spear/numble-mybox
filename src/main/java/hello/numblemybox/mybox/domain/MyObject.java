@@ -20,14 +20,14 @@ public class MyObject {
 	@ToString.Include
 	private final String id;
 	@ToString.Include
-	private final String objectName;
+	private final String name;
 	private final String username;
 	private final ObjectType type;
 
-	public MyObject(String id, String objectName, String username, ObjectType type) {
-		ensureFilename(objectName);
+	public MyObject(String id, String name, String username, ObjectType type) {
+		ensureFilename(name);
 		this.id = id;
-		this.objectName = objectName;
+		this.name = name;
 		this.username = username;
 		this.type = type;
 	}

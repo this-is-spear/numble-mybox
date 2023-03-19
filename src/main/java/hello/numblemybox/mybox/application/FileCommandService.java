@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
-import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
-import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,24 +35,9 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var findFile = myBoxRepository.findByObjectName(file.filename())
-						.flatMap(
-							myFile -> {
-								if (myFile != null) {
-									return Mono.error(InvalidFilenameException.alreadyFilename());
-								}
-								return Mono.empty();
-							}
-						).then();
-
-					var fileMono = myBoxStorage.getPath().flatMap(
-						path -> Mono.just(
-							new MyFile(null, file.filename(), ADMIN, ObjectType.FILE, path,
-								file.headers().getContentLength(),
-								getExtension(file))).flatMap(myBoxRepository::insert).then()
-					);
+					// TODO 폴에 저장 구현
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
-					return Mono.when(findFile, fileMono, uploadFile);
+					return Mono.when(uploadFile);
 				}
 			)
 			.then();
