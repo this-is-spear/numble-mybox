@@ -28,39 +28,83 @@ include::{snippets}/hello/http-response.adoc[]
 
 ==== HTTP request
 
-include::{snippets}/upload/http-request.adoc[]
+include::{snippets}/file/upload/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/upload/http-response.adoc[]
+include::{snippets}/file/upload/http-response.adoc[]
 
 === Get file
 
 ==== HTTP request
 
-include::{snippets}/getOne/http-request.adoc[]
+include::{snippets}/file/getOne/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/getOne/http-response.adoc[]
+include::{snippets}/file/getOne/http-response.adoc[]
 
 === Get files
 
 ==== HTTP request
 
-include::{snippets}/getAll/http-request.adoc[]
+include::{snippets}/file/getAll/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/getAll/http-response.adoc[]
+include::{snippets}/file/getAll/http-response.adoc[]
 
 === Download
+
+==== HTTP request
+
+include::{snippets}/file/download/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/file/download/http-response.adoc[]
+
+== Folder
+
+=== Create
+
+==== HTTP request
+
+include::{snippets}/folder/create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/create/http-response.adoc[]
+
+=== Get Folder
+
+=== Create
+
+==== HTTP request
+
+include::{snippets}/folder/find/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/http-response.adoc[]
+
+=== Get Root Folder
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/http-response.adoc[]
+
+=== Upload in Folder
 
 
 ==== HTTP request
 
-include::{snippets}/download/http-request.adoc[]
+include::{snippets}/folder/upload/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/download/http-response.adoc[]
+include::{snippets}/folder/upload/http-response.adoc[]

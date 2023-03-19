@@ -59,7 +59,7 @@ public class FileDocument {
 			.expectStatus().isOk()
 			.expectBody()
 			.consumeWith(
-				WebTestClientRestDocumentation.document("upload")
+				WebTestClientRestDocumentation.document("file/upload")
 			);
 	}
 
@@ -74,7 +74,7 @@ public class FileDocument {
 			.expectStatus().isOk()
 			.expectBody()
 			.consumeWith(
-				WebTestClientRestDocumentation.document("getOne")
+				WebTestClientRestDocumentation.document("file/getOne")
 			);
 	}
 
@@ -92,7 +92,7 @@ public class FileDocument {
 			.expectStatus().isOk()
 			.expectBody()
 			.consumeWith(
-				WebTestClientRestDocumentation.document("getAll")
+				WebTestClientRestDocumentation.document("file/getAll")
 			);
 	}
 
@@ -113,7 +113,7 @@ public class FileDocument {
 			.expectStatus().isOk()
 			.expectBody()
 			.consumeWith(
-				WebTestClientRestDocumentation.document("download")
+				WebTestClientRestDocumentation.document("file/download")
 			);
 	}
 }
