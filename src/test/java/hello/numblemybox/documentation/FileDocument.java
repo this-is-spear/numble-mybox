@@ -21,6 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FileQueryService;
+import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.ui.FileController;
@@ -67,7 +68,7 @@ public class FileDocument {
 	void getOne() {
 		String filename = "test.txt";
 		when(fileQueryService.getFile(filename)).thenReturn(
-			Mono.just(new FileResponse("a1s23df", "test", "txt", 128L)));
+			Mono.just(new FileResponse("a1s23df", "test", ObjectType.FILE, "txt", 128L)));
 
 		this.webTestClient.get().uri("/mybox/files/{fileName}", filename)
 			.exchange()
@@ -82,8 +83,8 @@ public class FileDocument {
 	void getAll() {
 		when(fileQueryService.getFiles()).thenReturn(
 			Flux.just(
-				new FileResponse("CMS13fa", "image", "png", 2_000_000L),
-				new FileResponse("ADM342KD", "profile", "jpg", 3_000_000L)
+				new FileResponse("CMS13fa", "image", ObjectType.FILE, "png", 2_000_000L),
+				new FileResponse("ADM342KD", "profile", ObjectType.FILE, "jpg", 3_000_000L)
 			)
 		);
 

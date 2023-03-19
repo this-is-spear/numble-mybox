@@ -1,6 +1,6 @@
 package hello.numblemybox.mybox.domain;
 
-public enum ItemType {
+public enum ObjectType {
 	FOLDER,
 	FILE
 }

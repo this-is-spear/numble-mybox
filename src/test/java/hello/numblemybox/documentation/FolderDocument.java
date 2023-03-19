@@ -19,9 +19,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import hello.numblemybox.mybox.application.FolderCommandService;
 import hello.numblemybox.mybox.application.FolderQueryService;
-import hello.numblemybox.mybox.dto.ChildResponse;
-import hello.numblemybox.mybox.domain.ItemType;
+import hello.numblemybox.mybox.domain.ObjectType;
+import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.FolderResponse;
+import hello.numblemybox.mybox.dto.MyObjectResponse;
 import hello.numblemybox.mybox.ui.FolderController;
 import reactor.core.publisher.Mono;
 
@@ -54,10 +55,10 @@ public class FolderDocument {
 
 	@Test
 	void findFolder() {
-		var children = new ArrayList<ChildResponse>();
-		children.add(new ChildResponse("929G1242D1", "첫 번째 폴더", ItemType.FOLDER));
-		children.add(new ChildResponse("193DF1367D", "image.txt", ItemType.FILE));
-		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", children);
+		var children = new ArrayList<MyObjectResponse>();
+		children.add(new FolderResponse("929G1242D1", "첫 번째 폴더", ObjectType.FOLDER, new ArrayList<>()));
+		children.add(new FileResponse("193DF1367D", "image.txt", ObjectType.FILE, "txt", 1234L));
+		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER, children);
 
 		String folderId = "13DFSDKI132SD";
 		Mockito.when(folderQueryService.findFolder(folderId))
@@ -76,11 +77,11 @@ public class FolderDocument {
 
 	@Test
 	void findRootFolder() {
-		var children = new ArrayList<ChildResponse>();
-		children.add(new ChildResponse("13SDF1343D1", "첫 번째 폴더", ItemType.FOLDER));
-		children.add(new ChildResponse("13SDF1342S2", "두 번째 폴더", ItemType.FOLDER));
-		children.add(new ChildResponse("13SDF1343D3", "image.txt", ItemType.FILE));
-		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", children);
+		var children = new ArrayList<MyObjectResponse>();
+		children.add(new FolderResponse("13SDF1343D1", "첫 번째 폴더", ObjectType.FOLDER, new ArrayList<>()));
+		children.add(new FolderResponse("13SDF1342S2", "두 번째 폴더", ObjectType.FOLDER, new ArrayList<>()));
+		children.add(new FileResponse("13SDF1343D3", "image.txt", ObjectType.FILE, "txt", 1234L));
+		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER, children);
 
 		Mockito.when(folderQueryService.findRootFolder())
 			.thenReturn(Mono.just(folderResponse));

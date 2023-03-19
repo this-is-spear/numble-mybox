@@ -50,7 +50,7 @@ class FileAcceptanceTest extends AcceptanceTemplate {
 		// then
 		var 파일_조회_요청 = 파일_조회_요청(인사_문장);
 		var response = getValue(파일_조회_요청.returnResult().getResponseBody(), FileResponse.class);
-		var 파일_다운로드_요청 = 파일_다운로드_요청(response.id());
+		var 파일_다운로드_요청 = 파일_다운로드_요청(response.getId());
 		var responseBody = 파일_다운로드_요청.returnResult().getResponseBody();
 
 		assertNotNull(responseBody);

@@ -3,6 +3,7 @@ package hello.numblemybox.mybox.application;
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -24,7 +25,7 @@ public class FileQueryService {
 	 */
 	public Mono<FileResponse> getFile(String filename) {
 		return myBoxRepository.findByFilename(filename).flatMap(myFile -> Mono.just(
-			new FileResponse(myFile.getId(), myFile.getFilename(), myFile.getExtension(), myFile.getSize())
+			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(), myFile.getSize())
 		));
 	}
 
@@ -35,7 +36,7 @@ public class FileQueryService {
 	 */
 	public Flux<FileResponse> getFiles() {
 		return myBoxRepository.findAll().flatMap(myFile -> Flux.just(
-			new FileResponse(myFile.getId(), myFile.getFilename(), myFile.getExtension(), myFile.getSize())
+			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(), myFile.getSize())
 		));
 	}
 }

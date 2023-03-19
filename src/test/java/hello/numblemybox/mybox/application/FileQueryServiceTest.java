@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.fake.FakeMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 
 class FileQueryServiceTest {
@@ -16,6 +17,7 @@ class FileQueryServiceTest {
 	private static final FileResponse 이미지_파일_응답 = new FileResponse(
 		이미지_파일.getId(),
 		이미지_파일.getFilename(),
+		ObjectType.FILE,
 		이미지_파일.getExtension(),
 		이미지_파일.getSize()
 	);
