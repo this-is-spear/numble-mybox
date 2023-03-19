@@ -18,16 +18,16 @@ public final class FakeMyBoxRepository implements MyBoxRepository {
 	@Override
 	public Mono<MyFile> insert(MyFile entity) {
 		String id = UUID.randomUUID().toString();
-		MyFile storedMyFile = new MyFile(id, entity.getFilename(), entity.getUsername(), entity.getPath(),
-			entity.getSize(), entity.getExtension());
+		MyFile storedMyFile = new MyFile(id, entity.getFilename(), entity.getUsername(),
+			entity.getPath(), entity.getSize(), entity.getExtension());
 		map.put(id, storedMyFile);
 		return Mono.just(storedMyFile);
 	}
 
 	@Override
-	public Mono<MyFile> findByFilename(String filename) {
+	public Mono<MyFile> findByObjectName(String objectName) {
 		Optional<MyFile> first = map.values().stream()
-			.filter(myFile -> Objects.equals(filename, myFile.getFilename()))
+			.filter(myFile -> Objects.equals(objectName, myFile.getFilename()))
 			.findFirst();
 
 		return first.map(Mono::just).orElseGet(Mono::empty);

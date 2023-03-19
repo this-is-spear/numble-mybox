@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.MyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var findFile = myBoxRepository.findByFilename(file.filename())
+					var findFile = myBoxRepository.findByObjectName(file.filename())
 						.flatMap(
 							myFile -> {
 								if (myFile != null) {
@@ -48,7 +49,8 @@ public class FileCommandService {
 
 					var fileMono = myBoxStorage.getPath().flatMap(
 						path -> Mono.just(
-							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+							new MyFile(null, file.filename(), ADMIN, ObjectType.FILE, path,
+								file.headers().getContentLength(),
 								getExtension(file))).flatMap(myBoxRepository::insert).then()
 					);
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();

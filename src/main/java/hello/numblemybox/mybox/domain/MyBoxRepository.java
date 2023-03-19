@@ -16,10 +16,10 @@ public interface MyBoxRepository {
 	/**
 	 * 파일의 이름을 이용해 파일 메타데이터를 조회합니다. 파일 이름에 맞는 메타데이터가 없는 경우, null 을 Mono 로 래핑해서 반환합니다.
 	 *
-	 * @param filename 파일 이름
+	 * @param objectName 파일 이름
 	 * @return 파일 메타데이터
 	 */
-	Mono<MyFile> findByFilename(String filename);
+	Mono<MyFile> findByObjectName(String objectName);
 
 	/**
 	 * 저장된 모든 파일 메타데이터를 조회합니다.

@@ -52,7 +52,7 @@ class FileCommandServiceTest {
 		assertThat(Files.exists(업로드할_사진의_경로.resolve(업로드할_사진))).isTrue();
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 
-		StepVerifier.create(myBoxRepository.findByFilename(사진.filename()))
+		StepVerifier.create(myBoxRepository.findByObjectName(사진.filename()))
 			.expectNextMatches(myFile -> Objects.equals(사진.filename(), myFile.getFilename()))
 			.verifyComplete();
 	}
@@ -93,7 +93,8 @@ class FileCommandServiceTest {
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
 
-		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", 테스트할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg");
+		MyFile myFile = new MyFile(null, 업로드할_사진, "rk",
+			테스트할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg");
 
 		myBoxRepository.insert(myFile)
 			.subscribe(entity -> create(fileCommandService.downloadFileById(entity.getId()))

@@ -24,7 +24,7 @@ public class FileQueryService {
 	 * @return 파일의 메타데이터
 	 */
 	public Mono<FileResponse> getFile(String filename) {
-		return myBoxRepository.findByFilename(filename).flatMap(myFile -> Mono.just(
+		return myBoxRepository.findByObjectName(filename).flatMap(myFile -> Mono.just(
 			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(), myFile.getSize())
 		));
 	}
