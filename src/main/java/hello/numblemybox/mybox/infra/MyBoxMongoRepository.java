@@ -15,7 +15,7 @@ public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, St
 	Mono<MyFile> insert(MyFile entity);
 
 	@Override
-	Mono<MyFile> findByObjectName(String objectName);
+	Mono<MyFile> findByName(String objectName);
 
 	@Override
 	Flux<MyFile> findAll();

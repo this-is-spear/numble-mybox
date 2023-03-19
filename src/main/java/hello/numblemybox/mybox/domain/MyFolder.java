@@ -7,39 +7,80 @@ import hello.numblemybox.mybox.exception.DuplicateObjectException;
 import hello.numblemybox.mybox.exception.InvalidObjectException;
 
 public final class MyFolder extends MyObject {
+	private final List<MyFile> files;
+	private final List<MyFolder> children;
 
-	private final List<String> childrenId;
-
-	public MyFolder(String id, String name, String username, List<String> childrenId) {
-		super(id, name, username, ObjectType.FOLDER);
-		this.childrenId = childrenId;
+	public MyFolder(String id, String name, String username, ObjectType type, List<MyFolder> children,
+		List<MyFile> files) {
+		super(id, name, username, type);
+		this.children = children;
+		this.files = new ArrayList<>();
 	}
 
 	public MyFolder(String id, String name, String username) {
-		super(id, name, username, ObjectType.FOLDER);
-		this.childrenId = new ArrayList<>();
+		this(id, name, username, ObjectType.FOLDER, new ArrayList<>(), new ArrayList<>());
 	}
 
-	public List<String> getChildrenId() {
-		return new ArrayList<>(childrenId);
+	public static MyFolder createFolder(String id, String name, String username) {
+		return new MyFolder(id, name, username, ObjectType.FOLDER, new ArrayList<>(), new ArrayList<>());
+	}
+
+	public static MyFolder createRootFolder(String id, String name, String username) {
+		return new MyFolder(id, name, username, ObjectType.ROOT, new ArrayList<>(), new ArrayList<>());
+	}
+
+	public List<MyFolder> getChildren() {
+		return new ArrayList<>(children);
+	}
+
+	public List<MyFile> getFiles() {
+		return new ArrayList<>(files);
 	}
 
 	public <T extends MyObject> void addMyObject(T t) {
 		final var id = t.getId();
 		ensureIdIsNull(id);
-		ensureIdisDuplicated(id);
-		childrenId.add(id);
+		ensureIdIsDuplicated(t);
+		addItem(t);
 	}
 
 	public <T extends MyObject> void removeMyObject(T t) {
 		final var id = t.getId();
 		ensureIdIsNull(id);
-		childrenId.remove(id);
+		removeItem(t);
 	}
 
-	private void ensureIdisDuplicated(String id) {
-		if (this.childrenId.contains(id)) {
-			throw new DuplicateObjectException();
+	private <T extends MyObject> void addItem(T t) {
+		if (t instanceof MyFolder myFolder) {
+			children.add(myFolder);
+		} else if (t instanceof MyFile myFile) {
+			files.add(myFile);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	private <T extends MyObject> void removeItem(T t) {
+		if (t instanceof MyFolder myFolder) {
+			children.remove(myFolder);
+		} else if (t instanceof MyFile myFile) {
+			files.remove(myFile);
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	private <T extends MyObject> void ensureIdIsDuplicated(T t) {
+		if (t instanceof MyFolder myFolder) {
+			if (this.children.contains(myFolder)) {
+				throw new DuplicateObjectException();
+			}
+		} else if (t instanceof MyFile myFile) {
+			if (this.files.contains(myFile)) {
+				throw new DuplicateObjectException();
+			}
+		} else {
+			throw new IllegalArgumentException();
 		}
 	}
 

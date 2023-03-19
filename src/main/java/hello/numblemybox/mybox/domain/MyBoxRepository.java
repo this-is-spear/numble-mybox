@@ -19,7 +19,7 @@ public interface MyBoxRepository {
 	 * @param objectName 파일 이름
 	 * @return 파일 메타데이터
 	 */
-	Mono<MyFile> findByObjectName(String objectName);
+	Mono<MyFile> findByName(String objectName);
 
 	/**
 	 * 저장된 모든 파일 메타데이터를 조회합니다.

@@ -52,7 +52,7 @@ class FileCommandServiceTest {
 		assertThat(Files.exists(업로드할_사진의_경로.resolve(업로드할_사진))).isTrue();
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 
-		StepVerifier.create(myBoxRepository.findByObjectName(사진.filename()))
+		StepVerifier.create(myBoxRepository.findByName(사진.filename()))
 			.expectNextMatches(myFile -> Objects.equals(사진.filename(), myFile.getFilename()))
 			.verifyComplete();
 	}

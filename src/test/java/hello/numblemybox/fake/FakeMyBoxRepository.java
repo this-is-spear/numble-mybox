@@ -25,7 +25,7 @@ public final class FakeMyBoxRepository implements MyBoxRepository {
 	}
 
 	@Override
-	public Mono<MyFile> findByObjectName(String objectName) {
+	public Mono<MyFile> findByName(String objectName) {
 		Optional<MyFile> first = map.values().stream()
 			.filter(myFile -> Objects.equals(objectName, myFile.getFilename()))
 			.findFirst();
