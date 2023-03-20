@@ -90,13 +90,13 @@ public final class MyFolder {
 	public void removeMyObject(MyFile myFile) {
 		final var id = myFile.getId();
 		ensureIdIsNull(id);
-		files.add(myFile);
+		files.remove(myFile);
 	}
 
 	public void removeMyObject(MyFolder myFolder) {
 		final var id = myFolder.getId();
 		ensureIdIsNull(id);
-		children.add(myFolder);
+		children.remove(myFolder);
 	}
 
 	private void ensureIdIsNull(String id) {

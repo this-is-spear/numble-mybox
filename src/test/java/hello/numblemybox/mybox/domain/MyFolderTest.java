@@ -40,6 +40,35 @@ class MyFolderTest {
 	}
 
 	@Test
+	@DisplayName("파일을 삭제할 수 있다.")
+	void removeMyFile() {
+		// given
+		var myFolder = new MyFolder("id1", "folder name", ADMIN);
+		myFolder.addMyObject(MY_FILE);
+
+		// when
+		myFolder.removeMyObject(MY_FILE);
+
+		// then
+		assertThat(myFolder.getFiles()).hasSize(0);
+	}
+
+
+	@Test
+	@DisplayName("폴더를 삭제할 수 있다.")
+	void removeMyFolder() {
+		// given
+		var myFolder = new MyFolder("id1", "folder name", ADMIN);
+		myFolder.addMyObject(MY_FOLDER);
+
+		// when
+		myFolder.removeMyObject(MY_FOLDER);
+
+		// then
+		assertThat(myFolder.getChildren()).hasSize(0);
+	}
+
+	@Test
 	@DisplayName("같은 폴더를 추가하려하면 DuplicateObjectException 예외가 발생한다.")
 	void addMyFolder_notDuplicated() {
 		var myFolder = new MyFolder("id1", "folder name", ADMIN);
