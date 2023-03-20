@@ -18,7 +18,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hello.numblemybox.SpringBootTemplate;
-import hello.numblemybox.mybox.infra.MyBoxMongoRepository;
+import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
 
 class AcceptanceTemplate extends SpringBootTemplate {
 
@@ -27,7 +27,7 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	@Autowired
 	protected WebTestClient webTestClient;
 	@Autowired
-	protected MyBoxMongoRepository myBoxRepository;
+	protected FileMyBoxMongoRepository myBoxRepository;
 
 	@BeforeEach
 	void setUp() throws IOException {
@@ -74,8 +74,7 @@ class AcceptanceTemplate extends SpringBootTemplate {
 		final var builder = new MultipartBodyBuilder();
 		final var requestPartName = "files";
 
-		for (int i = 0; i < filenames.length; i++) {
-			var filename = filenames[i];
+		for (String filename : filenames) {
 			builder.part("image", getFileOne(filename))
 				.header("Content-disposition",
 					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename))

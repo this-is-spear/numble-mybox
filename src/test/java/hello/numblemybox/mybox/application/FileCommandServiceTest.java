@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.fake.FakeMyBoxRepository;
 import hello.numblemybox.fake.FakeMyBoxStorage;
-import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import hello.numblemybox.stubs.FilePartStub;
@@ -27,7 +27,7 @@ class FileCommandServiceTest {
 
 	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private FileCommandService fileCommandService;
-	private MyBoxRepository myBoxRepository;
+	private FileMyBoxRepository myBoxRepository;
 	private MyBoxStorage myBoxStorage;
 
 	@BeforeEach

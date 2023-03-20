@@ -3,7 +3,7 @@ package hello.numblemybox.mybox.domain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface MyBoxRepository {
+public interface FileMyBoxRepository {
 
 	/**
 	 * 파일 메타데이터를 저장합니다. 저장할 때, id가 null 이면 자동으로 값을 매핑하빈다.

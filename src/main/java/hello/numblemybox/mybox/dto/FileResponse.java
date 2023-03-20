@@ -4,7 +4,7 @@ import hello.numblemybox.mybox.domain.ObjectType;
 import lombok.Getter;
 
 @Getter
-public class FileResponse extends MyObjectResponse{
+public class FileResponse extends MyObjectResponse {
 	private final String extension;
 	private final Long size;
 

@@ -2,7 +2,7 @@ package hello.numblemybox.mybox.application;
 
 import org.springframework.stereotype.Service;
 
-import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class FileQueryService {
-	private final MyBoxRepository myBoxRepository;
+	private final FileMyBoxRepository myBoxRepository;
 
 	/**
 	 * 파일의 이름을 입력받아 데이터베이스에 저장된 파일 메타데이터를 조회합니다.
@@ -25,7 +25,8 @@ public class FileQueryService {
 	 */
 	public Mono<FileResponse> getFile(String filename) {
 		return myBoxRepository.findByName(filename).flatMap(myFile -> Mono.just(
-			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(), myFile.getSize())
+			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(),
+				myFile.getSize())
 		));
 	}
 
@@ -36,7 +37,8 @@ public class FileQueryService {
 	 */
 	public Flux<FileResponse> getFiles() {
 		return myBoxRepository.findAll().flatMap(myFile -> Flux.just(
-			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(), myFile.getSize())
+			new FileResponse(myFile.getId(), myFile.getFilename(), ObjectType.FILE, myFile.getExtension(),
+				myFile.getSize())
 		));
 	}
 }

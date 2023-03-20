@@ -3,18 +3,50 @@ package hello.numblemybox.mybox.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import hello.numblemybox.mybox.exception.DuplicateObjectException;
-import hello.numblemybox.mybox.exception.InvalidObjectException;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public final class MyFolder extends MyObject {
-	private final List<MyFile> files;
-	private final List<MyFolder> children;
+import hello.numblemybox.mybox.exception.DuplicateObjectException;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
+import hello.numblemybox.mybox.exception.InvalidObjectException;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Getter
+@Document
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public final class MyFolder {
+
+	private static final int MAXIMUM_LENGTH = 20;
+	private static final int MINIMUM_LENGTH = 2;
+
+	@Id
+	@EqualsAndHashCode.Include
+	@ToString.Include
+	private String id;
+	@ToString.Include
+	private String name;
+	private String username;
+	private ObjectType type;
+	@ToString.Include
+	private List<MyFile> files;
+	@ToString.Include
+	private List<MyFolder> children;
 
 	public MyFolder(String id, String name, String username, ObjectType type, List<MyFolder> children,
 		List<MyFile> files) {
-		super(id, name, username, type);
+		ensureName(name);
+		this.id = id;
+		this.name = name;
+		this.username = username;
+		this.type = type;
 		this.children = children;
-		this.files = new ArrayList<>();
+		this.files = files;
 	}
 
 	public MyFolder(String id, String name, String username) {
@@ -37,51 +69,34 @@ public final class MyFolder extends MyObject {
 		return new ArrayList<>(files);
 	}
 
-	public <T extends MyObject> void addMyObject(T t) {
-		final var id = t.getId();
+	public void addMyObject(MyFile myFile) {
+		final var id = myFile.getId();
 		ensureIdIsNull(id);
-		ensureIdIsDuplicated(t);
-		addItem(t);
+		if (this.files.contains(myFile)) {
+			throw new DuplicateObjectException();
+		}
+		files.add(myFile);
 	}
 
-	public <T extends MyObject> void removeMyObject(T t) {
-		final var id = t.getId();
+	public void addMyObject(MyFolder myFolder) {
+		final var id = myFolder.getId();
 		ensureIdIsNull(id);
-		removeItem(t);
+		if (this.children.contains(myFolder)) {
+			throw new DuplicateObjectException();
+		}
+		children.add(myFolder);
 	}
 
-	private <T extends MyObject> void addItem(T t) {
-		if (t instanceof MyFolder myFolder) {
-			children.add(myFolder);
-		} else if (t instanceof MyFile myFile) {
-			files.add(myFile);
-		} else {
-			throw new IllegalArgumentException();
-		}
+	public void removeMyObject(MyFile myFile) {
+		final var id = myFile.getId();
+		ensureIdIsNull(id);
+		files.add(myFile);
 	}
 
-	private <T extends MyObject> void removeItem(T t) {
-		if (t instanceof MyFolder myFolder) {
-			children.remove(myFolder);
-		} else if (t instanceof MyFile myFile) {
-			files.remove(myFile);
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
-
-	private <T extends MyObject> void ensureIdIsDuplicated(T t) {
-		if (t instanceof MyFolder myFolder) {
-			if (this.children.contains(myFolder)) {
-				throw new DuplicateObjectException();
-			}
-		} else if (t instanceof MyFile myFile) {
-			if (this.files.contains(myFile)) {
-				throw new DuplicateObjectException();
-			}
-		} else {
-			throw new IllegalArgumentException();
-		}
+	public void removeMyObject(MyFolder myFolder) {
+		final var id = myFolder.getId();
+		ensureIdIsNull(id);
+		children.add(myFolder);
 	}
 
 	private void ensureIdIsNull(String id) {
@@ -90,4 +105,13 @@ public final class MyFolder extends MyObject {
 		}
 	}
 
+	private void ensureName(String filename) {
+		if (filename == null || filename.isBlank() || filename.length() < MINIMUM_LENGTH) {
+			throw InvalidFilenameException.tooShort();
+		}
+
+		if (filename.length() > MAXIMUM_LENGTH) {
+			throw InvalidFilenameException.tooLong();
+		}
+	}
 }

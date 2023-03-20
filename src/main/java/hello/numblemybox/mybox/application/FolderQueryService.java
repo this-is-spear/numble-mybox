@@ -4,10 +4,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import hello.numblemybox.mybox.domain.MyFolder;
-import hello.numblemybox.mybox.domain.MyObject;
-import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
+import hello.numblemybox.mybox.domain.MyFolder;
+import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FolderResponse;
 import hello.numblemybox.mybox.dto.MyObjectResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ public class FolderQueryService {
 
 	public Mono<FolderResponse> findRootFolder() {
 		return getRootFolder(ADMIN)
-			.flatMap(myObject -> Mono.just((MyFolder)myObject))
 			.flatMap(myFolder ->
 				Mono.just(getFolderResponse(myFolder)));
 	}
@@ -40,7 +38,7 @@ public class FolderQueryService {
 			).collect(Collectors.toList()));
 	}
 
-	private Mono<MyObject> getRootFolder(String username) {
+	private Mono<MyFolder> getRootFolder(String username) {
 		return myBoxMongoRepository.findByTypeAndUsername(ObjectType.ROOT, username);
 	}
 }

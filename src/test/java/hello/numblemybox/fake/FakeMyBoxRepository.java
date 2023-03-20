@@ -6,12 +6,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public final class FakeMyBoxRepository implements MyBoxRepository {
+public final class FakeMyBoxRepository implements FileMyBoxRepository {
 
 	private final Map<String, MyFile> map = new HashMap<>();
 

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.fake.FakeMyBoxRepository;
-import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 
@@ -23,7 +23,7 @@ class FileQueryServiceTest {
 	);
 
 	private FileQueryService fileQueryService;
-	private MyBoxRepository myBoxRepository;
+	private FileMyBoxRepository myBoxRepository;
 
 	@BeforeEach
 	void setUp() {

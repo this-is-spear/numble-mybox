@@ -5,9 +5,10 @@ import java.util.Objects;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
-import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,7 @@ import reactor.core.scheduler.Schedulers;
 public class FileCommandService {
 	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private final MyBoxStorage myBoxStorage;
-	private final MyBoxRepository myBoxRepository;
+	private final FileMyBoxRepository myBoxRepository;
 
 	/**
 	 * 1. 파일의 메타데이터를 식별한다.
@@ -35,9 +36,25 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					// TODO 폴에 저장 구현
+					var findFile = myBoxRepository.findByName(file.filename())
+						.flatMap(
+							myFile -> {
+								if (myFile != null) {
+									return Mono.error(InvalidFilenameException.alreadyFilename());
+								}
+								return Mono.empty();
+							}
+						).then();
+
+					var fileMono = myBoxStorage.getPath().flatMap(
+						path -> Mono.just(
+								new MyFile(null, file.filename(), ADMIN, path,
+									file.headers().getContentLength(), getExtension(file)))
+							.flatMap(myBoxRepository::insert).then()
+					);
+
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
-					return Mono.when(uploadFile);
+					return Mono.when(findFile, fileMono, uploadFile);
 				}
 			)
 			.then();
