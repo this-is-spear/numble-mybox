@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import hello.numblemybox.mybox.exception.DuplicateObjectException;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
@@ -32,6 +33,7 @@ public final class MyFolder {
 	@ToString.Include
 	private String name;
 	private String username;
+	@ToString.Include
 	private ObjectType type;
 	@ToString.Include
 	private List<MyFile> files;

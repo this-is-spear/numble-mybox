@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import hello.numblemybox.fake.FakeMyBoxRepository;
+import hello.numblemybox.fake.FakeFileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
@@ -27,7 +27,7 @@ class FileQueryServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		myBoxRepository = new FakeMyBoxRepository();
+		myBoxRepository = new FakeFileMyBoxRepository();
 		myBoxRepository.insert(이미지_파일).subscribe();
 		myBoxRepository.insert(텍스트_파일).subscribe();
 		fileQueryService = new FileQueryService(myBoxRepository);

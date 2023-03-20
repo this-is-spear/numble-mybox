@@ -11,7 +11,7 @@ import hello.numblemybox.mybox.domain.MyFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public final class FakeMyBoxRepository implements FileMyBoxRepository {
+public final class FakeFileMyBoxRepository implements FileMyBoxRepository {
 
 	private final Map<String, MyFile> map = new HashMap<>();
 

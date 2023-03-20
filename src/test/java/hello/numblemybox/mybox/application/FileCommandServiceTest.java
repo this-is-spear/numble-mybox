@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import hello.numblemybox.fake.FakeMyBoxRepository;
+import hello.numblemybox.fake.FakeFileMyBoxRepository;
 import hello.numblemybox.fake.FakeMyBoxStorage;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -32,7 +32,7 @@ class FileCommandServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		myBoxRepository = new FakeMyBoxRepository();
+		myBoxRepository = new FakeFileMyBoxRepository();
 		myBoxStorage = new FakeMyBoxStorage();
 		fileCommandService = new FileCommandService(myBoxStorage, myBoxRepository);
 	}

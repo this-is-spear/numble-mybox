@@ -1,5 +1,6 @@
 package hello.numblemybox.mybox.infra;
 
+import org.reactivestreams.Publisher;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import reactor.core.publisher.Mono;
 public interface FolderMyBoxMongoRepository extends ReactiveMongoRepository<MyFolder, String>, FolderMyBoxRepository {
 
 	@Override
-	Mono<MyFolder> findById(String id);
+	Mono<MyFolder> findById(Publisher<String> id);
 
 	Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username);
 
@@ -24,5 +25,5 @@ public interface FolderMyBoxMongoRepository extends ReactiveMongoRepository<MyFo
 	Flux<MyFolder> findAll();
 
 	@Override
-	Mono<MyFolder> save(MyFolder entity);
+	<S extends MyFolder> Mono<S> save(S entity);
 }

@@ -49,15 +49,4 @@ public class FolderController {
 	public Mono<FolderResponse> findRootFolder() {
 		return folderQueryService.findRootFolder();
 	}
-
-	@PostMapping(
-		value = "/{parentId}/upload",
-		consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-	)
-	public Mono<Void> uploadInFolder(
-		@PathVariable String parentId,
-		@RequestPart("files") Flux<FilePart> partFlux
-	) {
-		return folderCommandService.uploadInFolder(parentId, partFlux);
-	}
 }

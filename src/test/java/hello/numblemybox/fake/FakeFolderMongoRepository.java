@@ -18,7 +18,7 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 	public Mono<MyFolder> findById(String id) {
 		return Mono.justOrEmpty(map.values().stream()
 			.filter(myObject -> myObject.getId().equals(id)
-				&& myObject.getType().equals(ObjectType.FOLDER))
+				&& myObject.getType().equals(ObjectType.FOLDER) || myObject.getType().equals(ObjectType.ROOT))
 			.findFirst());
 	}
 
@@ -31,25 +31,19 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 	}
 
 	@Override
-	public Mono<MyFolder> insert(MyFolder entity) {
-		var id = UUID.randomUUID().toString();
-		var folder = new MyFolder(id, entity.getName(), entity.getUsername(), entity.getType(),
-			entity.getChildren(), entity.getFiles());
-		map.put(id, folder);
-		return Mono.just(folder);
+	public Mono<MyFolder> insert(MyFolder from) {
+		if (from.getId() == null) {
+			var id = UUID.randomUUID().toString();
+			var to = new MyFolder(id, from.getName(), from.getUsername(),
+				from.getType(), from.getChildren(), from.getFiles());
+			map.put(id, to);
+			return Mono.just(to);
+		}
+		return Mono.just(from);
 	}
 
 	@Override
 	public Flux<MyFolder> findAll() {
 		return Flux.fromIterable(map.values());
-	}
-
-	@Override
-	public Mono<MyFolder> save(MyFolder entity) {
-		var id = UUID.randomUUID().toString();
-		var folder = new MyFolder(id, entity.getName(), entity.getUsername(), entity.getType(),
-			entity.getChildren(), entity.getFiles());
-		map.put(id, folder);
-		return Mono.just(folder);
 	}
 }

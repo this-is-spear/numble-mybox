@@ -22,8 +22,8 @@ import lombok.ToString;
 @Getter
 @Document
 @ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class MyFile {
 	private static final int MAXIMUM_LENGTH = 20;
 	private static final int MINIMUM_LENGTH = 2;

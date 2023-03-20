@@ -33,7 +33,9 @@ public interface FolderMyBoxRepository {
 	 */
 	Mono<MyFolder> insert(MyFolder entity);
 
+	/**
+	 * 전체 폴더를 조회합니다.
+	 * @return 전체 폴더 리스트
+	 */
 	Flux<MyFolder> findAll();
-
-	Mono<MyFolder> save(MyFolder entity);
 }
