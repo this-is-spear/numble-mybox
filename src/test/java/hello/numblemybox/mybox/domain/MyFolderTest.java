@@ -53,7 +53,6 @@ class MyFolderTest {
 		assertThat(myFolder.getFiles()).hasSize(0);
 	}
 
-
 	@Test
 	@DisplayName("폴더를 삭제할 수 있다.")
 	void removeMyFolder() {

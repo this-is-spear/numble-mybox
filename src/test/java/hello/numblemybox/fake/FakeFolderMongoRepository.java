@@ -10,7 +10,7 @@ import hello.numblemybox.mybox.domain.ObjectType;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class FakeToBoMongoRepository implements FolderMyBoxRepository {
+public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 
 	private Map<String, MyFolder> map = new HashMap<>();
 

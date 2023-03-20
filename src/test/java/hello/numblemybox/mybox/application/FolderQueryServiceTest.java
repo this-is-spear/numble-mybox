@@ -5,7 +5,7 @@ import static reactor.test.StepVerifier.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import hello.numblemybox.fake.FakeToBoMongoRepository;
+import hello.numblemybox.fake.FakeFolderMongoRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFolder;
 
@@ -16,7 +16,7 @@ class FolderQueryServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		mongoRepository = new FakeToBoMongoRepository();
+		mongoRepository = new FakeFolderMongoRepository();
 		folderQueryService = new FolderQueryService(mongoRepository);
 	}
 
