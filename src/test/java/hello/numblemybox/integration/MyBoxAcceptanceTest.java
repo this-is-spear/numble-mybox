@@ -81,7 +81,7 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		var 루트_식별자 = getRootId(첫_번째_루트_폴더_조회);
 
 		// when
-		var 새로운_폴더_이름 = "폴더_친구";
+		var 새로운_폴더_이름 = "새로운_폴더";
 		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
 		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
