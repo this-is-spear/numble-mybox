@@ -206,7 +206,7 @@ public class MyBoxDocument {
 		var fileId = "641440b0f4647553d5c7942t";
 		var parentId = "DK3413KDC2";
 
-		when(fileCommandService.downloadFileById(any())).thenReturn(
+		when(fileCommandService.downloadFileById(parentId, fileId)).thenReturn(
 			Mono.just(new LoadedFileResponse("test.txt",
 				new ByteArrayInputStream("hellloooooo my name is tis".getBytes(StandardCharsets.UTF_8)),
 				MediaType.TEXT_PLAIN_VALUE)

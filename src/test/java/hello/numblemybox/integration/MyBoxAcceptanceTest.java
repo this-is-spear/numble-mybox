@@ -29,14 +29,14 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	void 폴더_내용을_확인한다() throws IOException {
 		// given
 		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
-		var parentId = getRootId(첫_번째_루트_폴더_조회);
-		var foldername = "폴더_이름";
+		var 루트_식별자 = getRootId(첫_번째_루트_폴더_조회);
+		var 새운_폴더_이름 = "폴더_이름";
 
 		// when
-		폴더_생성_요청(parentId, foldername);
+		폴더_생성_요청(루트_식별자, 새운_폴더_이름);
 		// then
-		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(parentId);
-		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, foldername)).isTrue();
+		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
+		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, 새운_폴더_이름)).isTrue();
 	}
 
 	/**
@@ -46,20 +46,23 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	 */
 	@Test
 	void 루트_폴더_안_파일을_다운로드한다() throws IOException {
+		// given
+		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
+		var 새로운_폴더_이름 = "폴더_친구";
+		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		var 새로운_폴더_식별자 = getFolderId(폴더_리스트_조회_요청(루트_식별자), 새로운_폴더_이름);
+
 		// when
-		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
-		var parentId = getRootId(첫_번째_루트_폴더_조회);
-		폴더_안_파일_업로드_요청(parentId, 그냥_문장);
-		var 파일리스트_조회 = 파일_리스트_조회_요청(parentId);
+		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
+		var 파일_식별자 = getFileId(파일_리스트_조회_요청(새로운_폴더_식별자), 그냥_문장);
 
 		// then
-		var fileId = getFileId(파일리스트_조회, 그냥_문장);
-		var 파일_다운로드_요청 = 파일_다운로드_요청(parentId, fileId);
-		var responseBody = 파일_다운로드_요청.returnResult().getResponseBody();
+		var 파일_다운로드_요청 = 파일_다운로드_요청(새로운_폴더_식별자, 파일_식별자);
+		var 응답_바디 = 파일_다운로드_요청.returnResult().getResponseBody();
 
-		assertNotNull(responseBody);
+		assertNotNull(응답_바디);
 
-		var 파일_내용 = getString(responseBody);
+		var 파일_내용 = getString(응답_바디);
 
 		assertThat(파일_내용).isEqualTo(
 			getString(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(그냥_문장)))
@@ -72,25 +75,24 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	 * @Then 그 안에 파일을 업로드해서 관리할 수 있다.
 	 */
 	@Test
-	void 폴더_안_파일을_다운로드한다() throws IOException {
+	void 폴더_안_파일을_업로드한다() throws IOException {
 		// given
 		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
-		var parentId = getRootId(첫_번째_루트_폴더_조회);
-		var foldername = "폴더_친구";
+		var 루트_식별자 = getRootId(첫_번째_루트_폴더_조회);
 
 		// when
-		폴더_생성_요청(parentId, foldername);
-		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(parentId);
-		var folderId = getFolderId(두_번째_루트_폴더_조회, foldername);
+		var 새로운_폴더_이름 = "폴더_친구";
+		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
+		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
 
 		// then
-		폴더_안_파일_업로드_요청(folderId, 그냥_문장);
-		var 세_번째_루트_폴더_조회 = 파일_리스트_조회_요청(folderId);
+		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
+		var 세_번째_루트_폴더_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
 		assertThat(isContainsFilename(세_번째_루트_폴더_조회, 그냥_문장)).isTrue();
 	}
 
 	private String getFolderId(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
-		// TODO 응답 데이터에서 파일 이름과 맞는 식별자 조회
 		var folderResponses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
 			new TypeReference<List<FolderResponse>>() {
 			});

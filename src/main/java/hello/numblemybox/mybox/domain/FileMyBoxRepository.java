@@ -37,10 +37,20 @@ public interface FileMyBoxRepository {
 	Mono<MyFile> findById(String id);
 
 	/**
-	 * 상위 폴더 정보를 이용해 하위 파일 정보를 조회한다.
+	 * 상위 폴더 정보를 이용해 하위 파일 정보를 조회합니다.
 	 *
 	 * @param parentId 상위 폴더의 식별자
-	 * @return 하위 파일 리스트
+	 * @return 파일 메타데이터 리스트
 	 */
 	Flux<MyFile> findByParentId(String parentId);
+
+	/**
+	 * 폴더 식별자와 파일 식별자를 이용해 파일을 조회합니다.
+	 *
+	 * @param id       파일 식별자
+	 * @param parentId 폴더 식별자
+	 * @return 파일 메타데이터
+	 */
+	Mono<MyFile> findByIdAndParentId(String id, String parentId);
+
 }

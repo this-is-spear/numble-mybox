@@ -27,4 +27,6 @@ public interface FileMyBoxMongoRepository extends ReactiveMongoRepository<MyFile
 	Mono<MyFile> findById(String id);
 
 	Flux<MyFile> findByParentId(String parentId);
+
+	Mono<MyFile> findByIdAndParentId(String id, String parentId);
 }
