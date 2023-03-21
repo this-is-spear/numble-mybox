@@ -25,39 +25,6 @@ public class FileCommandService {
 	private final FileMyBoxRepository myBoxRepository;
 	private final FolderCommandService folderCommandService;
 
-	/**
-	 * 1. 파일의 메타데이터를 식별한다.
-	 * 2. 파일 시스템에 업로드한다.
-	 * 3. 파일 정보를 저장한다.
-	 *
-	 * @param filePart 업로드하려는 파일 데이터
-	 */
-	public Mono<Void> upload(Flux<FilePart> filePart) {
-		return filePart
-			.publishOn(Schedulers.boundedElastic())
-			.flatMap(
-				file -> {
-					var findFile = myBoxRepository.findByName(file.filename()).flatMap(myFile -> {
-						if (myFile != null) {
-							return Mono.error(InvalidFilenameException.alreadyFilename());
-						}
-						return Mono.empty();
-					}).then();
-
-					var fileMono = myBoxStorage.getPath().flatMap(
-						path -> Mono.just(
-								new MyFile(null, file.filename(), ADMIN, path,
-									file.headers().getContentLength(), getExtension(file)))
-							.flatMap(myBoxRepository::save).then()
-					);
-
-					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
-					return Mono.when(findFile, fileMono, uploadFile);
-				}
-			)
-			.then();
-	}
-
 	private String getExtension(FilePart file) {
 		return Objects.requireNonNull(file.headers().getContentType()).toString();
 	}

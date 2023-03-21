@@ -19,6 +19,7 @@ import hello.numblemybox.fake.FakeMyBoxStorage;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Flux;
@@ -32,11 +33,13 @@ class FileCommandServiceTest {
 	private FileMyBoxRepository fileMyBoxRepository;
 	private FolderMyBoxRepository folderMyBoxRepository;
 	private MyBoxStorage myBoxStorage;
+	MyFolder ROOT;
 
 	@BeforeEach
 	void setUp() {
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
 		folderMyBoxRepository = new FakeFolderMongoRepository();
+		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", ADMIN)).block();
 		myBoxStorage = new FakeMyBoxStorage();
 		fileCommandService = new FileCommandService(myBoxStorage, fileMyBoxRepository,
 			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository));
@@ -48,9 +51,8 @@ class FileCommandServiceTest {
 		// given
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-
 		// when
-		create(fileCommandService.upload(Flux.just(사진)))
+		create(fileCommandService.upload(ROOT.getId(), Flux.just(사진)))
 			.verifyComplete();
 
 		// then
@@ -60,20 +62,6 @@ class FileCommandServiceTest {
 		StepVerifier.create(fileMyBoxRepository.findByName(사진.filename()))
 			.expectNextMatches(myFile -> Objects.equals(사진.filename(), myFile.getFilename()))
 			.verifyComplete();
-	}
-
-	@Test
-	@DisplayName("업로드하려는 파일과 같은 이름의 파일이 이미 저장되어 있으면 예외가 발생한다.")
-	void upload_NotExistFile() throws IOException {
-		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		fileMyBoxRepository.save(new MyFile(null, 사진.filename(), ADMIN, 업로드할_사진의_경로.toString(),
-				사진.headers().getContentLength(), 사진.filename().split("\\.")[1]))
-			.subscribe();
-
-		create(fileCommandService.upload(Flux.just(사진)))
-			.expectError(InvalidFilenameException.class)
-			.verify();
-		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 	}
 
 	@Test

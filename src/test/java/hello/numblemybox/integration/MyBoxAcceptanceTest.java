@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.FolderResponse;
 
-class FolderAcceptanceTest extends AcceptanceTemplate {
+class MyBoxAcceptanceTest extends AcceptanceTemplate {
 
 	/**
 	 * @Fact 사용자는 폴더 내용을 확인할 수 있다.
@@ -54,7 +54,7 @@ class FolderAcceptanceTest extends AcceptanceTemplate {
 
 		// then
 		var fileId = getFileId(파일리스트_조회, 그냥_문장);
-		var 파일_다운로드_요청 = 파일_다운로드_요청(fileId);
+		var 파일_다운로드_요청 = 파일_다운로드_요청(parentId, fileId);
 		var responseBody = 파일_다운로드_요청.returnResult().getResponseBody();
 
 		assertNotNull(responseBody);

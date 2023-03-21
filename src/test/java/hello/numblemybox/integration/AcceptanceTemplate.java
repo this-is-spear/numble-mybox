@@ -52,8 +52,8 @@ class AcceptanceTemplate extends SpringBootTemplate {
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 	}
 
-	protected WebTestClient.BodyContentSpec 파일_다운로드_요청(String id) {
-		return webTestClient.post().uri("/mybox/{id}/download", id)
+	protected WebTestClient.BodyContentSpec 파일_다운로드_요청(String folderId, String fileId) {
+		return webTestClient.post().uri("/mybox/folders/{folderId}/download/{fileId}", folderId, fileId)
 			.contentType(MediaType.APPLICATION_OCTET_STREAM)
 			.exchange()
 			.expectStatus().isOk()
@@ -128,15 +128,6 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	protected WebTestClient.BodyContentSpec 루트_폴더_메타데이터_조회_요청() {
 		return webTestClient.get()
 			.uri("/mybox/folders/root")
-			.accept(MediaType.APPLICATION_JSON)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody();
-	}
-
-	protected WebTestClient.BodyContentSpec 폴더_메타에디어_조회_요청(String folderId) {
-		return webTestClient.get()
-			.uri("/mybox/folders/{folderId}", folderId)
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
