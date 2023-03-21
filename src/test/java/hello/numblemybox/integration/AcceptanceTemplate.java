@@ -101,14 +101,14 @@ class AcceptanceTemplate extends SpringBootTemplate {
 			.expectStatus().isOk();
 	}
 
-	protected WebTestClient.ResponseSpec 폴더_안_파일_업로드_요청(String foldername, String filename) {
+	protected WebTestClient.ResponseSpec 폴더_안_파일_업로드_요청(String parentId, String filename) {
 		final var builder = new MultipartBodyBuilder();
 		final var requestPartName = "files";
 		builder.part("text", getFileOne(filename))
 			.header("Content-disposition",
-				String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, 끝맺음_문장))
+				String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename))
 			.contentType(MediaType.TEXT_PLAIN);
-		return webTestClient.post().uri("/mybox/folders/{foldername}/upload", foldername)
+		return webTestClient.post().uri("/mybox/folders/{parentId}/upload", parentId)
 			.contentType(MediaType.MULTIPART_FORM_DATA)
 			.bodyValue(builder.build())
 			.exchange()
@@ -125,18 +125,36 @@ class AcceptanceTemplate extends SpringBootTemplate {
 			.expectBody();
 	}
 
-	protected WebTestClient.BodyContentSpec 루트_폴더_조회_요청() {
+	protected WebTestClient.BodyContentSpec 루트_폴더_메타데이터_조회_요청() {
 		return webTestClient.get()
-			.uri("/mybox/folders")
+			.uri("/mybox/folders/root")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody();
 	}
 
-	protected WebTestClient.BodyContentSpec 폴더_조회_요청(String folderId) {
+	protected WebTestClient.BodyContentSpec 폴더_메타에디어_조회_요청(String folderId) {
 		return webTestClient.get()
 			.uri("/mybox/folders/{folderId}", folderId)
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody();
+	}
+
+	protected WebTestClient.BodyContentSpec 폴더_리스트_조회_요청(String folderId) {
+		return webTestClient.get()
+			.uri("/mybox/folders/{folderId}/folders", folderId)
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody();
+	}
+
+	protected WebTestClient.BodyContentSpec 파일_리스트_조회_요청(String folderId) {
+		return webTestClient.get()
+			.uri("/mybox/folders/{folderId}/files", folderId)
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()

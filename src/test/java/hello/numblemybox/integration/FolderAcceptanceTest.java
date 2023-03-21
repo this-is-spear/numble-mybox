@@ -6,14 +6,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.Objects;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.FolderResponse;
 
-@Disabled
 class FolderAcceptanceTest extends AcceptanceTemplate {
 
 	/**
@@ -25,16 +28,15 @@ class FolderAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_내용을_확인한다() throws IOException {
 		// given
-		var 첫_번째_루트_폴더_조회 = 루트_폴더_조회_요청();
+		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
 		var parentId = getRootId(첫_번째_루트_폴더_조회);
 		var foldername = "폴더_이름";
 
 		// when
 		폴더_생성_요청(parentId, foldername);
 		// then
-		var 두_번째_루트_폴더_조회 = 폴더_조회_요청(parentId);
-		// assertThat(isContainsName(두_번째_루트_폴더_조회, foldername)).isTrue();
-
+		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(parentId);
+		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, foldername)).isTrue();
 	}
 
 	/**
@@ -45,11 +47,13 @@ class FolderAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 루트_폴더_안_파일을_다운로드한다() throws IOException {
 		// when
-		파일_업로드_요청(그냥_문장);
-		var 루트_폴더_조회 = 루트_폴더_조회_요청();
+		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
+		var parentId = getRootId(첫_번째_루트_폴더_조회);
+		폴더_안_파일_업로드_요청(parentId, 그냥_문장);
+		var 파일리스트_조회 = 파일_리스트_조회_요청(parentId);
 
 		// then
-		var fileId = getFileId(루트_폴더_조회);
+		var fileId = getFileId(파일리스트_조회, 그냥_문장);
 		var 파일_다운로드_요청 = 파일_다운로드_요청(fileId);
 		var responseBody = 파일_다운로드_요청.returnResult().getResponseBody();
 
@@ -70,37 +74,57 @@ class FolderAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_안_파일을_다운로드한다() throws IOException {
 		// given
-		var 첫_번째_루트_폴더_조회 = 루트_폴더_조회_요청();
+		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
 		var parentId = getRootId(첫_번째_루트_폴더_조회);
-		var foldername = "폴더_이름";
+		var foldername = "폴더_친구";
 
 		// when
 		폴더_생성_요청(parentId, foldername);
-		var 두_번째_루트_폴더_조회 = 폴더_조회_요청(parentId);
-		var folderId = getNameContainsFolderName(두_번째_루트_폴더_조회, foldername);
+		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(parentId);
+		var folderId = getFolderId(두_번째_루트_폴더_조회, foldername);
 
 		// then
 		폴더_안_파일_업로드_요청(folderId, 그냥_문장);
-		var 세_번째_루트_폴더_조회 = 폴더_조회_요청(parentId);
-		assertThat(isContainsName(세_번째_루트_폴더_조회, 그냥_문장)).isTrue();
+		var 세_번째_루트_폴더_조회 = 파일_리스트_조회_요청(folderId);
+		assertThat(isContainsFilename(세_번째_루트_폴더_조회, 그냥_문장)).isTrue();
 	}
 
-	private String getNameContainsFolderName(WebTestClient.BodyContentSpec spec, String foldername) {
+	private String getFolderId(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
 		// TODO 응답 데이터에서 파일 이름과 맞는 식별자 조회
-		return null;
+		var folderResponses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
+			new TypeReference<List<FolderResponse>>() {
+			});
+		return folderResponses.stream()
+			.filter(response -> Objects.equals(response.name(), foldername))
+			.findFirst()
+			.get().id();
 	}
 
-	private String getFileId(WebTestClient.BodyContentSpec spec) {
-		// TODO 응답 데이터에서 파일 식별자 조회
-		return null;
+	private String getFileId(WebTestClient.BodyContentSpec spec, String filename) throws IOException {
+		var fileResponse = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
+			new TypeReference<List<FileResponse>>() {
+			});
+		return fileResponse.stream()
+			.filter(response -> Objects.equals(response.name(), filename))
+			.findFirst()
+			.get().id();
 	}
 
 	private String getRootId(WebTestClient.BodyContentSpec spec) throws IOException {
 		return OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(), FolderResponse.class).id();
 	}
 
-	private boolean isContainsName(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
-		// TODO 구현 필요
-		return false;
+	private boolean isContainsFoldername(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
+		var responses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
+			new TypeReference<List<FolderResponse>>() {
+			});
+		return responses.stream().anyMatch(response -> Objects.equals(response.name(), foldername));
+	}
+
+	private boolean isContainsFilename(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
+		var responses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
+			new TypeReference<List<FileResponse>>() {
+			});
+		return responses.stream().anyMatch(response -> Objects.equals(response.name(), foldername));
 	}
 }

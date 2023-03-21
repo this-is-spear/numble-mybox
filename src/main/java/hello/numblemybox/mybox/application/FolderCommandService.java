@@ -24,11 +24,11 @@ public class FolderCommandService {
 	 * 4. 폴더에 연관관계 매핑 후 업데이트한다.
 	 *
 	 * @param folderId   저장하려는 폴더 식별자
-	 * @param myFileFlux 파일 메타데이터 정보 스트림
+	 * @param file 파일 메타데이터 정보 스트림
 	 * @return void
 	 */
-	public Mono<Void> addFileInFolder(String folderId, Mono<MyFile> myFileFlux) {
-		return myFileFlux.flatMap(
+	public Mono<Void> addFileInFolder(String folderId, Mono<MyFile> file) {
+		return file.flatMap(
 			myFile -> {
 				var ensureFilename = fileMyBoxRepository.findByParentId(folderId).flatMap(myFolder -> {
 					if (myFolder.getName().equals(myFile.getFilename())) {
@@ -59,7 +59,7 @@ public class FolderCommandService {
 				var ensureFoldername = folderMyBoxRepository.findByParentId(parentId).flatMap(
 					myFolder -> {
 						if (myFolder.getName().equals(foldername)) {
-							return Mono.error(new IllegalArgumentException());
+							return Mono.error(new IllegalArgumentException("이름이 같을 수 없습니다."));
 						}
 						return Mono.empty();
 					}

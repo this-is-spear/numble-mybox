@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FolderCommandService;
 import hello.numblemybox.mybox.application.FolderQueryService;
 import hello.numblemybox.mybox.domain.ObjectType;
@@ -31,6 +32,9 @@ public class FolderDocument {
 
 	@MockBean
 	private FolderCommandService folderCommandService;
+
+	@MockBean
+	private FileCommandService fileCommandService;
 
 	@MockBean
 	private FolderQueryService folderQueryService;

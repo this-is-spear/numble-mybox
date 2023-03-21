@@ -23,6 +23,7 @@ public class FileCommandService {
 	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private final MyBoxStorage myBoxStorage;
 	private final FileMyBoxRepository myBoxRepository;
+	private final FolderCommandService folderCommandService;
 
 	/**
 	 * 1. 파일의 메타데이터를 식별한다.
@@ -36,15 +37,12 @@ public class FileCommandService {
 			.publishOn(Schedulers.boundedElastic())
 			.flatMap(
 				file -> {
-					var findFile = myBoxRepository.findByName(file.filename())
-						.flatMap(
-							myFile -> {
-								if (myFile != null) {
-									return Mono.error(InvalidFilenameException.alreadyFilename());
-								}
-								return Mono.empty();
-							}
-						).then();
+					var findFile = myBoxRepository.findByName(file.filename()).flatMap(myFile -> {
+						if (myFile != null) {
+							return Mono.error(InvalidFilenameException.alreadyFilename());
+						}
+						return Mono.empty();
+					}).then();
 
 					var fileMono = myBoxStorage.getPath().flatMap(
 						path -> Mono.just(
@@ -76,5 +74,18 @@ public class FileCommandService {
 				objects.getT2(),
 				objects.getT1().getExtension())
 			);
+	}
+
+	public Mono<Void> upload(String folderId, Flux<FilePart> filePart) {
+		return filePart
+			.flatMap(file -> {
+				var fileMono = myBoxStorage.getPath().flatMap(path -> Mono.just(
+							new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+								getExtension(file)))
+						.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, Mono.just(myFile))))
+					.then();
+				var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
+				return Mono.when(fileMono, uploadFile);
+			}).then();
 	}
 }
