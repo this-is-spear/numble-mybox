@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>MyBox Service API</title>
+<title>Folder Management API</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,37 +439,172 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>MyBox Service API</h1>
+<h1>Folder Management API</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
+<ul class="sectlevel3">
+<li><a href="#_back">Back</a></li>
+<li><a href="#_folder">Folder</a>
 <ul class="sectlevel2">
-<li><a href="#_1_file_management">1.File Management</a></li>
-<li><a href="#_2_folder_management">2.Folder Management</a></li>
-<li><a href="#_3_root_folder_management">3.Root Folder Management</a></li>
+<li><a href="#_create_folder">Create Folder</a></li>
+<li><a href="#_update_folder">Update Folder</a></li>
+<li><a href="#_get_folder_metadata">Get Folder Metadata</a></li>
+<li><a href="#_get_folders_in_parent_folder">Get Folders In Parent Folder</a></li>
+<li><a href="#_get_files_in_parent_folder">Get Files In Parent Folder</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect2">
-<h3 id="_1_file_management"><a class="link" href="#_1_file_management"><a href="file.html">1.File Management</a></a></h3>
+<div class="sect3">
+<h4 id="_back"><a class="link" href="#_back"><a href="file.html">Back</a></a></h4>
 
 </div>
+<div class="sect1">
+<h2 id="_folder"><a class="link" href="#_folder">Folder</a></h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="_2_folder_management"><a class="link" href="#_2_folder_management"><a href="folder.html">2.Folder Management</a></a></h3>
-
+<h3 id="_create_folder"><a class="link" href="#_create_folder">Create Folder</a></h3>
+<div class="paragraph">
+<p>생성하려는 위치의 폴더 식별자를 입력해 폴더를 생성한다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request"><a class="link" href="#_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /mybox/folders/23KDMFVK134DJC?foldername=%EC%A7%81%EB%B0%95%EA%B5%AC%EB%A6%AC HTTP/1.1
+Host: localhost:8080
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response"><a class="link" href="#_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_3_root_folder_management"><a class="link" href="#_3_root_folder_management"><a href="root.html">3.Root Folder Management</a></a></h3>
+<h3 id="_update_folder"><a class="link" href="#_update_folder">Update Folder</a></h3>
+<div class="paragraph">
+<p>폴더 식별자와 수정하려는 파일 이름을 입력해 폴더를 생성한다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_2"><a class="link" href="#_http_request_2">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /mybox/folders/123DFV24AS?foldername=foldername HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_2"><a class="link" href="#_http_response_2">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_get_folder_metadata"><a class="link" href="#_get_folder_metadata">Get Folder Metadata</a></h3>
+<div class="paragraph">
+<p>폴더의 식별자를 입력해 폴더의 정보를 조회한다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_3"><a class="link" href="#_http_request_3">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/folders/13DFSDKI132SD HTTP/1.1
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_3"><a class="link" href="#_http_response_3">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 52
 
+{"id":"13DFSDKI132SD","name":"root","type":"FOLDER"}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_get_folders_in_parent_folder"><a class="link" href="#_get_folders_in_parent_folder">Get Folders In Parent Folder</a></h3>
+<div class="paragraph">
+<p>폴더의 식별자를 입력해 폴더 내에 존재하는 폴더들의 정보를 조회한다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_4"><a class="link" href="#_http_request_4">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/folders/13DFSDKI132SD/folders HTTP/1.1
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_4"><a class="link" href="#_http_response_4">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 111
+
+[{"id":"13DFSDKI132SD","name":"참새","type":"FOLDER"},{"id":"13DFSDKI132SD","name":"제비","type":"FOLDER"}]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_get_files_in_parent_folder"><a class="link" href="#_get_files_in_parent_folder">Get Files In Parent Folder</a></h3>
+<div class="paragraph">
+<p>폴더의 식별자를 입력해 폴더 내에 존재하는 파일들의 정보를 조회한다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_5"><a class="link" href="#_http_request_5">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /mybox/folders/13DFSDKI132SD/files HTTP/1.1
+Accept: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_5"><a class="link" href="#_http_response_5">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 220
+
+[{"id":"13DFSDKI132SD","name":"image.png","type":"FILE","extension":"png","size":10485760,"path":"/Users/..."},{"id":"13DFSDKI132SD","name":"text.txt","type":"FILE","extension":"txt","size":10485760,"path":"/Users/..."}]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-03-22 04:17:55 +0900
+Last updated 2023-03-22 04:19:28 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -1,0 +1,55 @@
+= Root Folder Management API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+==== link:file.html[Back]
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== Root Folder
+
+=== Get Root Folder Metadata
+
+루트 메타데이터를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/metadata/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/metadata/http-response.adoc[]
+
+=== Get Folders in Root Folder
+
+루트 내에 존재하는 폴더들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/folders/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/folders/http-response.adoc[]
+
+=== Get Files in Root Folder
+
+루트 내에 존재하는 파일들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/files/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/files/http-response.adoc[]

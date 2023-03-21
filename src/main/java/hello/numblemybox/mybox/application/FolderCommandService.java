@@ -23,8 +23,8 @@ public class FolderCommandService {
 	 * 3. 파일 메타데이터를 저장한다.
 	 * 4. 폴더에 연관관계 매핑 후 업데이트한다.
 	 *
-	 * @param folderId   저장하려는 폴더 식별자
-	 * @param file 파일 메타데이터 정보 스트림
+	 * @param folderId 저장하려는 폴더 식별자
+	 * @param file     파일 메타데이터 정보 스트림
 	 * @return void
 	 */
 	public Mono<Void> addFileInFolder(String folderId, Mono<MyFile> file) {
@@ -67,5 +67,20 @@ public class FolderCommandService {
 				var insertFolder = folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, ADMIN, parentId));
 				return Mono.when(ensureFoldername, insertFolder);
 			}).then();
+	}
+
+	/**
+	 * 폴더 이름을 수정한다.
+	 *
+	 * @param folderId   수정하려는 폴더의 식별자
+	 * @param foldername 수정할 폴더 이름
+	 * @return 반환값 없음
+	 */
+	public Mono<Void> updateFolder(String folderId, String foldername) {
+		return folderMyBoxRepository.findById(folderId)
+			.map(myFolder -> myFolder.updateName(foldername))
+			.publishOn(Schedulers.boundedElastic())
+			.map(myFolder -> folderMyBoxRepository.save(myFolder).subscribe())
+			.then();
 	}
 }
