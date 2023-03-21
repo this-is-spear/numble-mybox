@@ -18,6 +18,7 @@ import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.domain.ObjectType;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import reactor.core.publisher.Mono;
 
 class FolderCommandServiceTest {
@@ -128,6 +129,6 @@ class FolderCommandServiceTest {
 			.verifyComplete();
 
 		create(folderCommandService.addFileInFolder(id, Mono.just(두_번째_파일)))
-			.verifyError(IllegalArgumentException.class);
+			.verifyError(InvalidFilenameException.class);
 	}
 }

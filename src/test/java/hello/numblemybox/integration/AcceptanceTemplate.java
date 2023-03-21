@@ -116,6 +116,15 @@ class AcceptanceTemplate extends SpringBootTemplate {
 			.expectStatus().isOk();
 	}
 
+	protected WebTestClient.ResponseSpec 폴더_안_파일이름_수정_요청(String parentId, String fileId, String filename) {
+		return webTestClient.patch().uri(uriBuilder -> uriBuilder.path("/mybox/folders/{parentId}/update/{fileId}")
+				.queryParam("filename", filename)
+				.build(parentId, fileId))
+			.exchange()
+			.expectStatus()
+			.isOk();
+	}
+
 	protected WebTestClient.BodyContentSpec 폴더_생성_요청(String parentId, String foldername) {
 		return webTestClient.post()
 			.uri(uriBuilder -> uriBuilder.path("/mybox/folders/{parentId}")

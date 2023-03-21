@@ -6,6 +6,7 @@ import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
+import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -32,7 +33,7 @@ public class FolderCommandService {
 			myFile -> {
 				var ensureFilename = fileMyBoxRepository.findByParentId(folderId).flatMap(myFolder -> {
 					if (myFolder.getName().equals(myFile.getFilename())) {
-						return Mono.error(new IllegalArgumentException());
+						return Mono.error(InvalidFilenameException.alreadyFilename());
 					}
 					return Mono.empty();
 				}).then();

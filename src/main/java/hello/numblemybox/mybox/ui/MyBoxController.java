@@ -183,4 +183,13 @@ public class MyBoxController {
 				.body(new InputStreamResource(fileResponse.inputStream()))
 			);
 	}
+
+	@PatchMapping("/{folderId}/update/{fileId}")
+	public Mono<Void> updateFilename(
+		@PathVariable String folderId,
+		@PathVariable String fileId,
+		@RequestParam String filename
+	) {
+		return fileCommandService.updateFilename(folderId, fileId, filename);
+	}
 }
