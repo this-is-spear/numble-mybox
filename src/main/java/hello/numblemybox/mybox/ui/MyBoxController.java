@@ -6,8 +6,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -44,6 +46,14 @@ public class MyBoxController {
 		@RequestParam String foldername
 	) {
 		return folderCommandService.createFolder(parentId, foldername);
+	}
+
+	@PatchMapping("/{folderId}")
+	public Mono<Void> updateFolder(
+		@PathVariable String folderId,
+		@RequestParam String foldername
+	) {
+		return folderCommandService.updateFolder(folderId, foldername);
 	}
 
 	/**

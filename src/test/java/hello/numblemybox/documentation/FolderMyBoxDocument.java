@@ -1,49 +1,18 @@
 package hello.numblemybox.documentation;
 
-import static hello.numblemybox.stubs.FileStubs.*;
 import static org.mockito.Mockito.*;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
-import hello.numblemybox.mybox.application.FileCommandService;
-import hello.numblemybox.mybox.application.FolderCommandService;
-import hello.numblemybox.mybox.application.FolderQueryService;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.FolderResponse;
-import hello.numblemybox.mybox.dto.LoadedFileResponse;
-import hello.numblemybox.mybox.ui.MyBoxController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@AutoConfigureRestDocs
-@ExtendWith(MockitoExtension.class)
-@WebFluxTest(controllers = MyBoxController.class)
-public class MyBoxDocument {
-	@Autowired
-	private WebTestClient webTestClient;
-
-	@MockBean
-	private FolderCommandService folderCommandService;
-
-	@MockBean
-	private FileCommandService fileCommandService;
-
-	@MockBean
-	private FolderQueryService folderQueryService;
+public class FolderMyBoxDocument extends DocumentTemplate {
 
 	@Test
 	void createFolder() {
@@ -179,47 +148,20 @@ public class MyBoxDocument {
 	}
 
 	@Test
-	void uploadFileInFolder() {
-		var parentId = "DK3413KDC2";
-		var builder = new MultipartBodyBuilder();
-		builder.part("image1.png", getFileOne(인사_문장))
-			.header("Content-disposition", "form-data; name=\"files\"; filename=\"image1.png\"")
-			.contentType(MediaType.TEXT_PLAIN);
-		builder.part("image2.jpg", getFileOne(끝맺음_문장))
-			.header("Content-disposition", "form-data; name=\"files\"; filename=\"image2.jpg\"")
-			.contentType(MediaType.TEXT_PLAIN);
-		when(fileCommandService.upload(any(), any(Flux.class))).thenReturn(Mono.empty());
+	void updateName() {
+		var folderId = "123DFV24AS";
+		var foldername = "foldername";
 
-		this.webTestClient.post().uri("/mybox/folders/{parentId}/upload", parentId)
-			.contentType(MediaType.MULTIPART_FORM_DATA)
-			.bodyValue(builder.build())
+		webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder
+				.path("/mybox/folders/{folderId}")
+				.queryParam("foldername", foldername)
+				.build(folderId))
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
 			.consumeWith(
-				WebTestClientRestDocumentation.document("file/upload")
-			);
-	}
-
-	@Test
-	void download() {
-		var fileId = "641440b0f4647553d5c7942t";
-		var parentId = "DK3413KDC2";
-
-		when(fileCommandService.downloadFileById(parentId, fileId)).thenReturn(
-			Mono.just(new LoadedFileResponse("test.txt",
-				new ByteArrayInputStream("hellloooooo my name is tis".getBytes(StandardCharsets.UTF_8)),
-				MediaType.TEXT_PLAIN_VALUE)
-			)
-		);
-
-		this.webTestClient.post().uri("/mybox/folders/{parentId}/download/{fileId}",parentId, fileId)
-			.contentType(MediaType.APPLICATION_OCTET_STREAM)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody()
-			.consumeWith(
-				WebTestClientRestDocumentation.document("file/download")
+				WebTestClientRestDocumentation.document("folder/update")
 			);
 	}
 }

@@ -1,0 +1,63 @@
+
+== Folder
+
+=== Create Folder
+
+생성하려는 위치의 폴더 식별자를 입력해 폴더를 생성한다.
+
+==== HTTP request
+
+include::{snippets}/folder/create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/create/http-response.adoc[]
+
+=== Update Folder
+
+폴더 식별자와 수정하려는 파일 이름을 입력해 폴더를 생성한다.
+
+==== HTTP request
+
+include::{snippets}/folder/update/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/update/http-response.adoc[]
+
+
+=== Get Folder Metadata
+
+폴더의 식별자를 입력해 폴더의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/find/metadata/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/metadata/http-response.adoc[]
+
+=== Get Folders In Parent Folder
+
+폴더의 식별자를 입력해 폴더 내에 존재하는 폴더들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/find/folders/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/folders/http-response.adoc[]
+
+=== Get Files In Parent Folder
+
+폴더의 식별자를 입력해 폴더 내에 존재하는 파일들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/find/files/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/files/http-response.adoc[]

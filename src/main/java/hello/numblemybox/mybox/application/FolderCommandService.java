@@ -68,4 +68,8 @@ public class FolderCommandService {
 				return Mono.when(ensureFoldername, insertFolder);
 			}).then();
 	}
+
+	public Mono<Void> updateFolder(String folderId, String foldername) {
+		return null;
+	}
 }

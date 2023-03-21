@@ -1,0 +1,26 @@
+
+== File
+
+=== Upload files
+
+파일을 업로드한다.
+
+==== HTTP request
+
+include::{snippets}/file/upload/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/file/upload/http-response.adoc[]
+
+=== Download
+
+파일을 다운로드한다.
+
+==== HTTP request
+
+include::{snippets}/file/download/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/file/download/http-response.adoc[]
