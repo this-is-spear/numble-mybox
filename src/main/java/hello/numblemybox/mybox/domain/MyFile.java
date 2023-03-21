@@ -71,6 +71,14 @@ public final class MyFile {
 		this.parentId = parentId;
 	}
 
+	public String getFilename() {
+		return this.getName();
+	}
+
+	public MyFile updateFilename(String filename) {
+		return renameFilename(filename);
+	}
+
 	private void ensurePath(String path) {
 		if (path == null || path.isBlank()) {
 			throw InvalidPathException.nullOrEmpty();
@@ -89,10 +97,6 @@ public final class MyFile {
 		}
 	}
 
-	public String getFilename() {
-		return this.getName();
-	}
-
 	private void ensureName(String filename) {
 		if (filename == null || filename.isBlank() || filename.length() < MINIMUM_LENGTH) {
 			throw InvalidFilenameException.tooShort();
@@ -101,5 +105,14 @@ public final class MyFile {
 		if (filename.length() > MAXIMUM_LENGTH) {
 			throw InvalidFilenameException.tooLong();
 		}
+
+		if (!filename.contains(".")) {
+			throw InvalidFilenameException.invalidFilename();
+		}
+	}
+
+	private MyFile renameFilename(String filename) {
+		return new MyFile(this.getId(), filename, this.getUsername(), this.getType(), this.getPath(),
+			this.getSize(), this.getExtension(), this.getParentId());
 	}
 }

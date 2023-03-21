@@ -16,10 +16,6 @@ public final class FileStubs {
 	public static final Path 테스트할_사진의_경로 = Paths.get("./src/test/resources/test-image");
 	public static final Path 업로드할_사진의_경로 = Paths.get("./src/test/resources/upload");
 	public static final Path 프로덕션_업로드_사진_경로 = Paths.get("./src/main/resources/upload");
-	public static final MyFile 이미지_파일 = new MyFile(null, "image", "rjsckdd12@gmail.com",
-		테스트할_사진의_경로.toString(), 1_000_000L, "png");
-	public static final MyFile 텍스트_파일 = new MyFile(null, "text", "rjsckdd12@gmail.com",
-		테스트할_사진의_경로.toString(), 10_000L, "txt");
 	public static final String 업로드할_사진 = "ElvisPresley.png";
 
 	public static byte[] getFileOne(String filename) {

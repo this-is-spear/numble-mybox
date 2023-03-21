@@ -18,11 +18,11 @@ import hello.numblemybox.stubs.FileStubs;
 class MyFileTest {
 
 	private static final String 파일_식별자 = "id";
-	private static final String 파일_이름 = "filename";
+	private static final String 파일_이름 = "filename.jpg";
 	private static final String 저장된_경로 = FileStubs.업로드할_사진의_경로.toString();
 	private static final String 파일_주인_식별자 = "rjsckdd12@gmail.com";
 	private static final long 파일_크기 = 123L;
-	private static final String 파일_확장자 = "jpg";
+	private static final String 파일_확장자 = "image/jpeg";
 
 	@Test
 	@DisplayName("식별자, 파일의 이름, 파일 소유자, 크기, 파일 확장자 정보를 가진다.")
@@ -52,7 +52,7 @@ class MyFileTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"asdljasdfdsdfsafsfsk1asd32kdf", "sdjkasdfl3sadfsdfsfs,l23nfddsf"})
+	@ValueSource(strings = {"asdljasdfdsdfsafsfsk1asd32kdf.jpg", "sdjkasdfl3sadfsdfsfsl23nfddsf.png"})
 	@DisplayName("파일 이름 크기가 20 글자보다 크면 예외가 발생한다.")
 	void myFile_nameShouldBeRule(String 큰_길이_파일_이름) {
 		assertThatThrownBy(

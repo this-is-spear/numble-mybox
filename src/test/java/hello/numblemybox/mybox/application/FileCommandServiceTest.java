@@ -88,11 +88,11 @@ class FileCommandServiceTest {
 	void downloadFileById() throws IOException {
 		// given
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
-		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when
-		MyFile file = fileMyBoxRepository.save(myFile).block();
+		var file = fileMyBoxRepository.save(myFile).block();
 
 		// then
 		create(fileCommandService.downloadFileById(ROOT.getId(), file.getId()))
@@ -104,11 +104,11 @@ class FileCommandServiceTest {
 	@DisplayName("다운로드할 파일이 없으면 예외가 발생한다.")
 	void downloadFileById_notExistInStorage() {
 		// given
-		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when
-		MyFile file = fileMyBoxRepository.save(myFile).block();
+		var file = fileMyBoxRepository.save(myFile).block();
 
 		// then
 		create(fileCommandService.downloadFileById(ROOT.getId(), file.getId()))
@@ -120,7 +120,7 @@ class FileCommandServiceTest {
 	void downloadFileById_notExistInDatabase() throws IOException {
 		// given
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
-		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when & then
@@ -128,4 +128,16 @@ class FileCommandServiceTest {
 			.verifyComplete();
 	}
 
+	@Test
+	@DisplayName("파일 이름을 수정한다.")
+	void updateFilename() {
+		// given
+		var 폴더_식별자 = ROOT.getId();
+		var 파일_식별자 = fileMyBoxRepository.save(new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", 폴더_식별자)).block().getId();
+
+		// then & then
+		String 새로운_파일_이름 = "newFile.txt";
+		create(fileCommandService.updateFilename(폴더_식별자, 파일_식별자, 새로운_파일_이름)).verifyComplete();
+	}
 }

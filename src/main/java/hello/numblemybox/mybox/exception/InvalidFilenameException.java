@@ -17,4 +17,8 @@ public final class InvalidFilenameException extends MyFileException {
 	public static InvalidFilenameException alreadyFilename() {
 		throw new InvalidFilenameException("저장소에 이미 같은 이름의 파일이 있습니다.");
 	}
+
+	public static InvalidFilenameException invalidFilename() {
+		return new InvalidFilenameException("파일 이름에 확장자가 포함되어야 합니다.");
+	}
 }

@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -29,10 +28,10 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_이름을_수정한다() throws IOException {
 		// given
-		var 새로운_폴더_이름 = "수정하려는_폴더_이름";
-		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		var 새로운_폴더이름 = "수정하려는_폴더_이름";
+		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
-		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
+		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더이름);
 
 		// when
 		var 다른_새로운_이름 = "수정하고_싶은_폴더_이름";
@@ -52,13 +51,13 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_내용을_확인한다() throws IOException {
 		// given
-		var 새로운_폴더_이름 = "폴더_이름";
+		var 새로운_폴더이름 = "폴더_이름";
 
 		// when
-		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		// then
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
-		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, 새로운_폴더_이름)).isTrue();
+		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, 새로운_폴더이름)).isTrue();
 	}
 
 	/**
@@ -69,13 +68,14 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 루트_폴더_안_파일을_다운로드한다() throws IOException {
 		// given
-		var 새로운_폴더_이름 = "폴더_친구";
-		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
-		var 새로운_폴더_식별자 = getFolderId(폴더_리스트_조회_요청(루트_식별자), 새로운_폴더_이름);
+		var 새로운_폴더이름 = "폴더_친구";
+		var 파일이름 = 그냥_문장;
+		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
+		var 새로운_폴더_식별자 = getFolderId(폴더_리스트_조회_요청(루트_식별자), 새로운_폴더이름);
 
 		// when
-		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
-		var 파일_식별자 = getFileId(파일_리스트_조회_요청(새로운_폴더_식별자), 그냥_문장);
+		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 파일이름);
+		var 파일_식별자 = getFileId(파일_리스트_조회_요청(새로운_폴더_식별자), 파일이름);
 
 		// then
 		var 파일_다운로드_요청 = 파일_다운로드_요청(새로운_폴더_식별자, 파일_식별자);
@@ -86,7 +86,7 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		var 파일_내용 = getString(응답_바디);
 
 		assertThat(파일_내용).isEqualTo(
-			getString(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(그냥_문장)))
+			getString(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(파일이름)))
 		);
 	}
 
@@ -99,17 +99,18 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_안_파일을_업로드한다() throws IOException {
 		// given
-		var 새로운_폴더_이름 = "새로운_폴더";
-		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
-		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
-		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
+		var 새로운_폴더이름 = "새로운_폴더";
+		var 파일이름 = 인사_문장;
+		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
+		var 첫_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
+		var 새로운_폴더_식별자 = getFolderId(첫_번째_루트_폴더_조회, 새로운_폴더이름);
 
 		// when
-		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
+		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 파일이름);
 
 		// then
-		var 세_번째_루트_폴더_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
-		assertThat(isContainsFilename(세_번째_루트_폴더_조회, 그냥_문장)).isTrue();
+		var 새로운_폴더_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
+		assertThat(isContainsFilename(새로운_폴더_조회, 파일이름)).isTrue();
 	}
 
 	/**
@@ -119,23 +120,24 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	 * @Then 파일이름을 수정한다.
 	 */
 	@Test
-	@Disabled
 	void 파일_이름을_수정한다() throws IOException {
 		// given
-		var 새로운_폴더_이름 = "새로운_폴더";
-		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		var 새로운_폴더이름 = "또또또_새로운_폴더";
+		var 파일이름 = 끝맺음_문장;
+
+		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		var 첫_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
-		var 새로운_폴더_식별자 = getFolderId(첫_번째_루트_폴더_조회, 새로운_폴더_이름);
+		var 새로운_폴더_식별자 = getFolderId(첫_번째_루트_폴더_조회, 새로운_폴더이름);
 
 		// when
-		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
+		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 파일이름);
 
 		var 첫_번째_파일_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
-		assertThat(isContainsFilename(첫_번째_파일_조회, 그냥_문장)).isTrue();
+		assertThat(isContainsFilename(첫_번째_파일_조회, 파일이름)).isTrue();
 
-		var 파일_식별자 = getFileId(첫_번째_파일_조회, 그냥_문장);
-		var 새로운_파일이름 = "updatedName.txt";
-		폴더_안_파일이름_수정_요청(새로운_폴더_식별자, 새로운_파일이름, 파일_식별자);
+		var 파일_식별자 = getFileId(첫_번째_파일_조회, 파일이름);
+		var 새로운_파일이름 = "완전_새로운_파일.txt";
+		폴더_안_파일이름_수정_요청(새로운_폴더_식별자, 파일_식별자, 새로운_파일이름);
 
 		// then
 		var 두_번째_파일_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);

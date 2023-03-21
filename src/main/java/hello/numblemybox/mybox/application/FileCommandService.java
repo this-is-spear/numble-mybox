@@ -12,6 +12,7 @@ import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 
 /**
@@ -60,6 +61,10 @@ public class FileCommandService {
 	}
 
 	public Mono<Void> updateFilename(String folderId, String fileId, String filename) {
-		return null;
+		return fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
+			.publishOn(Schedulers.boundedElastic())
+			.map(myFile -> myFile.updateFilename(filename))
+			.map(myFile -> fileMyBoxRepository.save(myFile).subscribe())
+			.then();
 	}
 }
