@@ -88,7 +88,7 @@ class FileCommandServiceTest {
 	void downloadFileById() throws IOException {
 		// given
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
-		MyFile myFile = new MyFile(null, 업로드할_사진, "rk",ObjectType.FOLDER,
+		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when
@@ -120,7 +120,7 @@ class FileCommandServiceTest {
 	void downloadFileById_notExistInDatabase() throws IOException {
 		// given
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
-		MyFile myFile = new MyFile(null, 업로드할_사진, "rk",ObjectType.FOLDER,
+		MyFile myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when & then

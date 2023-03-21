@@ -1,5 +1,7 @@
 package hello.numblemybox.mybox.domain;
 
+import java.util.Objects;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -61,5 +63,12 @@ public final class MyFolder {
 		if (filename.length() > MAXIMUM_LENGTH) {
 			throw InvalidFilenameException.tooLong();
 		}
+	}
+
+	public MyFolder updateName(String foldername) {
+		if (Objects.equals(this.getType(), ObjectType.ROOT)) {
+			throw new IllegalArgumentException("루트 폴더의 이름은 변경할 수 없습니다.");
+		}
+		return new MyFolder(this.getId(), foldername, this.getUsername(), this.getType(), this.getParentId());
 	}
 }

@@ -9,27 +9,27 @@ import reactor.core.publisher.Mono;
 public interface FolderMyBoxRepository {
 
 	/**
-	 * 식별자를 이용해 MyObject 를 찾습니다.
+	 * 식별자를 이용해 MyFolder 를 찾습니다.
 	 *
 	 * @param id 식별자
-	 * @return MyObject
+	 * @return MyFolder
 	 */
 	Mono<MyFolder> findById(String id);
 
 	/**
-	 * MyObject 의 타입과 사용자 명을 이용해 MyObject 를 찾습니다.
+	 * MyFolder 의 타입과 사용자 명을 이용해 MyFolder 를 찾습니다.
 	 *
-	 * @param type     MyObject 의 타입
-	 * @param username MyObject 의 주인
-	 * @return MyObject
+	 * @param type     MyFolder 의 타입
+	 * @param username MyFolder 의 주인
+	 * @return MyFolder
 	 */
 	Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username);
 
 	/**
-	 * MyObject 를 저장합니다. MyObject 는 폴더거나 파일입니다.
+	 * MyFolder 를 저장합니다. MyFolder 는 폴더거나 파일입니다.
 	 *
-	 * @param entity 식별자가 없는 MyObject
-	 * @return 식별자가 있는 MyObject
+	 * @param entity 식별자가 없는 MyFolder
+	 * @return 식별자가 있는 MyFolder
 	 */
 	Mono<MyFolder> save(MyFolder entity);
 

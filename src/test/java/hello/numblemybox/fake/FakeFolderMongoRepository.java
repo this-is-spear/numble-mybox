@@ -18,8 +18,7 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 	@Override
 	public Mono<MyFolder> findById(String id) {
 		return Mono.justOrEmpty(map.values().stream()
-			.filter(myObject -> myObject.getId().equals(id)
-				&& myObject.getType().equals(ObjectType.FOLDER) || myObject.getType().equals(ObjectType.ROOT))
+			.filter(myObject -> myObject.getId().equals(id))
 			.findFirst());
 	}
 

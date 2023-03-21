@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -164,6 +163,7 @@ public class MyBoxController {
 
 	/**
 	 * 파일 식별자를 입력해 파일을 다운로드한다.
+	 *
 	 * @param fileId 파일의 식별자
 	 * @return 파일 내부 정보
 	 */

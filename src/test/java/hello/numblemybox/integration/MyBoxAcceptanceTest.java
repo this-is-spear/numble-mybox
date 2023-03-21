@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -27,7 +26,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	 * @Then 수정된 폴더 이름을 확인할 수 있다.
 	 */
 	@Test
-	@Disabled
 	void 폴더_이름을_수정한다() throws IOException {
 		// given
 		var 새로운_폴더_이름 = "폴더_이름";
@@ -129,7 +127,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 			.findFirst()
 			.get().id();
 	}
-
 
 	private boolean isContainsFoldername(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
 		var responses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
