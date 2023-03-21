@@ -10,8 +10,8 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-include::../asciidoc/file.adoc[]
+=== link:file.html[1.File Management]
 
-include::../asciidoc/folder.adoc[]
+=== link:folder.html[2.Folder Management]
 
-include::../asciidoc/root.adoc[]
+=== link:root.html[3.Root Folder Management]

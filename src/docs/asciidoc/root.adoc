@@ -1,3 +1,21 @@
+= Root Folder Management API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+==== link:file.html[Back]
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
 == Root Folder
 
 === Get Root Folder Metadata

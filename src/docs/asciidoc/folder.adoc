@@ -1,3 +1,21 @@
+= Folder Management API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+==== link:file.html[Back]
+
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
 
 == Folder
 
@@ -24,7 +42,6 @@ include::{snippets}/folder/update/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/folder/update/http-response.adoc[]
-
 
 === Get Folder Metadata
 
