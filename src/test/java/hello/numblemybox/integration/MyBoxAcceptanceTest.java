@@ -28,13 +28,13 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_이름을_수정한다() throws IOException {
 		// given
-		var 새로운_폴더_이름 = "폴더_이름";
+		var 새로운_폴더_이름 = "수정하려는_폴더_이름";
 		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
 		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
 
 		// when
-		var 다른_새로운_이름 = "다른_새로운_이름";
+		var 다른_새로운_이름 = "수정하고_싶은_폴더_이름";
 		폴더_이름_수정_요청(새로운_폴더_식별자, 다른_새로운_이름);
 
 		// then
