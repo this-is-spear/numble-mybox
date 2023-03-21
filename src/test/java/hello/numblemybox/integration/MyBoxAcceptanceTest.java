@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -20,6 +21,30 @@ import hello.numblemybox.mybox.dto.FolderResponse;
 class MyBoxAcceptanceTest extends AcceptanceTemplate {
 
 	/**
+	 * @Fact 사용자는 폴더 이름을 수정할 수 있다.
+	 * @Given 폴더를 생성한 후
+	 * @When 폴더 이름을 수정하면
+	 * @Then 수정된 폴더 이름을 확인할 수 있다.
+	 */
+	@Test
+	@Disabled
+	void 폴더_이름을_수정한다() throws IOException {
+		// given
+		var 새로운_폴더_이름 = "폴더_이름";
+		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
+		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
+
+		// when
+		var 다른_새로운_이름 = "다른_새로운_이름";
+		폴더_이름_수정_요청(새로운_폴더_식별자, 다른_새로운_이름);
+
+		// then
+		var 세_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
+		assertThat(isContainsFoldername(세_번째_루트_폴더_조회, 다른_새로운_이름)).isTrue();
+	}
+
+	/**
 	 * @Fact 사용자는 폴더 내용을 확인할 수 있다.
 	 * @Given 폴더를 생성한 후
 	 * @When 폴더를 조회하면
@@ -28,15 +53,13 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 폴더_내용을_확인한다() throws IOException {
 		// given
-		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
-		var 루트_식별자 = getRootId(첫_번째_루트_폴더_조회);
-		var 새운_폴더_이름 = "폴더_이름";
+		var 새로운_폴더_이름 = "폴더_이름";
 
 		// when
-		폴더_생성_요청(루트_식별자, 새운_폴더_이름);
+		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
 		// then
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
-		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, 새운_폴더_이름)).isTrue();
+		assertThat(isContainsFoldername(두_번째_루트_폴더_조회, 새로운_폴더_이름)).isTrue();
 	}
 
 	/**
@@ -47,7 +70,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	@Test
 	void 루트_폴더_안_파일을_다운로드한다() throws IOException {
 		// given
-		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 		var 새로운_폴더_이름 = "폴더_친구";
 		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
 		var 새로운_폴더_식별자 = getFolderId(폴더_리스트_조회_요청(루트_식별자), 새로운_폴더_이름);
@@ -76,10 +98,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	 */
 	@Test
 	void 폴더_안_파일을_업로드한다() throws IOException {
-		// given
-		var 첫_번째_루트_폴더_조회 = 루트_폴더_메타데이터_조회_요청();
-		var 루트_식별자 = getRootId(첫_번째_루트_폴더_조회);
-
 		// when
 		var 새로운_폴더_이름 = "새로운_폴더";
 		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
@@ -112,9 +130,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 			.get().id();
 	}
 
-	private String getRootId(WebTestClient.BodyContentSpec spec) throws IOException {
-		return OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(), FolderResponse.class).id();
-	}
 
 	private boolean isContainsFoldername(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
 		var responses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),

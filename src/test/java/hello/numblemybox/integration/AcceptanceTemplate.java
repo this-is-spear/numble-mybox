@@ -19,11 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hello.numblemybox.SpringBootTemplate;
 import hello.numblemybox.mybox.domain.MyFolder;
+import hello.numblemybox.mybox.dto.FolderResponse;
 import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
 import hello.numblemybox.mybox.infra.FolderMyBoxMongoRepository;
 
 class AcceptanceTemplate extends SpringBootTemplate {
 	private static final String ADMIN = "rjsckdd12@gmail.com";
+	protected String 루트_식별자;
 	@Autowired
 	protected ObjectMapper OBJECT_MAPPER;
 	@Autowired
@@ -39,6 +41,7 @@ class AcceptanceTemplate extends SpringBootTemplate {
 		fileMyBoxMongoRepository.deleteAll().subscribe();
 		folderMyBoxRepository.deleteAll().subscribe();
 		folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", ADMIN)).subscribe();
+		루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 	}
 
 	@AfterAll
@@ -46,10 +49,8 @@ class AcceptanceTemplate extends SpringBootTemplate {
 		deleteFiles();
 	}
 
-	private static void deleteFiles() throws IOException {
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
+	protected String getRootId(WebTestClient.BodyContentSpec spec) throws IOException {
+		return OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(), FolderResponse.class).id();
 	}
 
 	protected WebTestClient.BodyContentSpec 파일_다운로드_요청(String folderId, String fileId) {
@@ -125,6 +126,16 @@ class AcceptanceTemplate extends SpringBootTemplate {
 			.expectBody();
 	}
 
+	protected WebTestClient.BodyContentSpec 폴더_이름_수정_요청(String parentId, String foldername) {
+		return webTestClient.patch()
+			.uri(uriBuilder -> uriBuilder.path("/mybox/folders/{parentId}")
+				.queryParam("foldername", foldername)
+				.build(parentId))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody();
+	}
+
 	protected WebTestClient.BodyContentSpec 루트_폴더_메타데이터_조회_요청() {
 		return webTestClient.get()
 			.uri("/mybox/folders/root")
@@ -159,5 +170,11 @@ class AcceptanceTemplate extends SpringBootTemplate {
 
 	protected <T> T getValue(byte[] data, Class<T> t) throws IOException {
 		return OBJECT_MAPPER.readValue(data, t);
+	}
+
+	private static void deleteFiles() throws IOException {
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 	}
 }
