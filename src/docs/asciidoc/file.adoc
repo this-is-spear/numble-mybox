@@ -10,7 +10,7 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-==== link:file.html[Back]
+==== link:index.html[Back]
 
 == File
 
