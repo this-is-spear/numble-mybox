@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -91,21 +92,54 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 
 	/**
 	 * @Fact 사용자는 폴더를 생성하고 그 안에 파일을 업로드해서 관리할 수 있다.
-	 * @When 사용자는 폴더를 생성하면
-	 * @Then 그 안에 파일을 업로드해서 관리할 수 있다.
+	 * @Given 사용자는 폴더를 생성하면
+	 * @When 안에 파일을 업로드해서
+	 * @Then 관리할 수 있다.
 	 */
 	@Test
 	void 폴더_안_파일을_업로드한다() throws IOException {
-		// when
+		// given
 		var 새로운_폴더_이름 = "새로운_폴더";
 		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
 		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더_이름);
 
-		// then
+		// when
 		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
+
+		// then
 		var 세_번째_루트_폴더_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
 		assertThat(isContainsFilename(세_번째_루트_폴더_조회, 그냥_문장)).isTrue();
+	}
+
+	/**
+	 * @Fact 사용자는 폴더를 생성하고 파일을 업로드 한 후, 파일 이름을 수정한다.
+	 * @Given 사용자는 폴더를 생성하고
+	 * @When 파일을 업로드한 후,
+	 * @Then 파일이름을 수정한다.
+	 */
+	@Test
+	@Disabled
+	void 파일_이름을_수정한다() throws IOException {
+		// given
+		var 새로운_폴더_이름 = "새로운_폴더";
+		폴더_생성_요청(루트_식별자, 새로운_폴더_이름);
+		var 첫_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
+		var 새로운_폴더_식별자 = getFolderId(첫_번째_루트_폴더_조회, 새로운_폴더_이름);
+
+		// when
+		폴더_안_파일_업로드_요청(새로운_폴더_식별자, 그냥_문장);
+
+		var 첫_번째_파일_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
+		assertThat(isContainsFilename(첫_번째_파일_조회, 그냥_문장)).isTrue();
+
+		var 파일_식별자 = getFileId(첫_번째_파일_조회, 그냥_문장);
+		var 새로운_파일이름 = "updatedName.txt";
+		폴더_안_파일이름_수정_요청(새로운_폴더_식별자, 새로운_파일이름, 파일_식별자);
+
+		// then
+		var 두_번째_파일_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
+		assertThat(isContainsFilename(두_번째_파일_조회, 새로운_파일이름)).isTrue();
 	}
 
 	private String getFolderId(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
