@@ -96,7 +96,7 @@ class FolderAcceptanceTest extends AcceptanceTemplate {
 	}
 
 	private String getRootId(WebTestClient.BodyContentSpec spec) throws IOException {
-		return OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(), FolderResponse.class).getId();
+		return OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(), FolderResponse.class).id();
 	}
 
 	private boolean isContainsName(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
