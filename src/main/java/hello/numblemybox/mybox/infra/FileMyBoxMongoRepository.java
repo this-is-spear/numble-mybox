@@ -3,19 +3,19 @@ package hello.numblemybox.mybox.infra;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
-import hello.numblemybox.mybox.domain.MyBoxRepository;
+import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, String>, MyBoxRepository {
+public interface FileMyBoxMongoRepository extends ReactiveMongoRepository<MyFile, String>, FileMyBoxRepository {
 
 	@Override
-	Mono<MyFile> insert(MyFile entity);
+	Mono<MyFile> save(MyFile entity);
 
 	@Override
-	Mono<MyFile> findByFilename(String filename);
+	Mono<MyFile> findByName(String name);
 
 	@Override
 	Flux<MyFile> findAll();
@@ -25,4 +25,8 @@ public interface MyBoxMongoRepository extends ReactiveMongoRepository<MyFile, St
 
 	@Override
 	Mono<MyFile> findById(String id);
+
+	Flux<MyFile> findByParentId(String parentId);
+
+	Mono<MyFile> findByIdAndParentId(String id, String parentId);
 }

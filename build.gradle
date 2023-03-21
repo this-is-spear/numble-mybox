@@ -83,7 +83,3 @@ task copyDocument(type: Copy) {
     from file("build/docs/asciidoc")
     into file("static")
 }
-
-build {
-    dependsOn copyDocument
-}

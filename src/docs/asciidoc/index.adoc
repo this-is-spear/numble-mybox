@@ -14,6 +14,8 @@ endif::[]
 
 === hello
 
+API 테스트
+
 ==== HTTP request
 
 include::{snippets}/hello/http-request.adoc[]
@@ -26,41 +28,146 @@ include::{snippets}/hello/http-response.adoc[]
 
 === Upload files
 
+파일을 업로드한다.
+
 ==== HTTP request
 
-include::{snippets}/upload/http-request.adoc[]
+include::{snippets}/file/upload/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/upload/http-response.adoc[]
+include::{snippets}/file/upload/http-response.adoc[]
 
 === Get file
 
+파일 메타데이터를 조회한다.
+
 ==== HTTP request
 
-include::{snippets}/getOne/http-request.adoc[]
+include::{snippets}/file/getOne/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/getOne/http-response.adoc[]
+include::{snippets}/file/getOne/http-response.adoc[]
 
 === Get files
 
+전체 파일의 메타데이터를 조회한다.
+
 ==== HTTP request
 
-include::{snippets}/getAll/http-request.adoc[]
+include::{snippets}/file/getAll/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/getAll/http-response.adoc[]
+include::{snippets}/file/getAll/http-response.adoc[]
 
 === Download
 
+파일을 다운로드한다.
 
 ==== HTTP request
 
-include::{snippets}/download/http-request.adoc[]
+include::{snippets}/file/download/http-request.adoc[]
 
 ==== HTTP response
 
-include::{snippets}/download/http-response.adoc[]
+include::{snippets}/file/download/http-response.adoc[]
+
+== Folder
+
+=== Create
+
+생성하려는 위치의 폴더 식별자를 입력해 폴더를 생성한다.
+
+==== HTTP request
+
+include::{snippets}/folder/create/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/create/http-response.adoc[]
+
+=== Get Folder Metadata
+
+폴더의 식별자를 입력해 폴더의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/find/metadata/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/metadata/http-response.adoc[]
+
+=== Get Folders In Parent Folder
+
+폴더의 식별자를 입력해 폴더 내에 존재하는 폴더들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/find/folders/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/folders/http-response.adoc[]
+
+=== Get Files In Parent Folder
+
+폴더의 식별자를 입력해 폴더 내에 존재하는 파일들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/find/files/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/find/files/http-response.adoc[]
+
+=== Get Root Folder Metadata
+
+루트 메타데이터를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/metadata/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/metadata/http-response.adoc[]
+
+=== Get Folders in Root Folder
+
+루트 내에 존재하는 폴더들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/folders/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/folders/http-response.adoc[]
+
+=== Get Files in Root Folder
+
+루트 내에 존재하는 파일들의 정보를 조회한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/files/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/files/http-response.adoc[]
+
+=== Upload in Folder
+
+폴더 식별자를 입력해 해당 위치 폴더로 파일을 업로드한다.
+
+==== HTTP request
+
+include::{snippets}/folder/findRoot/folders/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/findRoot/folders/http-response.adoc[]

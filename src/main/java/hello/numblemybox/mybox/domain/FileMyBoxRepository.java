@@ -3,7 +3,7 @@ package hello.numblemybox.mybox.domain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface MyBoxRepository {
+public interface FileMyBoxRepository {
 
 	/**
 	 * 파일 메타데이터를 저장합니다. 저장할 때, id가 null 이면 자동으로 값을 매핑하빈다.
@@ -11,15 +11,15 @@ public interface MyBoxRepository {
 	 * @param entity 파일 메타데이터
 	 * @return 파일 메타데이터
 	 */
-	Mono<MyFile> insert(MyFile entity);
+	Mono<MyFile> save(MyFile entity);
 
 	/**
 	 * 파일의 이름을 이용해 파일 메타데이터를 조회합니다. 파일 이름에 맞는 메타데이터가 없는 경우, null 을 Mono 로 래핑해서 반환합니다.
 	 *
-	 * @param filename 파일 이름
+	 * @param objectName 파일 이름
 	 * @return 파일 메타데이터
 	 */
-	Mono<MyFile> findByFilename(String filename);
+	Mono<MyFile> findByName(String objectName);
 
 	/**
 	 * 저장된 모든 파일 메타데이터를 조회합니다.
@@ -35,4 +35,22 @@ public interface MyBoxRepository {
 	 * @return 파일의 메티데이터
 	 */
 	Mono<MyFile> findById(String id);
+
+	/**
+	 * 상위 폴더 정보를 이용해 하위 파일 정보를 조회합니다.
+	 *
+	 * @param parentId 상위 폴더의 식별자
+	 * @return 파일 메타데이터 리스트
+	 */
+	Flux<MyFile> findByParentId(String parentId);
+
+	/**
+	 * 폴더 식별자와 파일 식별자를 이용해 파일을 조회합니다.
+	 *
+	 * @param id       파일 식별자
+	 * @param parentId 폴더 식별자
+	 * @return 파일 메타데이터
+	 */
+	Mono<MyFile> findByIdAndParentId(String id, String parentId);
+
 }
