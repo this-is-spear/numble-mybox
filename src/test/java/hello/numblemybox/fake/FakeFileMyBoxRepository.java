@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
+import hello.numblemybox.mybox.domain.ObjectType;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,12 +17,16 @@ public final class FakeFileMyBoxRepository implements FileMyBoxRepository {
 	private final Map<String, MyFile> map = new HashMap<>();
 
 	@Override
-	public Mono<MyFile> insert(MyFile entity) {
-		String id = UUID.randomUUID().toString();
-		MyFile storedMyFile = new MyFile(id, entity.getFilename(), entity.getUsername(),
-			entity.getPath(), entity.getSize(), entity.getExtension());
-		map.put(id, storedMyFile);
-		return Mono.just(storedMyFile);
+	public Mono<MyFile> save(MyFile from) {
+		if (from.getId() == null) {
+			var id = UUID.randomUUID().toString();
+			var to = new MyFile(id, from.getFilename(), from.getUsername(), ObjectType.FOLDER,
+				from.getPath(), from.getSize(), from.getExtension(), from.getParentId());
+			map.put(id, to);
+			return Mono.just(to);
+		}
+		map.put(from.getId(), from);
+		return Mono.just(from);
 	}
 
 	@Override
@@ -44,5 +49,14 @@ public final class FakeFileMyBoxRepository implements FileMyBoxRepository {
 			return Mono.just(map.get(id));
 		}
 		return Mono.empty();
+	}
+
+	@Override
+	public Flux<MyFile> findByParentId(String parentId) {
+		return Flux.fromIterable(map.values()
+			.stream()
+			.filter(myFile -> Objects.equals(myFile.getParentId(), parentId))
+			.toList()
+		);
 	}
 }

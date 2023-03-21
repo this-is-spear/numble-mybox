@@ -18,21 +18,27 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hello.numblemybox.SpringBootTemplate;
+import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
+import hello.numblemybox.mybox.infra.FolderMyBoxMongoRepository;
 
 class AcceptanceTemplate extends SpringBootTemplate {
-
+	private static final String ADMIN = "rjsckdd12@gmail.com";
 	@Autowired
 	protected ObjectMapper OBJECT_MAPPER;
 	@Autowired
 	protected WebTestClient webTestClient;
 	@Autowired
-	protected FileMyBoxMongoRepository myBoxRepository;
+	protected FileMyBoxMongoRepository fileMyBoxMongoRepository;
+	@Autowired
+	protected FolderMyBoxMongoRepository folderMyBoxRepository;
 
 	@BeforeEach
 	void setUp() throws IOException {
 		deleteFiles();
-		myBoxRepository.deleteAll().subscribe();
+		fileMyBoxMongoRepository.deleteAll().subscribe();
+		folderMyBoxRepository.deleteAll().subscribe();
+		folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", ADMIN)).subscribe();
 	}
 
 	@AfterAll

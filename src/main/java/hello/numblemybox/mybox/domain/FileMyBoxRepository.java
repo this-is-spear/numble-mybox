@@ -11,7 +11,7 @@ public interface FileMyBoxRepository {
 	 * @param entity 파일 메타데이터
 	 * @return 파일 메타데이터
 	 */
-	Mono<MyFile> insert(MyFile entity);
+	Mono<MyFile> save(MyFile entity);
 
 	/**
 	 * 파일의 이름을 이용해 파일 메타데이터를 조회합니다. 파일 이름에 맞는 메타데이터가 없는 경우, null 을 Mono 로 래핑해서 반환합니다.
@@ -35,4 +35,12 @@ public interface FileMyBoxRepository {
 	 * @return 파일의 메티데이터
 	 */
 	Mono<MyFile> findById(String id);
+
+	/**
+	 * 상위 폴더 정보를 이용해 하위 파일 정보를 조회한다.
+	 *
+	 * @param parentId 상위 폴더의 식별자
+	 * @return 하위 파일 리스트
+	 */
+	Flux<MyFile> findByParentId(String parentId);
 }

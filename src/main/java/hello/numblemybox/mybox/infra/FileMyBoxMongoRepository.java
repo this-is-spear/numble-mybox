@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 public interface FileMyBoxMongoRepository extends ReactiveMongoRepository<MyFile, String>, FileMyBoxRepository {
 
 	@Override
-	Mono<MyFile> insert(MyFile entity);
+	Mono<MyFile> save(MyFile entity);
 
 	@Override
 	Mono<MyFile> findByName(String name);
@@ -25,4 +25,6 @@ public interface FileMyBoxMongoRepository extends ReactiveMongoRepository<MyFile
 
 	@Override
 	Mono<MyFile> findById(String id);
+
+	Flux<MyFile> findByParentId(String parentId);
 }

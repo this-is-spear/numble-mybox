@@ -31,11 +31,20 @@ public interface FolderMyBoxRepository {
 	 * @param entity 식별자가 없는 MyObject
 	 * @return 식별자가 있는 MyObject
 	 */
-	Mono<MyFolder> insert(MyFolder entity);
+	Mono<MyFolder> save(MyFolder entity);
 
 	/**
 	 * 전체 폴더를 조회합니다.
+	 *
 	 * @return 전체 폴더 리스트
 	 */
 	Flux<MyFolder> findAll();
+
+	/**
+	 * 상위 폴더 정보를 이용해 하위 폴더 정보를 조회한다.
+	 *
+	 * @param parentId 상위 폴더의 식별자
+	 * @return 하위 폴더 리스트
+	 */
+	Flux<MyFolder> findByParentId(String parentId);
 }

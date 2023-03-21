@@ -1,15 +1,9 @@
 package hello.numblemybox.mybox.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import hello.numblemybox.mybox.exception.DuplicateObjectException;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
-import hello.numblemybox.mybox.exception.InvalidObjectException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,75 +30,27 @@ public final class MyFolder {
 	@ToString.Include
 	private ObjectType type;
 	@ToString.Include
-	private List<MyFile> files;
-	@ToString.Include
-	private List<MyFolder> children;
+	private String parentId;
 
-	public MyFolder(String id, String name, String username, ObjectType type, List<MyFolder> children,
-		List<MyFile> files) {
+	public MyFolder(String id, String name, String username, ObjectType type, String parentId) {
 		ensureName(name);
 		this.id = id;
 		this.name = name;
 		this.username = username;
 		this.type = type;
-		this.children = children;
-		this.files = files;
+		this.parentId = parentId;
 	}
 
-	public MyFolder(String id, String name, String username) {
-		this(id, name, username, ObjectType.FOLDER, new ArrayList<>(), new ArrayList<>());
-	}
-
-	public static MyFolder createFolder(String id, String name, String username) {
-		return new MyFolder(id, name, username, ObjectType.FOLDER, new ArrayList<>(), new ArrayList<>());
+	public static MyFolder createFolder(String id, String name, String username, String parentId) {
+		return new MyFolder(id, name, username, ObjectType.FOLDER, parentId);
 	}
 
 	public static MyFolder createRootFolder(String id, String name, String username) {
-		return new MyFolder(id, name, username, ObjectType.ROOT, new ArrayList<>(), new ArrayList<>());
+		return new MyFolder(id, name, username, ObjectType.ROOT, null);
 	}
 
-	public List<MyFolder> getChildren() {
-		return new ArrayList<>(children);
-	}
-
-	public List<MyFile> getFiles() {
-		return new ArrayList<>(files);
-	}
-
-	public void addMyObject(MyFile myFile) {
-		final var id = myFile.getId();
-		ensureIdIsNull(id);
-		if (this.files.contains(myFile)) {
-			throw new DuplicateObjectException();
-		}
-		files.add(myFile);
-	}
-
-	public void addMyObject(MyFolder myFolder) {
-		final var id = myFolder.getId();
-		ensureIdIsNull(id);
-		if (this.children.contains(myFolder)) {
-			throw new DuplicateObjectException();
-		}
-		children.add(myFolder);
-	}
-
-	public void removeMyObject(MyFile myFile) {
-		final var id = myFile.getId();
-		ensureIdIsNull(id);
-		files.remove(myFile);
-	}
-
-	public void removeMyObject(MyFolder myFolder) {
-		final var id = myFolder.getId();
-		ensureIdIsNull(id);
-		children.remove(myFolder);
-	}
-
-	private void ensureIdIsNull(String id) {
-		if (id == null || id.isBlank()) {
-			throw new InvalidObjectException();
-		}
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	private void ensureName(String filename) {

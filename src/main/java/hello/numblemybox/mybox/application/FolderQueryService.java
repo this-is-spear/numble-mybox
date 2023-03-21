@@ -1,15 +1,13 @@
 package hello.numblemybox.mybox.application;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FolderResponse;
-import hello.numblemybox.mybox.dto.MyObjectResponse;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -17,28 +15,24 @@ import reactor.core.publisher.Mono;
 public class FolderQueryService {
 
 	private static final String ADMIN = "rjsckdd12@gmail.com";
-	private final FolderMyBoxRepository myBoxMongoRepository;
+	private final FolderMyBoxRepository folderMyBoxRepository;
 
 	public Mono<FolderResponse> findFolder(String folderId) {
-		return myBoxMongoRepository.findById(folderId)
-			.flatMap(myObject -> Mono.just((MyFolder)myObject))
-			.flatMap(myFolder -> Mono.just(getFolderResponse(myFolder)));
+		return folderMyBoxRepository.findById(folderId)
+			.flatMap(this::getFolderResponse);
 	}
 
 	public Mono<FolderResponse> findRootFolder() {
 		return getRootFolder(ADMIN)
-			.flatMap(myFolder ->
-				Mono.just(getFolderResponse(myFolder)));
+			.flatMap(this::getFolderResponse);
 	}
 
-	private FolderResponse getFolderResponse(MyFolder myFolder) {
-		return new FolderResponse(myFolder.getId(), myFolder.getName(), myFolder.getType(),
-			myFolder.getChildren().stream().map(
-				f -> new MyObjectResponse(f.getId(), f.getName(), f.getType())
-			).collect(Collectors.toList()));
+	private Mono<FolderResponse> getFolderResponse(MyFolder myFolder) {
+		return Mono.just(new FolderResponse(myFolder.getId(), myFolder.getName(),
+			myFolder.getType()));
 	}
 
 	private Mono<MyFolder> getRootFolder(String username) {
-		return myBoxMongoRepository.findByTypeAndUsername(ObjectType.ROOT, username);
+		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, username);
 	}
 }

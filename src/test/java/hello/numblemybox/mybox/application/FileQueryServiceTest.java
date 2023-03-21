@@ -19,8 +19,8 @@ class FileQueryServiceTest {
 		이미지_파일.getFilename(),
 		ObjectType.FILE,
 		이미지_파일.getExtension(),
-		이미지_파일.getSize()
-	);
+		이미지_파일.getSize(),
+		이미지_파일.getPath());
 
 	private FileQueryService fileQueryService;
 	private FileMyBoxRepository myBoxRepository;
@@ -28,8 +28,8 @@ class FileQueryServiceTest {
 	@BeforeEach
 	void setUp() {
 		myBoxRepository = new FakeFileMyBoxRepository();
-		myBoxRepository.insert(이미지_파일).subscribe();
-		myBoxRepository.insert(텍스트_파일).subscribe();
+		myBoxRepository.save(이미지_파일).subscribe();
+		myBoxRepository.save(텍스트_파일).subscribe();
 		fileQueryService = new FileQueryService(myBoxRepository);
 	}
 

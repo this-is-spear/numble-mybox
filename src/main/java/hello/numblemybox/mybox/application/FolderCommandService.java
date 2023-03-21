@@ -6,10 +6,9 @@ import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
-import hello.numblemybox.mybox.domain.ObjectType;
 import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
@@ -28,25 +27,18 @@ public class FolderCommandService {
 	 * @param myFileFlux 파일 메타데이터 정보 스트림
 	 * @return void
 	 */
-	public Mono<Void> addFileInFolder(String folderId, Flux<MyFile> myFileFlux) {
+	public Mono<Void> addFileInFolder(String folderId, Mono<MyFile> myFileFlux) {
 		return myFileFlux.flatMap(
 			myFile -> {
-				var getParent = folderMyBoxRepository.findById(folderId);
-				var ensureDuplicate = getParent.flatMap(parent -> {
-					var names = parent.getFiles().stream().map(MyFile::getFilename).toList();
-					if (names.contains(myFile.getFilename())) {
-						return Mono.error(IllegalArgumentException::new);
+				var ensureFilename = fileMyBoxRepository.findByParentId(folderId).flatMap(myFolder -> {
+					if (myFolder.getName().equals(myFile.getFilename())) {
+						return Mono.error(new IllegalArgumentException());
 					}
 					return Mono.empty();
 				}).then();
-
-				var insertFile = getParent.flatMap(parent -> fileMyBoxRepository.insert(myFile)
-					.flatMap(file -> {
-						parent.addMyObject(file);
-						return Mono.empty();
-					})).then();
-
-				return Mono.when(getParent, ensureDuplicate, insertFile);
+				myFile.addParent(folderId);
+				var insertFile = fileMyBoxRepository.save(myFile);
+				return Mono.when(ensureFilename, insertFile);
 			}).then();
 	}
 
@@ -62,28 +54,18 @@ public class FolderCommandService {
 	 */
 	public Mono<Void> createFolder(String parentId, String foldername) {
 		return folderMyBoxRepository.findById(parentId)
+			.publishOn(Schedulers.boundedElastic())
 			.flatMap(parent -> {
-				var ensureFolder = Mono.justOrEmpty(
-					parent.getChildren()
-						.stream()
-						.filter(myObject -> myObject.getType()
-							.equals(ObjectType.FOLDER))
-						.filter(myObject -> myObject.getName().equals(foldername))
-						.findFirst()).flatMap(foundFolder -> {
-					if (foundFolder != null) {
-						return Mono.error(new IllegalArgumentException("같은 이름의 폴더가 존재합니다."));
+				var ensureFoldername = folderMyBoxRepository.findByParentId(parentId).flatMap(
+					myFolder -> {
+						if (myFolder.getName().equals(foldername)) {
+							return Mono.error(new IllegalArgumentException());
+						}
+						return Mono.empty();
 					}
-					return Mono.empty();
-				});
-
-				var folder = MyFolder.createFolder(null, foldername, ADMIN);
-				var insert = folderMyBoxRepository.insert(folder);
-				var mono = insert.flatMap(myFolder -> {
-					parent.addMyObject(myFolder);
-					return Mono.empty();
-				});
-				var folderMono = folderMyBoxRepository.insert(parent);
-				return Mono.when(ensureFolder, insert, mono, folderMono);
-			});
+				).then();
+				var insertFolder = folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, ADMIN, parentId));
+				return Mono.when(ensureFoldername, insertFolder);
+			}).then();
 	}
 }

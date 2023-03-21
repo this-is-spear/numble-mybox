@@ -22,8 +22,8 @@ class FolderQueryServiceTest {
 
 	@Test
 	void findFolder() {
-		var 일반_폴더 = MyFolder.createFolder(null, "folder", "rjsckdd12@gmail.com");
-		mongoRepository.insert(일반_폴더)
+		var 일반_폴더 = MyFolder.createFolder(null, "folder", "rjsckdd12@gmail.com", "123");
+		mongoRepository.save(일반_폴더)
 			.map(myFolder ->
 				create(folderQueryService.findFolder(myFolder.getId()))
 					.expectNextCount(1)
@@ -35,7 +35,7 @@ class FolderQueryServiceTest {
 	@Test
 	void findRootFolder() {
 		var 루트_폴더 = MyFolder.createRootFolder(null, "root", "rjsckdd12@gmail.com");
-		create(mongoRepository.insert(루트_폴더))
+		create(mongoRepository.save(루트_폴더))
 			.expectNextCount(1)
 			.verifyComplete();
 

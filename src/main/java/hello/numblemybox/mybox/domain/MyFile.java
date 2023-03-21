@@ -43,8 +43,11 @@ public final class MyFile {
 	private Long size;
 	@ToString.Include
 	private String extension;
+	@ToString.Include
+	private String parentId;
 
-	public MyFile(String id, String name, String username, ObjectType type, String path, Long size, String extension) {
+	public MyFile(String id, String name, String username, ObjectType type, String path, Long size, String extension,
+		String parentId) {
 		ensureName(name);
 		ensureSize(size);
 		ensureExtension(extension);
@@ -56,11 +59,16 @@ public final class MyFile {
 		this.path = path;
 		this.size = size;
 		this.extension = extension;
+		this.parentId = parentId;
 	}
 
 	public MyFile(String id, String name, String username, String path, Long size,
 		String extension) {
-		this(id, name, username, ObjectType.FILE, path, size, extension);
+		this(id, name, username, ObjectType.FILE, path, size, extension, null);
+	}
+
+	public void addParent(String parentId) {
+		this.parentId = parentId;
 	}
 
 	private void ensurePath(String path) {

@@ -68,7 +68,7 @@ public class FileDocument {
 	void getOne() {
 		String filename = "test.txt";
 		when(fileQueryService.getFile(filename)).thenReturn(
-			Mono.just(new FileResponse("a1s23df", "test", ObjectType.FILE, "txt", 128L)));
+			Mono.just(new FileResponse("a1s23df", "test", ObjectType.FILE, "txt", 128L, "/Users/...")));
 
 		this.webTestClient.get().uri("/mybox/files/{fileName}", filename)
 			.exchange()
@@ -83,8 +83,8 @@ public class FileDocument {
 	void getAll() {
 		when(fileQueryService.getFiles()).thenReturn(
 			Flux.just(
-				new FileResponse("CMS13fa", "image", ObjectType.FILE, "png", 2_000_000L),
-				new FileResponse("ADM342KD", "profile", ObjectType.FILE, "jpg", 3_000_000L)
+				new FileResponse("CMS13fa", "image", ObjectType.FILE, "png", 2_000_000L, "/Users/..."),
+				new FileResponse("ADM342KD", "profile", ObjectType.FILE, "jpg", 3_000_000L, "/Users/...")
 			)
 		);
 

@@ -16,14 +16,13 @@ public interface FolderMyBoxMongoRepository extends ReactiveMongoRepository<MyFo
 	@Override
 	Mono<MyFolder> findById(Publisher<String> id);
 
-	Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username);
-
-	@Override
-	Mono<MyFolder> insert(MyFolder entity);
-
 	@Override
 	Flux<MyFolder> findAll();
 
 	@Override
-	<S extends MyFolder> Mono<S> save(S entity);
+	Mono<MyFolder> save(MyFolder entity);
+
+	Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username);
+
+	Flux<MyFolder> findByParentId(String parentId);
 }

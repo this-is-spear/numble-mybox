@@ -2,6 +2,7 @@ package hello.numblemybox.fake;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
@@ -31,19 +32,27 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 	}
 
 	@Override
-	public Mono<MyFolder> insert(MyFolder from) {
+	public Mono<MyFolder> save(MyFolder from) {
 		if (from.getId() == null) {
 			var id = UUID.randomUUID().toString();
-			var to = new MyFolder(id, from.getName(), from.getUsername(),
-				from.getType(), from.getChildren(), from.getFiles());
+			var to = new MyFolder(id, from.getName(), from.getUsername(), from.getType(), from.getParentId());
 			map.put(id, to);
 			return Mono.just(to);
 		}
+		map.put(from.getId(), from);
 		return Mono.just(from);
 	}
 
 	@Override
 	public Flux<MyFolder> findAll() {
 		return Flux.fromIterable(map.values());
+	}
+
+	@Override
+	public Flux<MyFolder> findByParentId(String parentId) {
+		return Flux.fromIterable(map.values()
+			.stream()
+			.filter(myFolder -> Objects.equals(myFolder.getParentId(), parentId))
+			.toList());
 	}
 }

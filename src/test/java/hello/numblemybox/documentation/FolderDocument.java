@@ -1,7 +1,5 @@
 package hello.numblemybox.documentation;
 
-import static hello.numblemybox.stubs.FileStubs.*;
-
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -54,11 +51,11 @@ public class FolderDocument {
 	}
 
 	@Test
-	void findFolder() {
+	void findFolderMetadata() {
 		var children = new ArrayList<MyObjectResponse>();
-		children.add(new FolderResponse("929G1242D1", "첫 번째 폴더", ObjectType.FOLDER, new ArrayList<>()));
-		children.add(new FileResponse("193DF1367D", "image.txt", ObjectType.FILE, "txt", 1234L));
-		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER, children);
+		children.add(new FolderResponse("929G1242D1", "첫 번째 폴더", ObjectType.FOLDER));
+		children.add(new FileResponse("193DF1367D", "image.txt", ObjectType.FILE, "txt", 1234L, "/Users/.."));
+		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER);
 
 		String folderId = "13DFSDKI132SD";
 		Mockito.when(folderQueryService.findFolder(folderId))
@@ -76,13 +73,8 @@ public class FolderDocument {
 	}
 
 	@Test
-	void findRootFolder() {
-		var children = new ArrayList<MyObjectResponse>();
-		children.add(new FolderResponse("13SDF1343D1", "첫 번째 폴더", ObjectType.FOLDER, new ArrayList<>()));
-		children.add(new FolderResponse("13SDF1342S2", "두 번째 폴더", ObjectType.FOLDER, new ArrayList<>()));
-		children.add(new FileResponse("13SDF1343D3", "image.txt", ObjectType.FILE, "txt", 1234L));
-		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER, children);
-
+	void findRootFolderMetadata() {
+		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER);
 		Mockito.when(folderQueryService.findRootFolder())
 			.thenReturn(Mono.just(folderResponse));
 

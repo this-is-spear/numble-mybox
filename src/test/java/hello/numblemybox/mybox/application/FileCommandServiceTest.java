@@ -61,7 +61,7 @@ class FileCommandServiceTest {
 	@DisplayName("업로드하려는 파일과 같은 이름의 파일이 이미 저장되어 있으면 예외가 발생한다.")
 	void upload_NotExistFile() throws IOException {
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		myBoxRepository.insert(new MyFile(null, 사진.filename(), ADMIN, 업로드할_사진의_경로.toString(),
+		myBoxRepository.save(new MyFile(null, 사진.filename(), ADMIN, 업로드할_사진의_경로.toString(),
 				사진.headers().getContentLength(), 사진.filename().split("\\.")[1]))
 			.subscribe();
 
@@ -96,7 +96,7 @@ class FileCommandServiceTest {
 		MyFile myFile = new MyFile(null, 업로드할_사진, "rk",
 			테스트할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg");
 
-		myBoxRepository.insert(myFile)
+		myBoxRepository.save(myFile)
 			.subscribe(entity -> create(fileCommandService.downloadFileById(entity.getId()))
 				.expectNextCount(1)
 				.verifyComplete());

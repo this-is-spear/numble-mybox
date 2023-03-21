@@ -50,7 +50,7 @@ public class FileCommandService {
 						path -> Mono.just(
 								new MyFile(null, file.filename(), ADMIN, path,
 									file.headers().getContentLength(), getExtension(file)))
-							.flatMap(myBoxRepository::insert).then()
+							.flatMap(myBoxRepository::save).then()
 					);
 
 					var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
