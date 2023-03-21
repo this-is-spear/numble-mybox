@@ -35,9 +35,7 @@ public class FileMyBoxDocument extends DocumentTemplate {
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
-			.consumeWith(
-				WebTestClientRestDocumentation.document("file/upload")
-			);
+			.consumeWith(WebTestClientRestDocumentation.document("file/upload"));
 	}
 
 	@Test
@@ -57,8 +55,21 @@ public class FileMyBoxDocument extends DocumentTemplate {
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
-			.consumeWith(
-				WebTestClientRestDocumentation.document("file/download")
-			);
+			.consumeWith(WebTestClientRestDocumentation.document("file/download"));
+	}
+
+	@Test
+	void updateFilename() {
+		var parentId = "DK3413KDC2";
+		var fileId = "DFSN13223432DAFK";
+		var filename = "update_filename.txt";
+		this.webTestClient.patch().uri(uriBuilder ->
+				uriBuilder.path("/mybox/folders/{parentId}/update/{fileId}")
+					.queryParam("filename", filename)
+					.build(parentId, fileId))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.consumeWith(WebTestClientRestDocumentation.document("file/update"));
 	}
 }

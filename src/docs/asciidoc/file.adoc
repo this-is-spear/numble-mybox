@@ -37,3 +37,15 @@ include::{snippets}/file/download/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/file/download/http-response.adoc[]
+
+=== Download
+
+파일 이름을 수정한다.
+
+==== HTTP request
+
+include::{snippets}/file/update/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/file/update/http-response.adoc[]

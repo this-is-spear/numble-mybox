@@ -59,4 +59,7 @@ public class FileCommandService {
 			getExtension(file)));
 	}
 
+	public Mono<Void> updateFilename(String folderId, String fileId, String filename) {
+		return null;
+	}
 }
