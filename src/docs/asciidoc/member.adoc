@@ -1,0 +1,68 @@
+= Member Management API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+==== link:index.html[Back]
+
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== Member
+
+=== Register
+
+아이디와 비밀번호를 입력해 회원 정보를 등록한다.
+
+==== HTTP request
+
+include::{snippets}/members/register/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/members/register/http-response.adoc[]
+
+=== Me
+
+회원 정보를 조회한다. 로그인된 사용자만 사용할 수 있다.
+
+==== HTTP request
+
+include::{snippets}/members/me/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/members/me/http-response.adoc[]
+
+=== Login
+
+아이디와 비밀번호를 입력해 로그인한다.
+
+==== HTTP request
+
+include::{snippets}/members/login/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/members/login/http-response.adoc[]
+
+=== Logout
+
+로그아웃한다.
+
+==== HTTP request
+
+include::{snippets}/members/logout/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/members/logout/http-response.adoc[]

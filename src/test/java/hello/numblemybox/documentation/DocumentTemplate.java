@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import hello.numblemybox.member.ui.MemberController;
+import hello.numblemybox.member.application.MemberService;
 import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FolderCommandService;
 import hello.numblemybox.mybox.application.FolderQueryService;
@@ -15,7 +17,10 @@ import hello.numblemybox.mybox.ui.MyBoxController;
 
 @AutoConfigureRestDocs
 @ExtendWith(MockitoExtension.class)
-@WebFluxTest(controllers = MyBoxController.class)
+@WebFluxTest(controllers = {
+	MyBoxController.class,
+	MemberController.class
+})
 public class DocumentTemplate {
 	@Autowired
 	protected WebTestClient webTestClient;
@@ -29,4 +34,6 @@ public class DocumentTemplate {
 	@MockBean
 	protected FolderQueryService folderQueryService;
 
+	@MockBean
+	protected MemberService memberService;
 }
