@@ -65,7 +65,7 @@ public class MyBoxController {
 		@PathVariable String folderId,
 		@RequestParam String foldername
 	) {
-		return folderCommandService.updateFolder(folderId, foldername);
+		return folderCommandService.updateFolder(userInfo, folderId, foldername);
 	}
 
 	/**

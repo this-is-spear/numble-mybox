@@ -1,8 +1,11 @@
 package hello.numblemybox.mybox.application;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -15,7 +18,6 @@ import reactor.core.scheduler.Schedulers;
 @Service
 @RequiredArgsConstructor
 public class FolderCommandService {
-	private final String ADMIN = "rjsckdd12@gmail.com";
 	private final FolderMyBoxRepository folderMyBoxRepository;
 	private final FileMyBoxRepository fileMyBoxRepository;
 
@@ -63,12 +65,19 @@ public class FolderCommandService {
 	/**
 	 * 폴더 이름을 수정한다.
 	 *
+	 * @param userInfo   현재 접속한 사용자의 정보
 	 * @param folderId   수정하려는 폴더의 식별자
 	 * @param foldername 수정할 폴더 이름
 	 * @return 반환값 없음
 	 */
-	public Mono<Void> updateFolder(String folderId, String foldername) {
+	public Mono<Void> updateFolder(UserInfo userInfo, String folderId, String foldername) {
 		return folderMyBoxRepository.findById(folderId)
+			.map(myFolder -> {
+				if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
+					throw InvalidMemberException.invalidUser();
+				}
+				return myFolder;
+			})
 			.map(myFolder -> myFolder.updateName(foldername))
 			.publishOn(Schedulers.boundedElastic())
 			.map(myFolder -> folderMyBoxRepository.save(myFolder).subscribe())

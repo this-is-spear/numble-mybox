@@ -26,13 +26,11 @@ import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import reactor.core.publisher.Mono;
 
 class FolderCommandServiceTest {
-
-	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private FolderCommandService folderCommandService;
 	private FolderMyBoxRepository folderMyBoxRepository;
 	private FileMyBoxRepository fileMyBoxRepository;
 	private MemberRepository memberRepository;
-	public UserInfo 사용자_정보 = new UserInfo("", "rjsckdd12@gmail.com", 30 * 1024 * 1024L);
+	private UserInfo 사용자_정보;
 
 	@BeforeEach
 	void setUp() {
@@ -48,7 +46,7 @@ class FolderCommandServiceTest {
 	@DisplayName("폴더를 생성한다.")
 	void createFolder() {
 		var 폴더_이름 = "newfolder";
-		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
+		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var id = Objects.requireNonNull(root.block()).getId();
 		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
 			.verifyComplete();
@@ -59,15 +57,15 @@ class FolderCommandServiceTest {
 	void updateFoldername() {
 		// given
 		var 폴더_이름 = "newfolder";
-		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN)).block();
+		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id())).block();
 		var 루트_폴더_식별자 = 루트_폴더.getId();
-		var 새로_생성한_폴더 = folderMyBoxRepository.save(new MyFolder(null, 폴더_이름, ADMIN, ObjectType.FOLDER, 루트_폴더_식별자))
+		var 새로_생성한_폴더 = folderMyBoxRepository.save(new MyFolder(null, 폴더_이름, 사용자_정보.id(), ObjectType.FOLDER, 루트_폴더_식별자))
 			.block();
 		var 생성한_폴더_식별자 = 새로_생성한_폴더.getId();
 
 		// when
 		String 수정할_이름 = "update name";
-		create(folderCommandService.updateFolder(생성한_폴더_식별자, 수정할_이름))
+		create(folderCommandService.updateFolder(사용자_정보, 생성한_폴더_식별자, 수정할_이름))
 			.verifyComplete();
 
 		// then
@@ -80,35 +78,36 @@ class FolderCommandServiceTest {
 	void updateFoldername_noRoot() {
 		// given
 		String 수정할_이름 = "update name";
-		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
+		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var 루트_폴더_식별자 = Objects.requireNonNull(루트_폴더.block()).getId();
 
 		// then & then
-		create(folderCommandService.updateFolder(루트_폴더_식별자, 수정할_이름))
+		create(folderCommandService.updateFolder(사용자_정보, 루트_폴더_식별자, 수정할_이름))
 			.verifyError(IllegalArgumentException.class);
 	}
 
 	@ParameterizedTest
 	@NullAndEmptySource
+	@DisplayName("폴더이름을 수정할 때, 수정하려는 폴더 이름이 비어있으면 예외가 발생한다.")
 	void updateFoldername_noEmpty(String 비어있는_이름) {
 		// given
 		var 폴더_이름 = "newfolder";
-		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
+		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var 루트_폴더_식별자 = Objects.requireNonNull(루트_폴더.block()).getId();
-		var 새로_생성한_폴더 = folderMyBoxRepository.save(new MyFolder(null, 폴더_이름, ADMIN, ObjectType.FOLDER, 루트_폴더_식별자))
+		var 새로_생성한_폴더 = folderMyBoxRepository.save(new MyFolder(null, 폴더_이름, 사용자_정보.id(), ObjectType.FOLDER, 루트_폴더_식별자))
 			.block();
 		var 생성한_폴더_식별자 = 새로_생성한_폴더.getId();
 
 		// then & then
-		create(folderCommandService.updateFolder(생성한_폴더_식별자, 비어있는_이름))
+		create(folderCommandService.updateFolder(사용자_정보, 생성한_폴더_식별자, 비어있는_이름))
 			.verifyError(RuntimeException.class);
 	}
 
 	@Test
 	@DisplayName("파일 메타데이터를 저장한다.")
 	void addFileInFolder() {
-		var 두_번째_파일 = new MyFile(null, "text.txt", ADMIN, "./src/...", 1024 * 1024 * 5L, "txt");
-		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
+		var 두_번째_파일 = new MyFile(null, "text.txt", 사용자_정보.id(), "./src/...", 1024 * 1024 * 5L, "txt");
+		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var id = Objects.requireNonNull(root.block()).getId();
 		create(folderCommandService.addFileInFolder(id, Mono.just(두_번째_파일)))
 			.verifyComplete();
@@ -118,7 +117,7 @@ class FolderCommandServiceTest {
 	@DisplayName("폴더를 생성할 때 같은 이름의 폴더를 생성할 수 없다.")
 	void createFolder_notDuplicateFilename() {
 		var 폴더_이름 = "newfolder";
-		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
+		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var id = Objects.requireNonNull(root.block()).getId();
 		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
 			.verifyComplete();
@@ -130,9 +129,9 @@ class FolderCommandServiceTest {
 	@Test
 	@DisplayName("파일 메타데이터 이름이 중복이면 예외가 발생한다.")
 	void addFileInFolder_notDuplicateName() {
-		var 첫_번째_파일 = new MyFile(null, "image.png", ADMIN, "./src/...", 1024 * 1024 * 5L, "png");
-		var 두_번째_파일 = new MyFile(null, "image.png", ADMIN, "./src/...", 1024 * 1024 * 5L, "png");
-		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
+		var 첫_번째_파일 = new MyFile(null, "image.png", 사용자_정보.id(), "./src/...", 1024 * 1024 * 5L, "png");
+		var 두_번째_파일 = new MyFile(null, "image.png", 사용자_정보.id(), "./src/...", 1024 * 1024 * 5L, "png");
+		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var id = Objects.requireNonNull(root.block()).getId();
 		create(folderCommandService.addFileInFolder(id, Mono.just(첫_번째_파일)))
 			.verifyComplete();
