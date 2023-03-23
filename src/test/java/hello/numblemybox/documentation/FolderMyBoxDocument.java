@@ -133,7 +133,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 		var 텍스트_파일 = new FileResponse("13DFSDKI132SD", "text.txt", ObjectType.FILE, "txt", 1024 * 1024 * 10L,
 			"/Users/...");
 
-		when(folderQueryService.findFilesInRoot())
+		when(folderQueryService.findFilesInRoot(사용자_정보))
 			.thenReturn(Flux.just(이미지_파일, 텍스트_파일));
 
 		webTestClient.get()
