@@ -22,7 +22,12 @@ public interface FolderMyBoxMongoRepository extends ReactiveMongoRepository<MyFo
 	@Override
 	Mono<MyFolder> save(MyFolder entity);
 
+	@Override
 	Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username);
 
+	@Override
 	Flux<MyFolder> findByParentId(String parentId);
+
+	@Override
+	Mono<MyFolder> findByParentIdAndName(String parentId, String name);
 }

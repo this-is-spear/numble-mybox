@@ -54,20 +54,11 @@ public class FolderCommandService {
 	 * @return void
 	 */
 	public Mono<Void> createFolder(String parentId, String foldername) {
-		return folderMyBoxRepository.findById(parentId)
-			.publishOn(Schedulers.boundedElastic())
-			.flatMap(parent -> {
-				var ensureFoldername = folderMyBoxRepository.findByParentId(parentId).flatMap(
-					myFolder -> {
-						if (myFolder.getName().equals(foldername)) {
-							return Mono.error(new IllegalArgumentException("이름이 같을 수 없습니다."));
-						}
-						return Mono.empty();
-					}
-				).then();
-				var insertFolder = folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, ADMIN, parentId));
-				return Mono.when(ensureFoldername, insertFolder);
-			}).then();
+		return folderMyBoxRepository.findByParentIdAndName(parentId, foldername)
+			.map(myFolder -> {
+				throw new IllegalArgumentException("같은 이름의 폴더가 있습니다.");
+			}).switchIfEmpty(folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, ADMIN, parentId)))
+			.then();
 	}
 
 	/**

@@ -29,7 +29,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	void 폴더_이름을_수정한다() throws IOException {
 		// given
 		var 새로운_폴더이름 = "수정하려는_폴더_이름";
-		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		var 두_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
 		var 새로운_폴더_식별자 = getFolderId(두_번째_루트_폴더_조회, 새로운_폴더이름);
@@ -53,8 +52,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	void 폴더_내용을_확인한다() throws IOException {
 		// given
 		var 새로운_폴더이름 = "폴더_이름";
-		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
-
 		// when
 		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		// then
@@ -72,7 +69,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		// given
 		var 새로운_폴더이름 = "폴더_친구";
 		var 파일이름 = 그냥_문장;
-		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		var 새로운_폴더_식별자 = getFolderId(폴더_리스트_조회_요청(루트_식별자), 새로운_폴더이름);
 
@@ -104,7 +100,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		// given
 		var 새로운_폴더이름 = "새로운_폴더";
 		var 파일이름 = 인사_문장;
-		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		var 첫_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);
 		var 새로운_폴더_식별자 = getFolderId(첫_번째_루트_폴더_조회, 새로운_폴더이름);
@@ -128,7 +123,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		// given
 		var 새로운_폴더이름 = "또또또_새로운_폴더";
 		var 파일이름 = 끝맺음_문장;
-		var 루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 
 		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		var 첫_번째_루트_폴더_조회 = 폴더_리스트_조회_요청(루트_식별자);

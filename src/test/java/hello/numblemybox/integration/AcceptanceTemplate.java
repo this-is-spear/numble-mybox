@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.time.Duration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
 import hello.numblemybox.mybox.infra.FolderMyBoxMongoRepository;
 
 class AcceptanceTemplate extends SpringBootTemplate {
+	protected String 루트_식별자;
 	protected static final MemberRequest 사용자의_정보 = new MemberRequest("email@email.com", "password");
 	private static final String SESSION_KEY = "LOGIN_MEMBER";
 	private static final UserInfo 사용자 = new UserInfo(null, 사용자의_정보.username(), 1024 * 1024 * 1024 * 3L);
@@ -45,10 +47,14 @@ class AcceptanceTemplate extends SpringBootTemplate {
 
 	@BeforeEach
 	void setUp() throws IOException {
+		webTestClient = webTestClient
+			.mutate()
+			.responseTimeout(Duration.ofMillis(60000))
+			.build();
 		deleteFiles();
 		fileMyBoxMongoRepository.deleteAll().subscribe();
 		folderMyBoxRepository.deleteAll().subscribe();
-		folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", ADMIN)).subscribe();
+		루트_식별자 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", ADMIN)).block().getId();
 	}
 
 	@AfterAll

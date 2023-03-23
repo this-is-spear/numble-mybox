@@ -32,7 +32,8 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 	@Override
 	public Mono<Void> uploadFile(Mono<FilePart> file) {
 		return file
-			.flatMap(filePart -> filePart.transferTo(LOCAL_PATH.resolve(filePart.filename())));
+			.flatMap(filePart -> filePart.transferTo(LOCAL_PATH.resolve(filePart.filename())))
+			.then();
 	}
 
 	@Override
