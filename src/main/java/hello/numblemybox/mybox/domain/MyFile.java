@@ -36,7 +36,7 @@ public final class MyFile {
 	private String id;
 	@ToString.Include
 	private String name;
-	private String username;
+	private String userId;
 	private ObjectType type;
 	private String path;
 	@ToString.Include
@@ -46,7 +46,7 @@ public final class MyFile {
 	@ToString.Include
 	private String parentId;
 
-	public MyFile(String id, String name, String username, ObjectType type, String path, Long size, String extension,
+	public MyFile(String id, String name, String userId, ObjectType type, String path, Long size, String extension,
 		String parentId) {
 		ensureName(name);
 		ensureSize(size);
@@ -54,7 +54,7 @@ public final class MyFile {
 		ensurePath(path);
 		this.id = id;
 		this.name = name;
-		this.username = username;
+		this.userId = userId;
 		this.type = type;
 		this.path = path;
 		this.size = size;
@@ -62,9 +62,9 @@ public final class MyFile {
 		this.parentId = parentId;
 	}
 
-	public MyFile(String id, String name, String username, String path, Long size,
+	public MyFile(String id, String name, String userId, String path, Long size,
 		String extension) {
-		this(id, name, username, ObjectType.FILE, path, size, extension, null);
+		this(id, name, userId, ObjectType.FILE, path, size, extension, null);
 	}
 
 	public void addParent(String parentId) {
@@ -112,7 +112,7 @@ public final class MyFile {
 	}
 
 	private MyFile renameFilename(String filename) {
-		return new MyFile(this.getId(), filename, this.getUsername(), this.getType(), this.getPath(),
+		return new MyFile(this.getId(), filename, this.getUserId(), this.getType(), this.getPath(),
 			this.getSize(), this.getExtension(), this.getParentId());
 	}
 }

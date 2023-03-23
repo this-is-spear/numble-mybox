@@ -112,7 +112,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 			"/Users/...");
 
 		var folderId = "13DFSDKI132SD";
-		when(folderQueryService.findFilesInParent(folderId))
+		when(folderQueryService.findFilesInParent(사용자_정보, folderId))
 			.thenReturn(Flux.just(이미지_파일, 텍스트_파일));
 
 		webTestClient.get()

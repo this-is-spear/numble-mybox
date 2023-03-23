@@ -129,7 +129,7 @@ public class MyBoxController {
 		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId
 	) {
-		return folderQueryService.findFilesInParent(folderId);
+		return folderQueryService.findFilesInParent(userInfo, folderId);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class MyBoxController {
 		@PathVariable String folderId,
 		@RequestPart("files") Flux<FilePart> partFlux
 	) {
-		return fileCommandService.upload(folderId, partFlux);
+		return fileCommandService.upload(userInfo, folderId, partFlux);
 	}
 
 	/**

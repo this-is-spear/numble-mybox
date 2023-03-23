@@ -48,8 +48,10 @@ public class FolderQueryService {
 				.flatMap(this::getFolderResponse));
 	}
 
-	public Flux<FileResponse> findFilesInParent(String folderId) {
-		return fileMyBoxRepository.findByParentId(folderId).flatMap(this::getFileResponse);
+	public Flux<FileResponse> findFilesInParent(UserInfo userInfo, String folderId) {
+		return fileMyBoxRepository.findByParentId(folderId)
+			.map(myFile -> ensureMember(userInfo, myFile))
+			.flatMap(this::getFileResponse);
 	}
 
 	public Flux<FileResponse> findFilesInRoot() {
@@ -77,5 +79,12 @@ public class FolderQueryService {
 			throw InvalidMemberException.invalidUser();
 		}
 		return myFolder;
+	}
+
+	private MyFile ensureMember(UserInfo userInfo, MyFile myFile) {
+		if (!Objects.equals(myFile.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFile;
 	}
 }

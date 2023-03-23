@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
@@ -37,10 +38,10 @@ public class FileCommandService {
 		return Mono.zip(fileMono, inputStreamMono).map(this::getLoadedFileResponse);
 	}
 
-	public Mono<Void> upload(String folderId, Flux<FilePart> filePart) {
+	public Mono<Void> upload(UserInfo userInfo, String folderId, Flux<FilePart> filePart) {
 		return filePart
 			.flatMap(file -> {
-				var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path)
+				var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
 						.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, Mono.just(myFile))))
 					.then();
 				var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
@@ -55,8 +56,8 @@ public class FileCommandService {
 			objects.getT1().getExtension());
 	}
 
-	private Mono<MyFile> getMyFile(FilePart file, String path) {
-		return Mono.just(new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+	private Mono<MyFile> getMyFile(FilePart file, String path, UserInfo userInfo) {
+		return Mono.just(new MyFile(null, file.filename(), userInfo.id(), path, file.headers().getContentLength(),
 			getExtension(file)));
 	}
 

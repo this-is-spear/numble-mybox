@@ -27,7 +27,7 @@ public class FileMyBoxDocument extends DocumentTemplate {
 		builder.part("image2.jpg", getFileOne(끝맺음_문장))
 			.header("Content-disposition", "form-data; name=\"files\"; filename=\"image2.jpg\"")
 			.contentType(MediaType.TEXT_PLAIN);
-		when(fileCommandService.upload(any(), any(Flux.class))).thenReturn(Mono.empty());
+		when(fileCommandService.upload(any(), any(), any(Flux.class))).thenReturn(Mono.empty());
 
 		this.webTestClient.post().uri("/mybox/folders/{parentId}/upload", parentId)
 			.contentType(MediaType.MULTIPART_FORM_DATA)
