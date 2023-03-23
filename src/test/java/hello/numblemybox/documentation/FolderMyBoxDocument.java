@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation;
 
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.FolderResponse;
@@ -50,7 +51,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 	@Test
 	void findRootFolderMetadata() {
 		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER);
-		when(folderQueryService.findRootFolder())
+		when(folderQueryService.findRootFolder(any()))
 			.thenReturn(Mono.just(folderResponse));
 
 		webTestClient.get()

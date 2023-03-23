@@ -28,27 +28,27 @@ public final class MyFolder {
 	private String id;
 	@ToString.Include
 	private String name;
-	private String username;
+	private String userId;
 	@ToString.Include
 	private ObjectType type;
 	@ToString.Include
 	private String parentId;
 
-	public MyFolder(String id, String name, String username, ObjectType type, String parentId) {
+	public MyFolder(String id, String name, String userId, ObjectType type, String parentId) {
 		ensureName(name);
 		this.id = id;
 		this.name = name;
-		this.username = username;
+		this.userId = userId;
 		this.type = type;
 		this.parentId = parentId;
 	}
 
-	public static MyFolder createFolder(String id, String name, String username, String parentId) {
-		return new MyFolder(id, name, username, ObjectType.FOLDER, parentId);
+	public static MyFolder createFolder(String id, String name, String userId, String parentId) {
+		return new MyFolder(id, name, userId, ObjectType.FOLDER, parentId);
 	}
 
-	public static MyFolder createRootFolder(String id, String name, String username) {
-		return new MyFolder(id, name, username, ObjectType.ROOT, null);
+	public static MyFolder createRootFolder(String id, String name, String userId) {
+		return new MyFolder(id, name, userId, ObjectType.ROOT, null);
 	}
 
 	public void setId(String id) {
@@ -69,6 +69,6 @@ public final class MyFolder {
 		if (Objects.equals(this.getType(), ObjectType.ROOT)) {
 			throw new IllegalArgumentException("루트 폴더의 이름은 변경할 수 없습니다.");
 		}
-		return new MyFolder(this.getId(), foldername, this.getUsername(), this.getType(), this.getParentId());
+		return new MyFolder(this.getId(), foldername, this.getUserId(), this.getType(), this.getParentId());
 	}
 }

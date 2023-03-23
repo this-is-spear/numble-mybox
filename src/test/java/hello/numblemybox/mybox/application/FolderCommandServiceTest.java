@@ -13,6 +13,10 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import hello.numblemybox.fake.FakeFileMyBoxRepository;
 import hello.numblemybox.fake.FakeFolderMongoRepository;
+import hello.numblemybox.fake.FakeMemberRepository;
+import hello.numblemybox.member.domain.Member;
+import hello.numblemybox.member.domain.MemberRepository;
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -27,12 +31,17 @@ class FolderCommandServiceTest {
 	private FolderCommandService folderCommandService;
 	private FolderMyBoxRepository folderMyBoxRepository;
 	private FileMyBoxRepository fileMyBoxRepository;
+	private MemberRepository memberRepository;
+	public UserInfo 사용자_정보 = new UserInfo("", "rjsckdd12@gmail.com", 30 * 1024 * 1024L);
 
 	@BeforeEach
 	void setUp() {
 		folderMyBoxRepository = new FakeFolderMongoRepository();
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
+		memberRepository = new FakeMemberRepository();
 		folderCommandService = new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository);
+		var 사용자 = memberRepository.insert(Member.createMember("rjsckdd12@gmail.com", "1234")).block();
+		사용자_정보 = new UserInfo(사용자.getId(), 사용자.getUsername(), 사용자.getCapacity());
 	}
 
 	@Test
@@ -41,7 +50,7 @@ class FolderCommandServiceTest {
 		var 폴더_이름 = "newfolder";
 		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
 		var id = Objects.requireNonNull(root.block()).getId();
-		create(folderCommandService.createFolder(id, 폴더_이름))
+		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
 			.verifyComplete();
 	}
 
@@ -111,10 +120,10 @@ class FolderCommandServiceTest {
 		var 폴더_이름 = "newfolder";
 		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", ADMIN));
 		var id = Objects.requireNonNull(root.block()).getId();
-		create(folderCommandService.createFolder(id, 폴더_이름))
+		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
 			.verifyComplete();
 
-		create(folderCommandService.createFolder(id, 폴더_이름))
+		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
 			.verifyError(IllegalArgumentException.class);
 	}
 

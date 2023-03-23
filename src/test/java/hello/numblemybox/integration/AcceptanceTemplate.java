@@ -13,7 +13,6 @@ import java.time.Duration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -21,9 +20,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hello.numblemybox.SpringBootTemplate;
-import hello.numblemybox.member.application.MemberService;
+import hello.numblemybox.member.domain.Member;
 import hello.numblemybox.member.dto.MemberRequest;
 import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.member.infra.MemberMongoRepository;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.dto.FolderResponse;
 import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
@@ -33,7 +33,6 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	protected String 루트_식별자;
 	protected static final MemberRequest 사용자의_정보 = new MemberRequest("email@email.com", "password");
 	private static final String SESSION_KEY = "LOGIN_MEMBER";
-	private static final UserInfo 사용자 = new UserInfo(null, 사용자의_정보.username(), 1024 * 1024 * 1024 * 3L);
 	private static final String SET_COOKIE = "Set-Cookie";
 	private static final String ADMIN = "rjsckdd12@gmail.com";
 	@Autowired
@@ -41,16 +40,20 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	@Autowired
 	protected WebTestClient webTestClient;
 	@Autowired
+	protected MemberMongoRepository memberMongoRepository;
+	@Autowired
 	protected FileMyBoxMongoRepository fileMyBoxMongoRepository;
 	@Autowired
 	protected FolderMyBoxMongoRepository folderMyBoxRepository;
 
 	@BeforeEach
 	void setUp() throws IOException {
-		webTestClient = webTestClient
-			.mutate()
-			.responseTimeout(Duration.ofMillis(60000))
-			.build();
+		var 저장된_사용자 = memberMongoRepository.insert(Member.createMember("alreadyUser@email.com", "1234"))
+			.block();
+		var 사용자_정보 = new UserInfo(저장된_사용자.getId(), 저장된_사용자.getUsername(), 저장된_사용자.getCapacity());
+		webTestClient = webTestClient.mutate()
+			.responseTimeout(Duration.ofMillis(10000)).build()
+			.mutateWith(sessionMutator(sessionBuilder().put(SESSION_KEY, 사용자_정보).build()));
 		deleteFiles();
 		fileMyBoxMongoRepository.deleteAll().subscribe();
 		folderMyBoxRepository.deleteAll().subscribe();
@@ -175,8 +178,7 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	}
 
 	protected WebTestClient.BodyContentSpec 사용자_정보조회_요청() {
-		return webTestClient.mutateWith(sessionMutator(sessionBuilder().put(SESSION_KEY, 사용자).build()))
-			.get().uri("/members/me")
+		return webTestClient.get().uri("/members/me")
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()

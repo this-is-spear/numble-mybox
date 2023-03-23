@@ -2,6 +2,7 @@ package hello.numblemybox.mybox.application;
 
 import org.springframework.stereotype.Service;
 
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -26,8 +27,8 @@ public class FolderQueryService {
 			.flatMap(this::getFolderResponse);
 	}
 
-	public Mono<FolderResponse> findRootFolder() {
-		return getRootFolder(ADMIN)
+	public Mono<FolderResponse> findRootFolder(UserInfo userInfo) {
+		return getRootFolder(userInfo.id())
 			.flatMap(this::getFolderResponse);
 	}
 
@@ -36,7 +37,7 @@ public class FolderQueryService {
 	}
 
 	public Flux<FolderResponse> findFoldersInRoot() {
-		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, ADMIN)
+		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, ADMIN)
 			.flatMapMany(root -> folderMyBoxRepository.findByParentId(root.getId())
 				.flatMap(this::getFolderResponse));
 	}
@@ -46,7 +47,7 @@ public class FolderQueryService {
 	}
 
 	public Flux<FileResponse> findFilesInRoot() {
-		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, ADMIN)
+		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, ADMIN)
 			.flatMapMany(root -> fileMyBoxRepository.findByParentId(root.getId()))
 			.flatMap(this::getFileResponse);
 	}
@@ -61,7 +62,7 @@ public class FolderQueryService {
 			myFolder.getType()));
 	}
 
-	private Mono<MyFolder> getRootFolder(String username) {
-		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, username);
+	private Mono<MyFolder> getRootFolder(String userId) {
+		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, userId);
 	}
 }

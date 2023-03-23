@@ -2,6 +2,7 @@ package hello.numblemybox.mybox.application;
 
 import org.springframework.stereotype.Service;
 
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -45,15 +46,17 @@ public class FolderCommandService {
 	 * 3. 폴더를 생성해 데아터베이스에 저장한다.
 	 * 4. 상위 폴더에 연관관계 매핑 후 상위 폴더를 업데이트한다.
 	 *
+	 * @param userInfo   사용하는 사용자
 	 * @param parentId   상위 폴더 ID
 	 * @param foldername 생성하려는 폴더 이름
 	 * @return void
 	 */
-	public Mono<Void> createFolder(String parentId, String foldername) {
+	public Mono<Void> createFolder(UserInfo userInfo, String parentId, String foldername) {
 		return folderMyBoxRepository.findByParentIdAndName(parentId, foldername)
 			.map(myFolder -> {
 				throw new IllegalArgumentException("같은 이름의 폴더가 있습니다.");
-			}).switchIfEmpty(folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, ADMIN, parentId)))
+			})
+			.switchIfEmpty(folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, userInfo.id(), parentId)))
 			.then();
 	}
 

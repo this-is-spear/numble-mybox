@@ -1,5 +1,7 @@
 package hello.numblemybox.mybox.ui;
 
+import static hello.numblemybox.AuthenticationConfigurer.*;
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.application.FileCommandService;
 import hello.numblemybox.mybox.application.FolderCommandService;
 import hello.numblemybox.mybox.application.FolderQueryService;
@@ -41,10 +45,11 @@ public class MyBoxController {
 	 */
 	@PostMapping("/{parentId}")
 	public Mono<Void> createFolder(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String parentId,
 		@RequestParam String foldername
 	) {
-		return folderCommandService.createFolder(parentId, foldername);
+		return folderCommandService.createFolder(userInfo, parentId, foldername);
 	}
 
 	/**
@@ -56,6 +61,7 @@ public class MyBoxController {
 	 */
 	@PatchMapping("/{folderId}")
 	public Mono<Void> updateFolder(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId,
 		@RequestParam String foldername
 	) {
@@ -73,6 +79,7 @@ public class MyBoxController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Mono<FolderResponse> findFolderMetadata(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId
 	) {
 		return folderQueryService.findFolder(folderId);
@@ -87,8 +94,8 @@ public class MyBoxController {
 		value = "/root",
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	public Mono<FolderResponse> findRootFolderMetadata() {
-		return folderQueryService.findRootFolder();
+	public Mono<FolderResponse> findRootFolderMetadata(@SessionAttribute(SESSION_KEY) UserInfo userInfo) {
+		return folderQueryService.findRootFolder(userInfo);
 	}
 
 	/**
@@ -102,6 +109,7 @@ public class MyBoxController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Flux<FolderResponse> findFoldersInParent(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId
 	) {
 		return folderQueryService.findFoldersInParent(folderId);
@@ -118,6 +126,7 @@ public class MyBoxController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Flux<FileResponse> findFilesInParent(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId
 	) {
 		return folderQueryService.findFilesInParent(folderId);
@@ -133,6 +142,7 @@ public class MyBoxController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Flux<FolderResponse> findFoldersInRoot(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo
 	) {
 		return folderQueryService.findFoldersInRoot();
 	}
@@ -147,6 +157,7 @@ public class MyBoxController {
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public Flux<FileResponse> findFilesInRoot(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo
 	) {
 		return folderQueryService.findFilesInRoot();
 	}
@@ -162,6 +173,7 @@ public class MyBoxController {
 		consumes = MediaType.MULTIPART_FORM_DATA_VALUE
 	)
 	public Mono<Void> uploadFilesInFolder(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId,
 		@RequestPart("files") Flux<FilePart> partFlux
 	) {
@@ -179,6 +191,7 @@ public class MyBoxController {
 		produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
 	)
 	public Mono<ResponseEntity<InputStreamResource>> downloadFile(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId,
 		@PathVariable String fileId
 	) {
@@ -201,6 +214,7 @@ public class MyBoxController {
 	 */
 	@PatchMapping("/{folderId}/update/{fileId}")
 	public Mono<Void> updateFilename(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId,
 		@PathVariable String fileId,
 		@RequestParam String filename

@@ -24,10 +24,10 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 	}
 
 	@Override
-	public Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username) {
+	public Mono<MyFolder> findByTypeAndUserId(ObjectType type, String userId) {
 		return Mono.justOrEmpty(map.values().stream()
-			.filter(myObject -> myObject.getType().equals(ObjectType.ROOT))
-			.filter(myObject -> myObject.getUsername().equals(username))
+			.filter(myObject -> myObject.getType().equals(type))
+			.filter(myObject -> myObject.getUserId().equals(userId))
 			.findFirst());
 	}
 
@@ -35,7 +35,7 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 	public Mono<MyFolder> save(MyFolder from) {
 		if (from.getId() == null) {
 			var id = UUID.randomUUID().toString();
-			var to = new MyFolder(id, from.getName(), from.getUsername(), from.getType(), from.getParentId());
+			var to = new MyFolder(id, from.getName(), from.getUserId(), from.getType(), from.getParentId());
 			map.put(id, to);
 			return Mono.just(to);
 		}
