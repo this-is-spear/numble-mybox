@@ -30,7 +30,6 @@ import hello.numblemybox.mybox.infra.FolderMyBoxMongoRepository;
 
 class AcceptanceTemplate extends SpringBootTemplate {
 	protected static final MemberRequest 사용자의_정보 = new MemberRequest("email@email.com", "password");
-	protected String 루트_식별자;
 	private static final String SESSION_KEY = "LOGIN_MEMBER";
 	private static final UserInfo 사용자 = new UserInfo(null, 사용자의_정보.username(), 1024 * 1024 * 1024 * 3L);
 	private static final String SET_COOKIE = "Set-Cookie";
@@ -50,7 +49,6 @@ class AcceptanceTemplate extends SpringBootTemplate {
 		fileMyBoxMongoRepository.deleteAll().subscribe();
 		folderMyBoxRepository.deleteAll().subscribe();
 		folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", ADMIN)).subscribe();
-		루트_식별자 = getRootId(루트_폴더_메타데이터_조회_요청());
 	}
 
 	@AfterAll
@@ -68,47 +66,6 @@ class AcceptanceTemplate extends SpringBootTemplate {
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody();
-	}
-
-	protected WebTestClient.BodyContentSpec 파일_조회_요청(String filename) {
-		return webTestClient.get().uri("/mybox/files/{filename}", filename)
-			.accept(MediaType.APPLICATION_JSON)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody();
-	}
-
-	protected WebTestClient.BodyContentSpec 파일_조회_요청() {
-		return webTestClient.get().uri("/mybox/files")
-			.accept(MediaType.APPLICATION_JSON)
-			.exchange()
-			.expectStatus().isOk()
-			.expectBody();
-	}
-
-	protected WebTestClient.ResponseSpec 파일_업로드_요청(String... filenames) {
-		final var builder = new MultipartBodyBuilder();
-		final var requestPartName = "files";
-
-		for (String filename : filenames) {
-			builder.part("image", getFileOne(filename))
-				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, filename))
-				.contentType(MediaType.TEXT_PLAIN);
-		}
-
-		if (filenames.length == 0) {
-			builder.part("text", getFileOne(끝맺음_문장))
-				.header("Content-disposition",
-					String.format("form-data; name=\"%s\"; filename=\"%s\"", requestPartName, 끝맺음_문장))
-				.contentType(MediaType.TEXT_PLAIN);
-		}
-
-		return webTestClient.post().uri("/mybox/upload")
-			.contentType(MediaType.MULTIPART_FORM_DATA)
-			.bodyValue(builder.build())
-			.exchange()
-			.expectStatus().isOk();
 	}
 
 	protected WebTestClient.ResponseSpec 폴더_안_파일_업로드_요청(String parentId, String filename) {
