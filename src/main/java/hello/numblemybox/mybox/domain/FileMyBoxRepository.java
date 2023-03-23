@@ -48,7 +48,7 @@ public interface FileMyBoxRepository {
 	 * 상위 폴더 정보와 파일 이름을 입력해 파일 정보를 조회합니다.
 	 *
 	 * @param parentId 폴더 식별자
-	 * @param name 파일 이름
+	 * @param name     파일 이름
 	 * @return 입력한 정보를 가진 파일
 	 */
 	Mono<MyFile> findByParentIdAndName(String parentId, String name);

@@ -1,6 +1,10 @@
 package hello.numblemybox.member.exception;
 
-public final class InvalidPasswordException extends MemberException{
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public final class InvalidPasswordException extends MemberException {
 	private InvalidPasswordException(String message) {
 		super(message);
 	}

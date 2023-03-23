@@ -16,7 +16,11 @@ import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.fake.FakeFileMyBoxRepository;
 import hello.numblemybox.fake.FakeFolderMongoRepository;
+import hello.numblemybox.fake.FakeMemberRepository;
 import hello.numblemybox.fake.FakeMyBoxStorage;
+import hello.numblemybox.member.domain.Member;
+import hello.numblemybox.member.domain.MemberRepository;
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -29,19 +33,23 @@ import reactor.test.StepVerifier;
 
 class FileCommandServiceTest {
 
-	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private FileCommandService fileCommandService;
 	private FileMyBoxRepository fileMyBoxRepository;
 	private FolderMyBoxRepository folderMyBoxRepository;
 	private MyBoxStorage myBoxStorage;
-	MyFolder ROOT;
+	private MemberRepository memberRepository;
+	private MyFolder ROOT;
+	private UserInfo 사용자_정보;
 
 	@BeforeEach
 	void setUp() throws IOException {
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(업로드할_사진));
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
 		folderMyBoxRepository = new FakeFolderMongoRepository();
-		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", ADMIN)).block();
+		memberRepository = new FakeMemberRepository();
+		var 사용자 = memberRepository.insert(Member.createMember("rjsckdd12@gmail.com", "1234")).block();
+		사용자_정보 = new UserInfo(사용자.getId(), 사용자.getUsername(), 사용자.getCapacity());
+		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", 사용자_정보.id())).block();
 		myBoxStorage = new FakeMyBoxStorage();
 		fileCommandService = new FileCommandService(myBoxStorage, fileMyBoxRepository,
 			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository));
@@ -58,7 +66,7 @@ class FileCommandServiceTest {
 		// given
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
 		// when
-		create(fileCommandService.upload(ROOT.getId(), Flux.just(사진)))
+		create(fileCommandService.upload(사용자_정보, ROOT.getId(), Flux.just(사진)))
 			.verifyComplete();
 
 		// then
@@ -88,14 +96,14 @@ class FileCommandServiceTest {
 	void downloadFileById() throws IOException {
 		// given
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
-		var myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var myFile = new MyFile(null, 업로드할_사진, 사용자_정보.id(), ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when
 		var file = fileMyBoxRepository.save(myFile).block();
 
 		// then
-		create(fileCommandService.downloadFileById(ROOT.getId(), file.getId()))
+		create(fileCommandService.downloadFileById(사용자_정보, ROOT.getId(), file.getId()))
 			.expectNextCount(1)
 			.verifyComplete();
 	}
@@ -111,7 +119,7 @@ class FileCommandServiceTest {
 		var file = fileMyBoxRepository.save(myFile).block();
 
 		// then
-		create(fileCommandService.downloadFileById(ROOT.getId(), file.getId()))
+		create(fileCommandService.downloadFileById(사용자_정보, ROOT.getId(), file.getId()))
 			.verifyError(RuntimeException.class);
 	}
 
@@ -124,7 +132,7 @@ class FileCommandServiceTest {
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when & then
-		create(fileCommandService.downloadFileById(ROOT.getId(), myFile.getId()))
+		create(fileCommandService.downloadFileById(사용자_정보, ROOT.getId(), myFile.getId()))
 			.verifyComplete();
 	}
 
@@ -133,11 +141,11 @@ class FileCommandServiceTest {
 	void updateFilename() {
 		// given
 		var 폴더_식별자 = ROOT.getId();
-		var 파일_식별자 = fileMyBoxRepository.save(new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var 파일_식별자 = fileMyBoxRepository.save(new MyFile(null, 업로드할_사진, 사용자_정보.id(), ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", 폴더_식별자)).block().getId();
 
 		// then & then
 		String 새로운_파일_이름 = "newFile.txt";
-		create(fileCommandService.updateFilename(폴더_식별자, 파일_식별자, 새로운_파일_이름)).verifyComplete();
+		create(fileCommandService.updateFilename(사용자_정보, 폴더_식별자, 파일_식별자, 새로운_파일_이름)).verifyComplete();
 	}
 }

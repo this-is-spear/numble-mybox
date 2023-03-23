@@ -20,7 +20,7 @@ class MyFileTest {
 	private static final String 파일_식별자 = "id";
 	private static final String 파일_이름 = "filename.jpg";
 	private static final String 저장된_경로 = FileStubs.업로드할_사진의_경로.toString();
-	private static final String 파일_주인_식별자 = "rjsckdd12@gmail.com";
+	private static final String 파일_주인_식별자 = "123FDF343";
 	private static final long 파일_크기 = 123L;
 	private static final String 파일_확장자 = "image/jpeg";
 
@@ -34,7 +34,7 @@ class MyFileTest {
 		assertAll(
 			() -> assertThat(file.getId()).isEqualTo(파일_식별자),
 			() -> assertThat(file.getFilename()).isEqualTo(파일_이름),
-			() -> assertThat(file.getUsername()).isEqualTo(파일_주인_식별자),
+			() -> assertThat(file.getUserId()).isEqualTo(파일_주인_식별자),
 			() -> assertThat(file.getSize()).isEqualTo(파일_크기),
 			() -> assertThat(file.getExtension()).isEqualTo(파일_확장자)
 		);

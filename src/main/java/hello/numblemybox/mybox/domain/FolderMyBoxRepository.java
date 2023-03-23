@@ -23,7 +23,7 @@ public interface FolderMyBoxRepository {
 	 * @param username MyFolder 의 주인
 	 * @return MyFolder
 	 */
-	Mono<MyFolder> findByTypeAndUsername(ObjectType type, String username);
+	Mono<MyFolder> findByTypeAndUserId(ObjectType type, String userId);
 
 	/**
 	 * MyFolder 를 저장합니다. MyFolder 는 폴더거나 파일입니다.
@@ -50,8 +50,9 @@ public interface FolderMyBoxRepository {
 
 	/**
 	 * 폴더 내부에 해당 이름의 파일을 조회한다.
+	 *
 	 * @param parentId 폴더의 식별자
-	 * @param name 폴더 이름
+	 * @param name     폴더 이름
 	 * @return
 	 */
 	Mono<MyFolder> findByParentIdAndName(String parentId, String name);

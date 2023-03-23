@@ -6,8 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import hello.numblemybox.mybox.domain.MyFile;
-
 public final class FileStubs {
 
 	public static final String 그냥_문장 = "test-text3.txt";

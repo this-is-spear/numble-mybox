@@ -1,7 +1,11 @@
 package hello.numblemybox.mybox.application;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
+import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -21,32 +25,39 @@ public class FolderQueryService {
 	private final FolderMyBoxRepository folderMyBoxRepository;
 	private final FileMyBoxRepository fileMyBoxRepository;
 
-	public Mono<FolderResponse> findFolder(String folderId) {
+	public Mono<FolderResponse> findFolder(UserInfo userInfo, String folderId) {
 		return folderMyBoxRepository.findById(folderId)
+			.map(myFolder -> ensureMember(userInfo, myFolder))
 			.flatMap(this::getFolderResponse);
 	}
 
-	public Mono<FolderResponse> findRootFolder() {
-		return getRootFolder(ADMIN)
+	public Mono<FolderResponse> findRootFolder(UserInfo userInfo) {
+		return getRootFolder(userInfo.id())
 			.flatMap(this::getFolderResponse);
 	}
 
-	public Flux<FolderResponse> findFoldersInParent(String folderId) {
-		return folderMyBoxRepository.findByParentId(folderId).flatMap(this::getFolderResponse);
+	public Flux<FolderResponse> findFoldersInParent(UserInfo userInfo, String folderId) {
+		return folderMyBoxRepository.findByParentId(folderId)
+			.map(myFolder -> ensureMember(userInfo, myFolder))
+			.flatMap(this::getFolderResponse);
 	}
 
-	public Flux<FolderResponse> findFoldersInRoot() {
-		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, ADMIN)
+	public Flux<FolderResponse> findFoldersInRoot(UserInfo userInfo) {
+		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, ADMIN)
+			.map(myFolder -> ensureMember(userInfo, myFolder))
 			.flatMapMany(root -> folderMyBoxRepository.findByParentId(root.getId())
 				.flatMap(this::getFolderResponse));
 	}
 
-	public Flux<FileResponse> findFilesInParent(String folderId) {
-		return fileMyBoxRepository.findByParentId(folderId).flatMap(this::getFileResponse);
+	public Flux<FileResponse> findFilesInParent(UserInfo userInfo, String folderId) {
+		return fileMyBoxRepository.findByParentId(folderId)
+			.map(myFile -> ensureMember(userInfo, myFile))
+			.flatMap(this::getFileResponse);
 	}
 
-	public Flux<FileResponse> findFilesInRoot() {
-		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, ADMIN)
+	public Flux<FileResponse> findFilesInRoot(UserInfo userInfo) {
+		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, ADMIN)
+			.map(myFile -> ensureMember(userInfo, myFile))
 			.flatMapMany(root -> fileMyBoxRepository.findByParentId(root.getId()))
 			.flatMap(this::getFileResponse);
 	}
@@ -61,7 +72,21 @@ public class FolderQueryService {
 			myFolder.getType()));
 	}
 
-	private Mono<MyFolder> getRootFolder(String username) {
-		return folderMyBoxRepository.findByTypeAndUsername(ObjectType.ROOT, username);
+	private Mono<MyFolder> getRootFolder(String userId) {
+		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, userId);
+	}
+
+	private MyFolder ensureMember(UserInfo userInfo, MyFolder myFolder) {
+		if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFolder;
+	}
+
+	private MyFile ensureMember(UserInfo userInfo, MyFile myFile) {
+		if (!Objects.equals(myFile.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFile;
 	}
 }

@@ -27,7 +27,7 @@ public class FileMyBoxDocument extends DocumentTemplate {
 		builder.part("image2.jpg", getFileOne(끝맺음_문장))
 			.header("Content-disposition", "form-data; name=\"files\"; filename=\"image2.jpg\"")
 			.contentType(MediaType.TEXT_PLAIN);
-		when(fileCommandService.upload(any(), any(Flux.class))).thenReturn(Mono.empty());
+		when(fileCommandService.upload(any(), any(), any(Flux.class))).thenReturn(Mono.empty());
 
 		this.webTestClient.post().uri("/mybox/folders/{parentId}/upload", parentId)
 			.contentType(MediaType.MULTIPART_FORM_DATA)
@@ -43,7 +43,7 @@ public class FileMyBoxDocument extends DocumentTemplate {
 		var fileId = "641440b0f4647553d5c7942t";
 		var parentId = "DK3413KDC2";
 
-		when(fileCommandService.downloadFileById(parentId, fileId)).thenReturn(
+		when(fileCommandService.downloadFileById(사용자_정보, parentId, fileId)).thenReturn(
 			Mono.just(new LoadedFileResponse("test.txt",
 				new ByteArrayInputStream("hellloooooo my name is tis".getBytes(StandardCharsets.UTF_8)),
 				MediaType.TEXT_PLAIN_VALUE)

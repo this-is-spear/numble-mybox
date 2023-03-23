@@ -20,7 +20,7 @@ public final class FakeFileMyBoxRepository implements FileMyBoxRepository {
 	public Mono<MyFile> save(MyFile from) {
 		if (from.getId() == null) {
 			var id = UUID.randomUUID().toString();
-			var to = new MyFile(id, from.getFilename(), from.getUsername(), ObjectType.FOLDER,
+			var to = new MyFile(id, from.getFilename(), from.getUserId(), ObjectType.FOLDER,
 				from.getPath(), from.getSize(), from.getExtension(), from.getParentId());
 			map.put(id, to);
 			return Mono.just(to);

@@ -1,5 +1,7 @@
 package hello.numblemybox.member.ui;
 
+import static hello.numblemybox.AuthenticationConfigurer.*;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,6 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
-	private static final String SESSION_KEY = "LOGIN_MEMBER";
 	private final MemberService memberService;
 
 	/**

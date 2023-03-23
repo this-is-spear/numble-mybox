@@ -6,6 +6,8 @@ import java.util.Objects;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
+import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
@@ -21,7 +23,6 @@ import reactor.util.function.Tuple2;
 @Service
 @RequiredArgsConstructor
 public class FileCommandService {
-	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private final MyBoxStorage myBoxStorage;
 	private final FileMyBoxRepository fileMyBoxRepository;
 	private final FolderCommandService folderCommandService;
@@ -30,17 +31,18 @@ public class FileCommandService {
 		return Objects.requireNonNull(file.headers().getContentType()).toString();
 	}
 
-	public Mono<LoadedFileResponse> downloadFileById(String folderId, String fileId) {
-		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId);
+	public Mono<LoadedFileResponse> downloadFileById(UserInfo userInfo, String folderId, String fileId) {
+		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
+			.map(myFile -> ensureMember(userInfo, myFile));
 		var filename = fileMono.map(MyFile::getFilename);
 		var inputStreamMono = myBoxStorage.downloadFile(filename);
 		return Mono.zip(fileMono, inputStreamMono).map(this::getLoadedFileResponse);
 	}
 
-	public Mono<Void> upload(String folderId, Flux<FilePart> filePart) {
+	public Mono<Void> upload(UserInfo userInfo, String folderId, Flux<FilePart> filePart) {
 		return filePart
 			.flatMap(file -> {
-				var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path)
+				var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
 						.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, Mono.just(myFile))))
 					.then();
 				var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
@@ -55,16 +57,24 @@ public class FileCommandService {
 			objects.getT1().getExtension());
 	}
 
-	private Mono<MyFile> getMyFile(FilePart file, String path) {
-		return Mono.just(new MyFile(null, file.filename(), ADMIN, path, file.headers().getContentLength(),
+	private Mono<MyFile> getMyFile(FilePart file, String path, UserInfo userInfo) {
+		return Mono.just(new MyFile(null, file.filename(), userInfo.id(), path, file.headers().getContentLength(),
 			getExtension(file)));
 	}
 
-	public Mono<Void> updateFilename(String folderId, String fileId, String filename) {
+	public Mono<Void> updateFilename(UserInfo userInfo, String folderId, String fileId, String filename) {
 		return fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
 			.publishOn(Schedulers.boundedElastic())
+			.map(myFile -> ensureMember(userInfo, myFile))
 			.map(myFile -> myFile.updateFilename(filename))
 			.map(myFile -> fileMyBoxRepository.save(myFile).subscribe())
 			.then();
+	}
+
+	private MyFile ensureMember(UserInfo userInfo, MyFile myFile) {
+		if (!Objects.equals(myFile.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFile;
 	}
 }

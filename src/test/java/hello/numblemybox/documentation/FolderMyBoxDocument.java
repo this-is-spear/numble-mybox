@@ -33,7 +33,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER);
 
 		var folderId = "13DFSDKI132SD";
-		when(folderQueryService.findFolder(folderId))
+		when(folderQueryService.findFolder(사용자_정보, folderId))
 			.thenReturn(Mono.just(folderResponse));
 
 		webTestClient.get()
@@ -50,7 +50,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 	@Test
 	void findRootFolderMetadata() {
 		var folderResponse = new FolderResponse("13DFSDKI132SD", "root", ObjectType.FOLDER);
-		when(folderQueryService.findRootFolder())
+		when(folderQueryService.findRootFolder(사용자_정보))
 			.thenReturn(Mono.just(folderResponse));
 
 		webTestClient.get()
@@ -70,7 +70,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 		var 제비_폴더 = new FolderResponse("13DFSDKI132SD", "제비", ObjectType.FOLDER);
 
 		var folderId = "13DFSDKI132SD";
-		when(folderQueryService.findFoldersInParent(folderId))
+		when(folderQueryService.findFoldersInParent(사용자_정보, folderId))
 			.thenReturn(Flux.just(참새_폴더, 제비_폴더));
 
 		webTestClient.get()
@@ -90,7 +90,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 		var 제비_폴더 = new FolderResponse("13DFSDKI132SD", "제비", ObjectType.FOLDER);
 		var 족제비_폴더 = new FolderResponse("13DFSDKI132SD", "족제비_폴더", ObjectType.FOLDER);
 
-		when(folderQueryService.findFoldersInRoot())
+		when(folderQueryService.findFoldersInRoot(사용자_정보))
 			.thenReturn(Flux.just(참새_폴더, 제비_폴더, 족제비_폴더));
 
 		webTestClient.get()
@@ -112,7 +112,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 			"/Users/...");
 
 		var folderId = "13DFSDKI132SD";
-		when(folderQueryService.findFilesInParent(folderId))
+		when(folderQueryService.findFilesInParent(사용자_정보, folderId))
 			.thenReturn(Flux.just(이미지_파일, 텍스트_파일));
 
 		webTestClient.get()
@@ -133,7 +133,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 		var 텍스트_파일 = new FileResponse("13DFSDKI132SD", "text.txt", ObjectType.FILE, "txt", 1024 * 1024 * 10L,
 			"/Users/...");
 
-		when(folderQueryService.findFilesInRoot())
+		when(folderQueryService.findFilesInRoot(사용자_정보))
 			.thenReturn(Flux.just(이미지_파일, 텍스트_파일));
 
 		webTestClient.get()
