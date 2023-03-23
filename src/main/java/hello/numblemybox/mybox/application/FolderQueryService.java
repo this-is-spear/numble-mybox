@@ -27,12 +27,7 @@ public class FolderQueryService {
 
 	public Mono<FolderResponse> findFolder(UserInfo userInfo, String folderId) {
 		return folderMyBoxRepository.findById(folderId)
-			.map(myFolder -> {
-				if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
-					throw InvalidMemberException.invalidUser();
-				}
-				return myFolder;
-			})
+			.map(myFolder -> ensureMember(userInfo, myFolder))
 			.flatMap(this::getFolderResponse);
 	}
 
@@ -41,8 +36,10 @@ public class FolderQueryService {
 			.flatMap(this::getFolderResponse);
 	}
 
-	public Flux<FolderResponse> findFoldersInParent(String folderId) {
-		return folderMyBoxRepository.findByParentId(folderId).flatMap(this::getFolderResponse);
+	public Flux<FolderResponse> findFoldersInParent(UserInfo userInfo, String folderId) {
+		return folderMyBoxRepository.findByParentId(folderId)
+			.map(myFolder -> ensureMember(userInfo, myFolder))
+			.flatMap(this::getFolderResponse);
 	}
 
 	public Flux<FolderResponse> findFoldersInRoot() {
@@ -73,5 +70,12 @@ public class FolderQueryService {
 
 	private Mono<MyFolder> getRootFolder(String userId) {
 		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, userId);
+	}
+
+	private MyFolder ensureMember(UserInfo userInfo, MyFolder myFolder) {
+		if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFolder;
 	}
 }
