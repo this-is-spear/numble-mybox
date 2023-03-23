@@ -10,8 +10,12 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
+== Contents
+
 === link:file.html[1.File Management]
 
 === link:folder.html[2.Folder Management]
 
 === link:root.html[3.Root Folder Management]
+
+=== link:member.html[4.Member Management]

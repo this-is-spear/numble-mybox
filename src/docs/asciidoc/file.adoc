@@ -6,11 +6,11 @@
 :toclevels: 2
 :sectlinks:
 
+==== link:index.html[Back]
+
 ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
-
-==== link:index.html[Back]
 
 == File
 

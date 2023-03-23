@@ -33,7 +33,7 @@ public class MyBoxController {
 	private final FolderQueryService folderQueryService;
 
 	/**
-	 * 지정한 폴더에 폴더를 저장합니다.
+	 * 폴더 이름을 입력받아 지정한 폴더에 폴더를 저장합니다.
 	 *
 	 * @param parentId   저장하려는 폴더 식별자
 	 * @param foldername 폴더 이름 : 폴더 이름은 중복일 수 없습니다.
@@ -47,6 +47,13 @@ public class MyBoxController {
 		return folderCommandService.createFolder(parentId, foldername);
 	}
 
+	/**
+	 * 폴더 이름을 입력받아 폴더를 수정합니다.
+	 *
+	 * @param folderId   수정할 폴더의 식별자
+	 * @param foldername 폴더 이름
+	 * @return 반환 값 없음
+	 */
 	@PatchMapping("/{folderId}")
 	public Mono<Void> updateFolder(
 		@PathVariable String folderId,
@@ -184,6 +191,14 @@ public class MyBoxController {
 			);
 	}
 
+	/**
+	 * 파일 이름을 입력받아 파일을 수정합니다.
+	 *
+	 * @param folderId 파일이 저장된 폴더의 식별자
+	 * @param fileId   파일 식별자
+	 * @param filename 파일 이름
+	 * @return 반환값 없음
+	 */
 	@PatchMapping("/{folderId}/update/{fileId}")
 	public Mono<Void> updateFilename(
 		@PathVariable String folderId,

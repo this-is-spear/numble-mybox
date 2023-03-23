@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFolder;
@@ -53,5 +54,22 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 			.stream()
 			.filter(myFolder -> Objects.equals(myFolder.getParentId(), parentId))
 			.toList());
+	}
+
+	@Override
+	public Mono<MyFolder> findByParentIdAndName(String parentId, String foldername) {
+		System.out.println("no");
+		System.out.println(foldername);
+
+		System.out.println(map.values()
+			.stream()
+			.filter(myFolder -> Objects.equals(myFolder.getParentId(), parentId)
+				&& Objects.equals(myFolder.getName(), foldername)).collect(Collectors.toList()));
+
+		return Mono.justOrEmpty(map.values()
+			.stream()
+			.filter(myFolder -> Objects.equals(myFolder.getParentId(), parentId)
+				&& Objects.equals(myFolder.getName(), foldername))
+			.findFirst());
 	}
 }

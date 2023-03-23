@@ -52,7 +52,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 	void 폴더_내용을_확인한다() throws IOException {
 		// given
 		var 새로운_폴더이름 = "폴더_이름";
-
 		// when
 		폴더_생성_요청(루트_식별자, 새로운_폴더이름);
 		// then

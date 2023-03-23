@@ -47,4 +47,12 @@ public interface FolderMyBoxRepository {
 	 * @return 하위 폴더 리스트
 	 */
 	Flux<MyFolder> findByParentId(String parentId);
+
+	/**
+	 * 폴더 내부에 해당 이름의 파일을 조회한다.
+	 * @param parentId 폴더의 식별자
+	 * @param name 폴더 이름
+	 * @return
+	 */
+	Mono<MyFolder> findByParentIdAndName(String parentId, String name);
 }
