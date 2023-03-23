@@ -72,15 +72,17 @@ public class FolderCommandService {
 	 */
 	public Mono<Void> updateFolder(UserInfo userInfo, String folderId, String foldername) {
 		return folderMyBoxRepository.findById(folderId)
-			.map(myFolder -> {
-				if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
-					throw InvalidMemberException.invalidUser();
-				}
-				return myFolder;
-			})
+			.map(myFolder -> ensureMember(userInfo, myFolder))
 			.map(myFolder -> myFolder.updateName(foldername))
 			.publishOn(Schedulers.boundedElastic())
 			.map(myFolder -> folderMyBoxRepository.save(myFolder).subscribe())
 			.then();
+	}
+
+	private MyFolder ensureMember(UserInfo userInfo, MyFolder myFolder) {
+		if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFolder;
 	}
 }
