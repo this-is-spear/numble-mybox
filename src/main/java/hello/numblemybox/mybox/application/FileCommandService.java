@@ -34,12 +34,7 @@ public class FileCommandService {
 
 	public Mono<LoadedFileResponse> downloadFileById(UserInfo userInfo, String folderId, String fileId) {
 		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
-			.map(myFile -> {
-				if (!Objects.equals(myFile.getUserId(), userInfo.id())) {
-					throw InvalidMemberException.invalidUser();
-				}
-				return myFile;
-			});
+			.map(myFile -> ensureMember(userInfo, myFile));
 		var filename = fileMono.map(MyFile::getFilename);
 		var inputStreamMono = myBoxStorage.downloadFile(filename);
 		return Mono.zip(fileMono, inputStreamMono).map(this::getLoadedFileResponse);
@@ -68,11 +63,19 @@ public class FileCommandService {
 			getExtension(file)));
 	}
 
-	public Mono<Void> updateFilename(String folderId, String fileId, String filename) {
+	public Mono<Void> updateFilename(UserInfo userInfo, String folderId, String fileId, String filename) {
 		return fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
 			.publishOn(Schedulers.boundedElastic())
+			.map(myFile -> ensureMember(userInfo, myFile))
 			.map(myFile -> myFile.updateFilename(filename))
 			.map(myFile -> fileMyBoxRepository.save(myFile).subscribe())
 			.then();
+	}
+
+	private MyFile ensureMember(UserInfo userInfo, MyFile myFile) {
+		if (!Objects.equals(myFile.getUserId(), userInfo.id())) {
+			throw InvalidMemberException.invalidUser();
+		}
+		return myFile;
 	}
 }

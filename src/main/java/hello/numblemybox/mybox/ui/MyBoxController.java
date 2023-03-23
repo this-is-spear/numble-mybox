@@ -219,6 +219,6 @@ public class MyBoxController {
 		@PathVariable String fileId,
 		@RequestParam String filename
 	) {
-		return fileCommandService.updateFilename(folderId, fileId, filename);
+		return fileCommandService.updateFilename(userInfo, folderId, fileId, filename);
 	}
 }

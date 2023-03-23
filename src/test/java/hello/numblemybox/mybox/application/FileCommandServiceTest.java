@@ -141,11 +141,11 @@ class FileCommandServiceTest {
 	void updateFilename() {
 		// given
 		var 폴더_식별자 = ROOT.getId();
-		var 파일_식별자 = fileMyBoxRepository.save(new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var 파일_식별자 = fileMyBoxRepository.save(new MyFile(null, 업로드할_사진, 사용자_정보.id(), ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", 폴더_식별자)).block().getId();
 
 		// then & then
 		String 새로운_파일_이름 = "newFile.txt";
-		create(fileCommandService.updateFilename(폴더_식별자, 파일_식별자, 새로운_파일_이름)).verifyComplete();
+		create(fileCommandService.updateFilename(사용자_정보, 폴더_식별자, 파일_식별자, 새로운_파일_이름)).verifyComplete();
 	}
 }
