@@ -7,6 +7,7 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
@@ -31,8 +32,14 @@ public class FileCommandService {
 		return Objects.requireNonNull(file.headers().getContentType()).toString();
 	}
 
-	public Mono<LoadedFileResponse> downloadFileById(String folderId, String fileId) {
-		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId);
+	public Mono<LoadedFileResponse> downloadFileById(UserInfo userInfo, String folderId, String fileId) {
+		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
+			.map(myFile -> {
+				if (!Objects.equals(myFile.getUserId(), userInfo.id())) {
+					throw InvalidMemberException.invalidUser();
+				}
+				return myFile;
+			});
 		var filename = fileMono.map(MyFile::getFilename);
 		var inputStreamMono = myBoxStorage.downloadFile(filename);
 		return Mono.zip(fileMono, inputStreamMono).map(this::getLoadedFileResponse);

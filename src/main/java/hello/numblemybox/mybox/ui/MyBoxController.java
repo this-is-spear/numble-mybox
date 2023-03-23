@@ -195,7 +195,7 @@ public class MyBoxController {
 		@PathVariable String folderId,
 		@PathVariable String fileId
 	) {
-		return fileCommandService.downloadFileById(folderId, fileId)
+		return fileCommandService.downloadFileById(userInfo, folderId, fileId)
 			.map(fileResponse -> ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION,
 					String.format("attachment; filename=\"%s\"", fileResponse.filename()))

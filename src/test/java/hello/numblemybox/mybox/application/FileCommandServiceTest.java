@@ -96,14 +96,14 @@ class FileCommandServiceTest {
 	void downloadFileById() throws IOException {
 		// given
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), 업로드할_사진의_경로.resolve(업로드할_사진));
-		var myFile = new MyFile(null, 업로드할_사진, "rk", ObjectType.FOLDER,
+		var myFile = new MyFile(null, 업로드할_사진, 사용자_정보.id(), ObjectType.FOLDER,
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when
 		var file = fileMyBoxRepository.save(myFile).block();
 
 		// then
-		create(fileCommandService.downloadFileById(ROOT.getId(), file.getId()))
+		create(fileCommandService.downloadFileById(사용자_정보, ROOT.getId(), file.getId()))
 			.expectNextCount(1)
 			.verifyComplete();
 	}
@@ -119,7 +119,7 @@ class FileCommandServiceTest {
 		var file = fileMyBoxRepository.save(myFile).block();
 
 		// then
-		create(fileCommandService.downloadFileById(ROOT.getId(), file.getId()))
+		create(fileCommandService.downloadFileById(사용자_정보, ROOT.getId(), file.getId()))
 			.verifyError(RuntimeException.class);
 	}
 
@@ -132,7 +132,7 @@ class FileCommandServiceTest {
 			업로드할_사진의_경로.toString(), (long)1024 * 1024 * 10, "jpg", ROOT.getId());
 
 		// when & then
-		create(fileCommandService.downloadFileById(ROOT.getId(), myFile.getId()))
+		create(fileCommandService.downloadFileById(사용자_정보, ROOT.getId(), myFile.getId()))
 			.verifyComplete();
 	}
 
