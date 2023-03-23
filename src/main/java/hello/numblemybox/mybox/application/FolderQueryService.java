@@ -42,8 +42,9 @@ public class FolderQueryService {
 			.flatMap(this::getFolderResponse);
 	}
 
-	public Flux<FolderResponse> findFoldersInRoot() {
+	public Flux<FolderResponse> findFoldersInRoot(UserInfo userInfo) {
 		return folderMyBoxRepository.findByTypeAndUserId(ObjectType.ROOT, ADMIN)
+			.map(myFolder -> ensureMember(userInfo, myFolder))
 			.flatMapMany(root -> folderMyBoxRepository.findByParentId(root.getId())
 				.flatMap(this::getFolderResponse));
 	}

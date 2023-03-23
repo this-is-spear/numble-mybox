@@ -90,7 +90,7 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 		var 제비_폴더 = new FolderResponse("13DFSDKI132SD", "제비", ObjectType.FOLDER);
 		var 족제비_폴더 = new FolderResponse("13DFSDKI132SD", "족제비_폴더", ObjectType.FOLDER);
 
-		when(folderQueryService.findFoldersInRoot())
+		when(folderQueryService.findFoldersInRoot(사용자_정보))
 			.thenReturn(Flux.just(참새_폴더, 제비_폴더, 족제비_폴더));
 
 		webTestClient.get()

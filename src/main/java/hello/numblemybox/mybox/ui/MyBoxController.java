@@ -144,7 +144,7 @@ public class MyBoxController {
 	public Flux<FolderResponse> findFoldersInRoot(
 		@SessionAttribute(SESSION_KEY) UserInfo userInfo
 	) {
-		return folderQueryService.findFoldersInRoot();
+		return folderQueryService.findFoldersInRoot(userInfo);
 	}
 
 	/**
