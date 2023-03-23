@@ -31,12 +31,8 @@ public class FolderCommandService {
 	public Mono<Void> addFileInFolder(String folderId, Mono<MyFile> file) {
 		return file.flatMap(
 			myFile -> {
-				var ensureFilename = fileMyBoxRepository.findByParentId(folderId).flatMap(myFolder -> {
-					if (myFolder.getName().equals(myFile.getFilename())) {
-						return Mono.error(InvalidFilenameException.alreadyFilename());
-					}
-					return Mono.empty();
-				}).then();
+				var ensureFilename = fileMyBoxRepository.findByParentIdAndName(folderId, myFile.getName())
+					.map(findFile -> Mono.error(InvalidFilenameException.alreadyFilename())).then();
 				myFile.addParent(folderId);
 				var insertFile = fileMyBoxRepository.save(myFile);
 				return Mono.when(ensureFilename, insertFile);

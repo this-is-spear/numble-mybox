@@ -58,6 +58,14 @@ public final class FakeFileMyBoxRepository implements FileMyBoxRepository {
 	}
 
 	@Override
+	public Mono<MyFile> findByParentIdAndName(String parentId, String name) {
+		return Mono.justOrEmpty(map.values()
+			.stream()
+			.filter(myFile -> Objects.equals(myFile.getParentId(), parentId) && Objects.equals(myFile.getName(), name))
+			.findFirst());
+	}
+
+	@Override
 	public Mono<MyFile> findByIdAndParentId(String id, String parentId) {
 		return Mono.justOrEmpty(Optional.ofNullable(map.get(id))
 			.filter(myFile -> Objects.equals(myFile.getParentId(), parentId)));
