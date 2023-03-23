@@ -1,5 +1,9 @@
 package hello.numblemybox.member.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public final class InvalidCapacityException extends MemberException{
 	private InvalidCapacityException(String message) {
 		super(message);

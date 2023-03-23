@@ -23,7 +23,6 @@ import reactor.util.function.Tuple2;
 @Service
 @RequiredArgsConstructor
 public class FileCommandService {
-	private static final String ADMIN = "rjsckdd12@gmail.com";
 	private final MyBoxStorage myBoxStorage;
 	private final FileMyBoxRepository fileMyBoxRepository;
 	private final FolderCommandService folderCommandService;
