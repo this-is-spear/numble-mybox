@@ -13,5 +13,6 @@ public interface MemberMongoRepository extends ReactiveMongoRepository<Member, S
 	@Override
 	<S extends Member> Mono<S> insert(S entity);
 
+	@Override
 	Mono<Member> findByUsername(String username);
 }

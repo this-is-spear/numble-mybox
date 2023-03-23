@@ -1,5 +1,6 @@
 package hello.numblemybox.integration;
 
+import static hello.numblemybox.fake.FakeSessionMutator.*;
 import static hello.numblemybox.stubs.FileStubs.*;
 
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -18,14 +20,21 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hello.numblemybox.SpringBootTemplate;
+import hello.numblemybox.member.application.MemberService;
+import hello.numblemybox.member.dto.MemberRequest;
+import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.dto.FolderResponse;
 import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
 import hello.numblemybox.mybox.infra.FolderMyBoxMongoRepository;
 
 class AcceptanceTemplate extends SpringBootTemplate {
-	private static final String ADMIN = "rjsckdd12@gmail.com";
+	protected static final MemberRequest 사용자의_정보 = new MemberRequest("email@email.com", "password");
 	protected String 루트_식별자;
+	private static final String SESSION_KEY = "LOGIN_MEMBER";
+	private static final UserInfo 사용자 = new UserInfo(null, 사용자의_정보.username(), 1024 * 1024 * 1024 * 3L);
+	private static final String SET_COOKIE = "Set-Cookie";
+	private static final String ADMIN = "rjsckdd12@gmail.com";
 	@Autowired
 	protected ObjectMapper OBJECT_MAPPER;
 	@Autowired
@@ -177,13 +186,37 @@ class AcceptanceTemplate extends SpringBootTemplate {
 		return reader.readLine();
 	}
 
-	protected <T> T getValue(byte[] data, Class<T> t) throws IOException {
-		return OBJECT_MAPPER.readValue(data, t);
-	}
-
 	private static void deleteFiles() throws IOException {
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
+	}
+
+	protected void 회원가입_요청(MemberRequest 사용자의_정보) {
+		webTestClient.post().uri("/members/register")
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(사용자의_정보)
+			.exchange()
+			.expectStatus().isOk();
+	}
+
+	protected WebTestClient.BodyContentSpec 로그인_요청(MemberRequest 사용자의_정보) {
+		return webTestClient.post().uri("/members/login")
+			.contentType(MediaType.APPLICATION_JSON)
+			.bodyValue(사용자의_정보)
+			.exchange()
+			.expectHeader()
+			.exists(SET_COOKIE)
+			.expectStatus().isOk()
+			.expectBody();
+	}
+
+	protected WebTestClient.BodyContentSpec 사용자_정보조회_요청() {
+		return webTestClient.mutateWith(sessionMutator(sessionBuilder().put(SESSION_KEY, 사용자).build()))
+			.get().uri("/members/me")
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody();
 	}
 }
