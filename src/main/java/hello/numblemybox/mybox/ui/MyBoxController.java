@@ -82,7 +82,7 @@ public class MyBoxController {
 		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
 		@PathVariable String folderId
 	) {
-		return folderQueryService.findFolder(folderId);
+		return folderQueryService.findFolder(userInfo, folderId);
 	}
 
 	/**

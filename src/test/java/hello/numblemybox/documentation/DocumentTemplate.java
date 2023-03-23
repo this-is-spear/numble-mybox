@@ -27,6 +27,7 @@ import hello.numblemybox.mybox.ui.MyBoxController;
 	MemberController.class
 })
 public class DocumentTemplate {
+	protected static final UserInfo 사용자_정보 = new UserInfo("1234SDF43DC", "email@email.com", 30 * 1024 * 1024L);
 	@Autowired
 	protected WebTestClient webTestClient;
 
@@ -44,7 +45,6 @@ public class DocumentTemplate {
 
 	@BeforeEach
 	void setUp() {
-		var 사용자_정보 = new UserInfo("1234SDF43DC", "email@email.com", 30 * 1024 * 1024L);
 		this.webTestClient = webTestClient
 			.mutateWith(sessionMutator(sessionBuilder().put(SESSION_KEY, 사용자_정보).build()));
 	}

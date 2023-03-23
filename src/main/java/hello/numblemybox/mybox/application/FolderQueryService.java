@@ -1,8 +1,11 @@
 package hello.numblemybox.mybox.application;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
 import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -22,8 +25,14 @@ public class FolderQueryService {
 	private final FolderMyBoxRepository folderMyBoxRepository;
 	private final FileMyBoxRepository fileMyBoxRepository;
 
-	public Mono<FolderResponse> findFolder(String folderId) {
+	public Mono<FolderResponse> findFolder(UserInfo userInfo, String folderId) {
 		return folderMyBoxRepository.findById(folderId)
+			.map(myFolder -> {
+				if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {
+					throw InvalidMemberException.invalidUser();
+				}
+				return myFolder;
+			})
 			.flatMap(this::getFolderResponse);
 	}
 

@@ -38,7 +38,7 @@ class FolderQueryServiceTest {
 		var 일반_폴더 = MyFolder.createFolder(null, "folder", "rjsckdd12@gmail.com", "123");
 		folderMyBoxRepository.save(일반_폴더)
 			.map(myFolder ->
-				create(folderQueryService.findFolder(myFolder.getId()))
+				create(folderQueryService.findFolder(사용자_정보, myFolder.getId()))
 					.expectNextCount(1)
 					.verifyComplete()
 			)
