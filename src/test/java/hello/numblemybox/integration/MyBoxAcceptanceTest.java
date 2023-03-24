@@ -143,6 +143,7 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		assertThat(isContainsFilename(두_번째_파일_조회, 새로운_파일이름)).isTrue();
 	}
 
+
 	private String getFolderId(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
 		var folderResponses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
 			new TypeReference<List<FolderResponse>>() {

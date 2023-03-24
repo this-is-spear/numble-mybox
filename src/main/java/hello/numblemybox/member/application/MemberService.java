@@ -10,13 +10,17 @@ import hello.numblemybox.member.dto.MemberRequest;
 import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.member.exception.InvalidUsernameException;
+import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
+import hello.numblemybox.mybox.domain.MyFolder;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+	private static final String ROOT_FOLDER_NAME = "ROOT";
 	private final MemberRepository memberRepository;
+	private final FolderMyBoxRepository folderMyBoxRepository;
 
 	public Mono<UserInfo> login(MemberRequest memberRequest) {
 		return memberRepository.findByUsername(memberRequest.username()).map(member -> {
@@ -29,13 +33,25 @@ public class MemberService {
 	}
 
 	public Mono<Void> register(MemberRequest registerRequest) {
-		return memberRepository.findByUsername(registerRequest.username())
-			.map(member -> {
+		var ensureUsername = memberRepository.findByUsername(registerRequest.username())
+			.onErrorMap((error) -> {
 				throw InvalidUsernameException.alreadyUsername();
-			})
-			.switchIfEmpty(
-				memberRepository.insert(Member.createMember(registerRequest.username(), registerRequest.password())))
+			}).map(member -> {
+				throw InvalidUsernameException.alreadyUsername();
+			}).then();
+
+		var insertMember = memberRepository.insert(getMember(registerRequest))
+			.flatMap(member -> folderMyBoxRepository.save(getRoot(member)))
 			.then();
+
+		return Mono.when(ensureUsername, insertMember);
 	}
 
+	private Member getMember(MemberRequest registerRequest) {
+		return Member.createMember(registerRequest.username(), registerRequest.password());
+	}
+
+	private MyFolder getRoot(Member member) {
+		return MyFolder.createRootFolder(null, ROOT_FOLDER_NAME, member.getId());
+	}
 }
