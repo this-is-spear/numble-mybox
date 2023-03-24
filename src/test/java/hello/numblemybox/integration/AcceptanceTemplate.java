@@ -7,10 +7,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.time.Duration;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,7 +32,6 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	protected static final MemberRequest 사용자의_정보 = new MemberRequest("email@email.com", "password");
 	private static final String SESSION_KEY = "LOGIN_MEMBER";
 	private static final String SET_COOKIE = "Set-Cookie";
-	private static final String ADMIN = "rjsckdd12@gmail.com";
 	@Autowired
 	protected ObjectMapper OBJECT_MAPPER;
 	@Autowired
@@ -47,22 +44,16 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	protected FolderMyBoxMongoRepository folderMyBoxRepository;
 
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() {
+		fileMyBoxMongoRepository.deleteAll().block();
+		folderMyBoxRepository.deleteAll().block();
 		var 저장된_사용자 = memberMongoRepository.insert(Member.createMember("alreadyUser@email.com", "1234"))
 			.block();
 		var 사용자_정보 = new UserInfo(저장된_사용자.getId(), 저장된_사용자.getUsername(), 저장된_사용자.getCapacity());
+		루트_식별자 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", 사용자_정보.id())).block().getId();
 		webTestClient = webTestClient.mutate()
 			.responseTimeout(Duration.ofMillis(10000)).build()
 			.mutateWith(sessionMutator(sessionBuilder().put(SESSION_KEY, 사용자_정보).build()));
-		deleteFiles();
-		fileMyBoxMongoRepository.deleteAll().subscribe();
-		folderMyBoxRepository.deleteAll().subscribe();
-		루트_식별자 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "ROOT", ADMIN)).block().getId();
-	}
-
-	@AfterAll
-	static void afterAll() throws IOException {
-		deleteFiles();
 	}
 
 	protected String getRootId(WebTestClient.BodyContentSpec spec) throws IOException {
@@ -150,12 +141,6 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	protected String getString(byte[] responseBody) throws IOException {
 		var reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(responseBody)));
 		return reader.readLine();
-	}
-
-	private static void deleteFiles() throws IOException {
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(그냥_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(끝맺음_문장));
-		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(인사_문장));
 	}
 
 	protected void 회원가입_요청(MemberRequest 사용자의_정보) {

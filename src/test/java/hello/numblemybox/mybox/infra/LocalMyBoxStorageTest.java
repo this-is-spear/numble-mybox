@@ -23,10 +23,12 @@ class LocalMyBoxStorageTest {
 	@DisplayName("파일을 업로드한다.")
 	void uploadFile() throws IOException {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		create(localMyBoxStorage.uploadFile(Mono.just(filePart)))
+		String fileId = "12344444";
+		create(localMyBoxStorage.uploadFile(Mono.just(filePart), fileId))
 			.verifyComplete();
-		assertThat(Files.exists(LOCAL_PATH.resolve(업로드할_사진))).isTrue();
-		Files.deleteIfExists(LOCAL_PATH.resolve(업로드할_사진));
+
+		assertThat(Files.exists(LOCAL_PATH.resolve(fileId))).isTrue();
+		Files.deleteIfExists(LOCAL_PATH.resolve(fileId));
 	}
 
 	@Test

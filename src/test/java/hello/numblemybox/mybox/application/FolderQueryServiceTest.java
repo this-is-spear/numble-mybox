@@ -21,7 +21,7 @@ class FolderQueryServiceTest {
 	private FolderMyBoxRepository folderMyBoxRepository;
 	private FileMyBoxRepository fileMyBoxRepository;
 	private MemberRepository memberRepository;
-	public UserInfo 사용자_정보 = new UserInfo("123", "rjsckdd12@gmail.com", 30 * 1024 * 1024L);
+	public UserInfo 사용자_정보;
 
 	@BeforeEach
 	void setUp() {
@@ -35,14 +35,10 @@ class FolderQueryServiceTest {
 
 	@Test
 	void findFolder() {
-		var 일반_폴더 = MyFolder.createFolder(null, "folder", "rjsckdd12@gmail.com", "123");
-		folderMyBoxRepository.save(일반_폴더)
-			.map(myFolder ->
-				create(folderQueryService.findFolder(사용자_정보, myFolder.getId()))
-					.expectNextCount(1)
-					.verifyComplete()
-			)
-			.subscribe();
+		MyFolder 저장한_폴더 = folderMyBoxRepository.save(MyFolder.createFolder(null, "folder", 사용자_정보.id(), "123")).block();
+		create(folderQueryService.findFolder(사용자_정보, 저장한_폴더.getId()))
+			.expectNextCount(1)
+			.verifyComplete();
 	}
 
 	@Test

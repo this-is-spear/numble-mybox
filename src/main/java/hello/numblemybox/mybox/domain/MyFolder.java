@@ -28,6 +28,7 @@ public final class MyFolder {
 	private String id;
 	@ToString.Include
 	private String name;
+	@ToString.Include
 	private String userId;
 	@ToString.Include
 	private ObjectType type;

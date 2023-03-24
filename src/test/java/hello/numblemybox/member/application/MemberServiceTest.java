@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import hello.numblemybox.fake.FakeFolderMongoRepository;
 import hello.numblemybox.fake.FakeMemberRepository;
 import hello.numblemybox.member.domain.Member;
 import hello.numblemybox.member.domain.MemberRepository;
@@ -13,6 +14,7 @@ import hello.numblemybox.member.dto.MemberRequest;
 import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.member.exception.InvalidUsernameException;
+import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 
 class MemberServiceTest {
 
@@ -20,11 +22,13 @@ class MemberServiceTest {
 	public static final String PASSWORD = "1234";
 	private Member 회원;
 	private MemberService memberService;
+	private FolderMyBoxRepository folderMyBoxRepository;
 
 	@BeforeEach
 	void setUp() {
 		MemberRepository memberRepository = new FakeMemberRepository();
-		memberService = new MemberService(memberRepository);
+		folderMyBoxRepository = new FakeFolderMongoRepository();
+		memberService = new MemberService(memberRepository, folderMyBoxRepository);
 		회원 = memberRepository.insert(Member.createMember(ID, PASSWORD)).block();
 	}
 
@@ -65,8 +69,7 @@ class MemberServiceTest {
 	void register() {
 		var 회원가입_요청 = new MemberRequest("this-is-spear@email.com", "1111");
 
-		create(memberService.register(회원가입_요청))
-			.verifyComplete();
+		create(memberService.register(회원가입_요청)).verifyComplete();
 	}
 
 	@Test

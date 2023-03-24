@@ -62,4 +62,11 @@ public interface FileMyBoxRepository {
 	 */
 	Mono<MyFile> findByIdAndParentId(String id, String parentId);
 
+	/**
+	 * 사용자의 식별자를 이용해 파일 목록을 조회합니다.
+	 *
+	 * @param userId 사용자의 식별자
+	 * @return 파일 목록
+	 */
+	Flux<MyFile> findByUserId(String userId);
 }

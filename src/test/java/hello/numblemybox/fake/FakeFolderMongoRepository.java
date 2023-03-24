@@ -58,14 +58,6 @@ public class FakeFolderMongoRepository implements FolderMyBoxRepository {
 
 	@Override
 	public Mono<MyFolder> findByParentIdAndName(String parentId, String foldername) {
-		System.out.println("no");
-		System.out.println(foldername);
-
-		System.out.println(map.values()
-			.stream()
-			.filter(myFolder -> Objects.equals(myFolder.getParentId(), parentId)
-				&& Objects.equals(myFolder.getName(), foldername)).collect(Collectors.toList()));
-
 		return Mono.justOrEmpty(map.values()
 			.stream()
 			.filter(myFolder -> Objects.equals(myFolder.getParentId(), parentId)

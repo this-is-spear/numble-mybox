@@ -1,5 +1,9 @@
 package hello.numblemybox.integration;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 
 class MemberAcceptanceTest extends AcceptanceTemplate {
@@ -20,5 +24,12 @@ class MemberAcceptanceTest extends AcceptanceTemplate {
 
 		// then
 		사용자_정보조회_요청().jsonPath("username", 사용자의_정보.username());
+	}
+
+	@Test
+	void 사용자의_루트_폴더를_조회한다() throws IOException {
+		var 루트_폴더_메타데이터_조회 = 루트_폴더_메타데이터_조회_요청();
+		var rootId = getRootId(루트_폴더_메타데이터_조회);
+		assertThat(rootId).isNotBlank();
 	}
 }
