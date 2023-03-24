@@ -7,7 +7,6 @@ import static reactor.test.StepVerifier.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +51,7 @@ class FileCommandServiceTest {
 		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", 사용자_정보.id())).block();
 		myBoxStorage = new FakeMyBoxStorage();
 		fileCommandService = new FileCommandService(myBoxStorage, fileMyBoxRepository,
-			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository));
+			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage));
 	}
 
 	@Test

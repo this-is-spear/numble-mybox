@@ -2,6 +2,7 @@ package hello.numblemybox.mybox.application;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import org.springframework.http.codec.multipart.FilePart;
 
@@ -39,4 +40,14 @@ public interface MyBoxStorage {
 	 * @return 파일 내부 정보
 	 */
 	Mono<InputStream> downloadFile(Mono<String> filename);
+
+	/**
+	 * 경로를 입력받아 파일을 다운로드합니다.
+	 *
+	 * @param path 다운로드할 파일의 경로
+	 * @return 파일 내부 정보
+	 */
+	Mono<InputStream> downloadFile(Path path);
+
+	Path getZipPath();
 }

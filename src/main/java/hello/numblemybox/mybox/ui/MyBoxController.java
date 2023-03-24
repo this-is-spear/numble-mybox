@@ -205,6 +205,30 @@ public class MyBoxController {
 	}
 
 	/**
+	 * 폴더 식별자를 입력해 압축된 폴더를 다운로드 한다.
+	 *
+	 * @param userInfo 사용자 식별자
+	 * @param folderId 폴더 식별자
+	 * @return 압축한 폴더 데이터
+	 */
+	@PostMapping(
+		value = "/{folderId}/download",
+		produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+	)
+	public Mono<ResponseEntity<InputStreamResource>> downloadFolder(
+		@SessionAttribute(SESSION_KEY) UserInfo userInfo,
+		@PathVariable String folderId
+	) {
+		return folderCommandService.downloadFolder(userInfo, folderId)
+			.map(fileResponse -> ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION,
+					String.format("attachment; filename=\"%s\"", fileResponse.filename()))
+				.header(HttpHeaders.CONTENT_TYPE, fileResponse.extension())
+				.body(new InputStreamResource(fileResponse.inputStream()))
+			);
+	}
+
+	/**
 	 * 파일 이름을 입력받아 파일을 수정합니다.
 	 *
 	 * @param folderId 파일이 저장된 폴더의 식별자
