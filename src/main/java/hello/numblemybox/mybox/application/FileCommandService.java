@@ -11,6 +11,7 @@ import hello.numblemybox.member.exception.InvalidMemberException;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
+import hello.numblemybox.mybox.exception.CapacityException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,14 +41,23 @@ public class FileCommandService {
 	}
 
 	public Mono<Void> upload(UserInfo userInfo, String folderId, Flux<FilePart> filePart) {
-		return filePart
-			.flatMap(file -> {
-				var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
-						.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, Mono.just(myFile))))
-					.then();
-				var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
-				return Mono.when(fileMono, uploadFile);
-			}).then();
+		return filePart.publishOn(Schedulers.boundedElastic()).flatMap(file -> {
+			var ensureCapacity = fileMyBoxRepository.findByUserId(userInfo.id())
+				.flatMap(myFile -> Flux.just(myFile.getSize()))
+				.reduce(Long::sum)
+				.map(total -> {
+					if (total + file.headers().getContentLength() > userInfo.availableCapacity()) {
+						throw CapacityException.over(userInfo.availableCapacity() - total);
+					}
+					return Mono.empty();
+				}).then();
+
+			var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
+					.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, Mono.just(myFile))))
+				.then();
+			var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
+			return Mono.when(ensureCapacity, fileMono, uploadFile);
+		}).then();
 	}
 
 	private LoadedFileResponse getLoadedFileResponse(Tuple2<MyFile, InputStream> objects) {
@@ -66,8 +76,7 @@ public class FileCommandService {
 		return fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
 			.publishOn(Schedulers.boundedElastic())
 			.map(myFile -> ensureMember(userInfo, myFile))
-			.map(myFile -> myFile.updateFilename(filename))
-			.map(myFile -> fileMyBoxRepository.save(myFile).subscribe())
+			.flatMap(myFile -> fileMyBoxRepository.save(myFile.updateFilename(filename)))
 			.then();
 	}
 

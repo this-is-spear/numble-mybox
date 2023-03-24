@@ -70,4 +70,11 @@ public final class FakeFileMyBoxRepository implements FileMyBoxRepository {
 		return Mono.justOrEmpty(Optional.ofNullable(map.get(id))
 			.filter(myFile -> Objects.equals(myFile.getParentId(), parentId)));
 	}
+
+	@Override
+	public Flux<MyFile> findByUserId(String userId) {
+		return Flux.fromIterable(map.values().stream()
+			.filter(myFile -> Objects.equals(myFile.getUserId(), userId))
+			.toList());
+	}
 }

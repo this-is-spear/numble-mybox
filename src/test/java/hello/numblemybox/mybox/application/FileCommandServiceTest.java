@@ -26,6 +26,7 @@ import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.domain.ObjectType;
+import hello.numblemybox.mybox.exception.CapacityException;
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -47,7 +48,7 @@ class FileCommandServiceTest {
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
 		folderMyBoxRepository = new FakeFolderMongoRepository();
 		memberRepository = new FakeMemberRepository();
-		var 사용자 = memberRepository.insert(Member.createMember("rjsckdd12@gmail.com", "1234")).block();
+		var 사용자 = memberRepository.insert(new Member("rjsckdd12@gmail.com", "1234", 20_000_000L)).block();
 		사용자_정보 = new UserInfo(사용자.getId(), 사용자.getUsername(), 사용자.getCapacity());
 		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", 사용자_정보.id())).block();
 		myBoxStorage = new FakeMyBoxStorage();
@@ -76,6 +77,22 @@ class FileCommandServiceTest {
 		StepVerifier.create(fileMyBoxRepository.findByName(사진.filename()))
 			.expectNextMatches(myFile -> Objects.equals(사진.filename(), myFile.getFilename()))
 			.verifyComplete();
+	}
+
+	@Test
+	@DisplayName("업로드할 때, 사용자가 허용하는 용량보마 많아지면 안된다.")
+	void upload_capacityNotOver() {
+		// given
+		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
+
+		var 기존에_있는_파일 = new MyFile(null, "file.exe", 사용자_정보.id(), "asdf", 20_000_000L, "jpg");
+		기존에_있는_파일.addParent(ROOT.getId());
+		create(fileMyBoxRepository.save(기존에_있는_파일))
+			.expectNextCount(1)
+			.verifyComplete();
+
+		create(fileCommandService.upload(사용자_정보, ROOT.getId(), Flux.just(사진)))
+			.verifyError(CapacityException.class);
 	}
 
 	@Test
@@ -148,4 +165,5 @@ class FileCommandServiceTest {
 		String 새로운_파일_이름 = "newFile.txt";
 		create(fileCommandService.updateFilename(사용자_정보, 폴더_식별자, 파일_식별자, 새로운_파일_이름)).verifyComplete();
 	}
+
 }
