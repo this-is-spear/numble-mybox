@@ -28,12 +28,6 @@ class MemberAcceptanceTest extends AcceptanceTemplate {
 
 	@Test
 	void 사용자의_루트_폴더를_조회한다() throws IOException {
-		memberMongoRepository.findAll()
-			.subscribe(System.out::println);
-
-		folderMyBoxRepository.findAll()
-			.subscribe(System.out::println);
-
 		var 루트_폴더_메타데이터_조회 = 루트_폴더_메타데이터_조회_요청();
 		var rootId = getRootId(루트_폴더_메타데이터_조회);
 		assertThat(rootId).isNotBlank();
