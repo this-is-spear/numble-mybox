@@ -18,6 +18,7 @@ import reactor.core.scheduler.Schedulers;
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
 	private static final Path ZIP_PATH = Paths.get("./src/main/resources/tmp");
+
 	@Override
 	public Mono<String> getPath() {
 		return Mono.just(LOCAL_PATH.toString());

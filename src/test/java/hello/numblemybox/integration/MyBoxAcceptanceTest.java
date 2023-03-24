@@ -4,7 +4,6 @@ import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -149,7 +148,6 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		assertThat(isContainsFilename(두_번째_파일_조회, 새로운_파일이름)).isTrue();
 		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(파일_식별자));
 	}
-
 
 	private String getFolderId(WebTestClient.BodyContentSpec spec, String foldername) throws IOException {
 		var folderResponses = OBJECT_MAPPER.readValue(spec.returnResult().getResponseBody(),
