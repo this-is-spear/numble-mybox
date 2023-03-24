@@ -52,7 +52,7 @@ class FileCommandServiceTest {
 		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", 사용자_정보.id())).block();
 		myBoxStorage = new FakeMyBoxStorage();
 		fileCommandService = new FileCommandService(myBoxStorage, fileMyBoxRepository,
-			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository));
+			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage));
 	}
 
 	@Test
