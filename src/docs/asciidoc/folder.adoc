@@ -78,3 +78,17 @@ include::{snippets}/folder/find/files/http-request.adoc[]
 ==== HTTP response
 
 include::{snippets}/folder/find/files/http-response.adoc[]
+
+
+=== Download Folder
+
+폴더 식별자를 입력해 폴더를 다운로드한다.
+
+==== HTTP request
+
+include::{snippets}/folder/download/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/folder/download/http-response.adoc[]
+

@@ -10,6 +10,7 @@ import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
+import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -73,6 +74,12 @@ public class FolderCommandService {
 			.map(myFolder -> folderMyBoxRepository.save(myFolder).subscribe())
 			.then();
 	}
+
+
+	public Mono<LoadedFileResponse> downloadFolder(UserInfo userInfo, String folderId) {
+		return null;
+	}
+
 
 	private MyFolder ensureMember(UserInfo userInfo, MyFolder myFolder) {
 		if (!Objects.equals(myFolder.getUserId(), userInfo.id())) {

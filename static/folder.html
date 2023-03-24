@@ -454,6 +454,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_get_folder_metadata">Get Folder Metadata</a></li>
 <li><a href="#_get_folders_in_parent_folder">Get Folders In Parent Folder</a></li>
 <li><a href="#_get_files_in_parent_folder">Get Files In Parent Folder</a></li>
+<li><a href="#_download_folder">Download Folder</a></li>
 </ul>
 </li>
 </ul>
@@ -486,7 +487,8 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <h4 id="_http_response"><a class="link" href="#_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Set-Cookie: SESSION=365a200c-e3f1-473f-96ce-833083ac6051; Path=/; HttpOnly; SameSite=Lax</code></pre>
 </div>
 </div>
 </div>
@@ -509,7 +511,8 @@ Host: localhost:8080</code></pre>
 <h4 id="_http_response_2"><a class="link" href="#_http_response_2">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Set-Cookie: SESSION=82388f93-03e2-4a94-9058-a9b1dfcd013c; Path=/; HttpOnly; SameSite=Lax</code></pre>
 </div>
 </div>
 </div>
@@ -536,6 +539,7 @@ Host: localhost:8080</code></pre>
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
 Content-Length: 52
+Set-Cookie: SESSION=73764644-6fda-449d-8c3b-24fcee53aa7c; Path=/; HttpOnly; SameSite=Lax
 
 {"id":"13DFSDKI132SD","name":"root","type":"FOLDER"}</code></pre>
 </div>
@@ -563,6 +567,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
+Set-Cookie: SESSION=586972a3-40a8-430a-b8de-d6f7ac8b586c; Path=/; HttpOnly; SameSite=Lax
 Content-Length: 111
 
 [{"id":"13DFSDKI132SD","name":"참새","type":"FOLDER"},{"id":"13DFSDKI132SD","name":"제비","type":"FOLDER"}]</code></pre>
@@ -591,9 +596,41 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
+Set-Cookie: SESSION=97f4fa0b-35ef-46ab-ab3c-2c385ec35714; Path=/; HttpOnly; SameSite=Lax
 Content-Length: 220
 
 [{"id":"13DFSDKI132SD","name":"image.png","type":"FILE","extension":"png","size":10485760,"path":"/Users/..."},{"id":"13DFSDKI132SD","name":"text.txt","type":"FILE","extension":"txt","size":10485760,"path":"/Users/..."}]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_download_folder"><a class="link" href="#_download_folder">Download Folder</a></h3>
+<div class="paragraph">
+<p>폴더 식별자를 입력해 폴더를 다운로드한다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_6"><a class="link" href="#_http_request_6">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /mybox/folders/123DFV24AS/download HTTP/1.1
+Host: localhost:8080
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_6"><a class="link" href="#_http_response_6">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Disposition: attachment; filename="test.txt"
+Content-Type: application/zip
+Accept-Ranges: bytes
+Set-Cookie: SESSION=3eb05660-6e6c-4e07-8d10-a8ed2d48d601; Path=/; HttpOnly; SameSite=Lax
+Content-Length: 526
+
+PK   �VqV           '   test-text1 복사본.txtUT ��d��d��dux �     {3��u�^�7;�ں���%�\ PKIh�      PK   �VqV           '   test-text2 복사본.txtUT ��d��d��dux �     {�aƫof�(*r PKf��      PK   �VqVIh�      '           ��    test-text1 복사본.txtUT ��d��d��dux �     PK   �VqVf��      '           ���   test-text2 복사본.txtUT ��d��d��dux �     PK      �   </code></pre>
 </div>
 </div>
 </div>
@@ -604,7 +641,7 @@ Content-Length: 220
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-03-22 08:02:25 +0900
+Last updated 2023-03-25 00:18:29 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

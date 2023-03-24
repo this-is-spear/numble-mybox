@@ -1,6 +1,11 @@
 package hello.numblemybox.documentation;
 
+import static hello.numblemybox.stubs.FileStubs.*;
 import static org.mockito.Mockito.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -9,6 +14,7 @@ import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.dto.FileResponse;
 import hello.numblemybox.mybox.dto.FolderResponse;
+import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -162,6 +168,28 @@ public class FolderMyBoxDocument extends DocumentTemplate {
 			.expectBody()
 			.consumeWith(
 				WebTestClientRestDocumentation.document("folder/update")
+			);
+	}
+
+	@Test
+	void downloadFolder() throws IOException {
+		var folderId = "123DFV24AS";
+
+		when(folderCommandService.downloadFolder(사용자_정보, folderId)).thenReturn(
+			Mono.just(new LoadedFileResponse("test.txt",
+				new ByteArrayInputStream(Files.readAllBytes(업로드할_사진의_경로.resolve("test.zip"))),
+				"application/zip")
+			));
+
+		webTestClient.post()
+			.uri(uriBuilder -> uriBuilder
+				.path("/mybox/folders/{folderId}/download")
+				.build(folderId))
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.consumeWith(
+				WebTestClientRestDocumentation.document("folder/download")
 			);
 	}
 }
