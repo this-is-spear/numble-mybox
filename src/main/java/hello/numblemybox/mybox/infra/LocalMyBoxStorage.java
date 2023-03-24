@@ -17,7 +17,6 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
-	private static final int CAPACITY = 1024 * 1024 * 20;
 
 	@Override
 	public Mono<String> getPath() {
@@ -30,23 +29,21 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<Void> uploadFile(Mono<FilePart> file) {
+	public Mono<Void> uploadFile(Mono<FilePart> file, String fileId) {
 		return file
-			.flatMap(filePart -> filePart.transferTo(LOCAL_PATH.resolve(filePart.filename())))
+			.flatMap(filePart -> filePart.transferTo(LOCAL_PATH.resolve(fileId)))
 			.then();
 	}
 
 	@Override
-	public Mono<InputStream> downloadFile(Mono<String> filename) {
-		return filename
-			.publishOn(Schedulers.boundedElastic())
-			.map(name -> {
-					try {
-						return Files.newInputStream(LOCAL_PATH.resolve(name));
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
+	public Mono<InputStream> downloadFile(Mono<String> fileId) {
+		return fileId
+			.publishOn(Schedulers.boundedElastic()).map(id -> {
+				try {
+					return Files.newInputStream(LOCAL_PATH.resolve(id));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
 				}
-			);
+			});
 	}
 }

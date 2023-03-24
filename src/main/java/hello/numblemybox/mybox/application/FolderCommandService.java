@@ -31,15 +31,10 @@ public class FolderCommandService {
 	 * @param file     파일 메타데이터 정보 스트림
 	 * @return void
 	 */
-	public Mono<Void> addFileInFolder(String folderId, Mono<MyFile> file) {
-		return file.flatMap(
-			myFile -> {
-				var ensureFilename = fileMyBoxRepository.findByParentIdAndName(folderId, myFile.getName())
-					.map(findFile -> Mono.error(InvalidFilenameException.alreadyFilename())).then();
-				myFile.addParent(folderId);
-				var insertFile = fileMyBoxRepository.save(myFile);
-				return Mono.when(ensureFilename, insertFile);
-			}).then();
+	public Mono<MyFile> addFileInFolder(String folderId, MyFile file) {
+		return fileMyBoxRepository.findByParentIdAndName(folderId, file.getName())
+			.map(myFile -> ensureFilename(file, myFile))
+			.switchIfEmpty(saveFile(file, folderId));
 	}
 
 	/**
@@ -84,5 +79,17 @@ public class FolderCommandService {
 			throw InvalidMemberException.invalidUser();
 		}
 		return myFolder;
+	}
+
+	private MyFile ensureFilename(MyFile file, MyFile myFile) {
+		if (myFile != null) {
+			throw InvalidFilenameException.alreadyFilename();
+		}
+		return file;
+	}
+
+	private Mono<MyFile> saveFile(MyFile file, String folderId) {
+		file.addParent(folderId);
+		return fileMyBoxRepository.save(file);
 	}
 }

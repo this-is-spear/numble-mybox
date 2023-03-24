@@ -35,8 +35,8 @@ public class FileCommandService {
 	public Mono<LoadedFileResponse> downloadFileById(UserInfo userInfo, String folderId, String fileId) {
 		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
 			.map(myFile -> ensureMember(userInfo, myFile));
-		var filename = fileMono.map(MyFile::getFilename);
-		var inputStreamMono = myBoxStorage.downloadFile(filename);
+		var findId = fileMono.map(MyFile::getId);
+		var inputStreamMono = myBoxStorage.downloadFile(findId);
 		return Mono.zip(fileMono, inputStreamMono).map(this::getLoadedFileResponse);
 	}
 
@@ -52,11 +52,11 @@ public class FileCommandService {
 					return Mono.empty();
 				}).then();
 
-			var fileMono = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
-					.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, Mono.just(myFile))))
+			var uploadFile = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
+					.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, myFile)))
+				.flatMap(myFile -> myBoxStorage.uploadFile(Mono.just(file), myFile.getId()))
 				.then();
-			var uploadFile = myBoxStorage.uploadFile(Mono.just(file)).then();
-			return Mono.when(ensureCapacity, fileMono, uploadFile);
+			return Mono.when(ensureCapacity, uploadFile);
 		}).then();
 	}
 

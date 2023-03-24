@@ -109,7 +109,8 @@ class FolderCommandServiceTest {
 		var 두_번째_파일 = new MyFile(null, "text.txt", 사용자_정보.id(), "./src/...", 1024 * 1024 * 5L, "txt");
 		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var id = Objects.requireNonNull(root.block()).getId();
-		create(folderCommandService.addFileInFolder(id, Mono.just(두_번째_파일)))
+		create(folderCommandService.addFileInFolder(id, 두_번째_파일))
+			.expectNextCount(1)
 			.verifyComplete();
 	}
 
@@ -133,10 +134,11 @@ class FolderCommandServiceTest {
 		var 두_번째_파일 = new MyFile(null, "image.png", 사용자_정보.id(), "./src/...", 1024 * 1024 * 5L, "png");
 		var root = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id()));
 		var id = Objects.requireNonNull(root.block()).getId();
-		create(folderCommandService.addFileInFolder(id, Mono.just(첫_번째_파일)))
+		create(folderCommandService.addFileInFolder(id, 첫_번째_파일))
+			.expectNextCount(1)
 			.verifyComplete();
 
-		create(folderCommandService.addFileInFolder(id, Mono.just(두_번째_파일)))
+		create(folderCommandService.addFileInFolder(id, 두_번째_파일))
 			.verifyError(InvalidFilenameException.class);
 	}
 }

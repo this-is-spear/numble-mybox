@@ -4,6 +4,7 @@ import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -85,8 +86,10 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		var 파일_내용 = getString(응답_바디);
 
 		assertThat(파일_내용).isEqualTo(
-			getString(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(파일이름)))
+			getString(Files.readAllBytes(프로덕션_업로드_사진_경로.resolve(파일_식별자)))
 		);
+
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(파일_식별자));
 	}
 
 	/**
@@ -110,6 +113,9 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		// then
 		var 새로운_폴더_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
 		assertThat(isContainsFilename(새로운_폴더_조회, 파일이름)).isTrue();
+
+		var 파일_식별자 = getFileId(파일_리스트_조회_요청(새로운_폴더_식별자), 파일이름);
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(파일_식별자));
 	}
 
 	/**
@@ -141,6 +147,7 @@ class MyBoxAcceptanceTest extends AcceptanceTemplate {
 		// then
 		var 두_번째_파일_조회 = 파일_리스트_조회_요청(새로운_폴더_식별자);
 		assertThat(isContainsFilename(두_번째_파일_조회, 새로운_파일이름)).isTrue();
+		Files.deleteIfExists(프로덕션_업로드_사진_경로.resolve(파일_식별자));
 	}
 
 

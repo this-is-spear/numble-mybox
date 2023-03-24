@@ -30,7 +30,7 @@ public interface MyBoxStorage {
 	 * @param file 원본 파일
 	 * @return Void
 	 */
-	Mono<Void> uploadFile(Mono<FilePart> file);
+	Mono<Void> uploadFile(Mono<FilePart> file, String fileId);
 
 	/**
 	 * 저장소에 있는 파일을 다운로드합니다.
