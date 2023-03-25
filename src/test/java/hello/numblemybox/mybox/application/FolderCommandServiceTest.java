@@ -31,6 +31,7 @@ import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
+import hello.numblemybox.mybox.exception.InvalidFoldernameException;
 import hello.numblemybox.mybox.infra.LocalMyBoxStorage;
 
 class FolderCommandServiceTest {
@@ -134,7 +135,7 @@ class FolderCommandServiceTest {
 			.verifyComplete();
 
 		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
-			.verifyError(IllegalArgumentException.class);
+			.verifyError(InvalidFoldernameException.class);
 	}
 
 	@Test

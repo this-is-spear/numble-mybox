@@ -1,7 +1,9 @@
 package hello.numblemybox.mybox.application;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.dto.LoadedFileResponse;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
+import hello.numblemybox.mybox.exception.InvalidFoldernameException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -28,6 +31,9 @@ import reactor.util.function.Tuple2;
 @Service
 @RequiredArgsConstructor
 public class FolderCommandService {
+	private static final String ZIP_EXTENSION = ".zip";
+	private static final String EMPTY_PATH = "";
+	private static final String APPLICATION_ZIP = "application/zip";
 	private final FolderMyBoxRepository folderMyBoxRepository;
 	private final FileMyBoxRepository fileMyBoxRepository;
 	private final MyBoxStorage myBoxStorage;
@@ -62,7 +68,7 @@ public class FolderCommandService {
 	public Mono<Void> createFolder(UserInfo userInfo, String parentId, String foldername) {
 		return folderMyBoxRepository.findByParentIdAndName(parentId, foldername)
 			.map(myFolder -> {
-				throw new IllegalArgumentException("같은 이름의 폴더가 있습니다.");
+				throw InvalidFoldernameException.alreadyFilename();
 			})
 			.switchIfEmpty(folderMyBoxRepository.save(MyFolder.createFolder(null, foldername, userInfo.id(), parentId)))
 			.then();
@@ -95,23 +101,33 @@ public class FolderCommandService {
 	 *
 	 * @param userInfo 사용자 정보
 	 * @param folderId 다운로드 받으려는 폴더의 식별자
-	 * @return
+	 * @return 사용자에게 제공할 데이터
 	 */
 	public Mono<LoadedFileResponse> downloadFolder(UserInfo userInfo, String folderId) {
-		Path path = myBoxStorage.getZipPath();
+		Path zipPath = myBoxStorage.ZIP_PATH;
 		var ensureFolder = folderMyBoxRepository.findById(folderId)
 			.map(myFile -> ensureMember(userInfo, myFile));
-		createZipFile(folderId, path, ensureFolder);
-		var getInputStream = myBoxStorage.downloadFile(path.resolve(folderId + ".zip"));
+		createZipFile(folderId, zipPath, ensureFolder);
+		var getInputStream = downloadFileInLocal(Mono.just(zipPath.resolve(folderId + ZIP_EXTENSION)));
 		return Mono.zip(ensureFolder, getInputStream).map(this::getLoadedFileResponse);
 	}
 
+	private Mono<InputStream> downloadFileInLocal(Mono<Path> path) {
+		return path.publishOn(Schedulers.boundedElastic()).map(filePath -> {
+			try {
+				return Files.newInputStream(filePath);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
 	private void createZipFile(String folderId, Path path, Mono<MyFolder> ensureFolder) {
-		File zip = new File(path.resolve(folderId) + ".zip");
+		File zip = new File(path.resolve(folderId) + ZIP_EXTENSION);
 		ZipUtil.createEmpty(zip);
 
 		ensureFolder
-			.map(myFolder -> findFilesRecursive("", myFolder))
+			.map(myFolder -> findFilesRecursive(EMPTY_PATH, myFolder))
 			.map(list -> {
 				var arr = list.toArray(new ZipEntrySource[] {});
 				ZipUtil.addEntries(zip, arr);
@@ -121,14 +137,21 @@ public class FolderCommandService {
 
 	private List<ZipEntrySource> findFilesRecursive(String path, MyFolder myFolder) {
 		List<ZipEntrySource> list = new ArrayList<>();
-		fileMyBoxRepository.findByParentId(myFolder.getId())
-			.subscribe(myFile -> list.add(new FileSource(resolvePath(path, myFile.getName()),
-				new File(resolvePath(myFile.getPath(), myFile.getId())))));
+		addFiles(path, myFolder, list);
+		findFolders(path, myFolder, list);
+		return list;
+	}
 
+	private void findFolders(String path, MyFolder myFolder, List<ZipEntrySource> list) {
 		folderMyBoxRepository.findByParentId(myFolder.getId())
 			.subscribe(
 				nextFolder -> list.addAll(findFilesRecursive(resolvePath(path, myFolder.getName()), nextFolder)));
-		return list;
+	}
+
+	private void addFiles(String path, MyFolder myFolder, List<ZipEntrySource> list) {
+		fileMyBoxRepository.findByParentId(myFolder.getId())
+			.subscribe(myFile -> list.add(new FileSource(resolvePath(path, myFile.getName()),
+				new File(resolvePath(myFile.getPath(), myFile.getId())))));
 	}
 
 	private String resolvePath(String path, String filename) {
@@ -158,6 +181,6 @@ public class FolderCommandService {
 		return new LoadedFileResponse(
 			objects.getT1().getName(),
 			objects.getT2(),
-			"application/zip");
+			APPLICATION_ZIP);
 	}
 }

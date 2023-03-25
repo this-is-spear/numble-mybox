@@ -28,11 +28,6 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 	private static final Path ZIP_PATH = Paths.get("./src/main/resources/tmp");
 
 	@Override
-	public Mono<String> getPath() {
-		return Mono.just(업로드할_사진의_경로.toString());
-	}
-
-	@Override
 	public Mono<File> getFile(String filename) {
 		return Mono.just(업로드할_사진의_경로.resolve(filename).toFile());
 	}
@@ -75,40 +70,6 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 					throw new RuntimeException();
 				}
 			});
-	}
-
-	@Override
-	public Mono<InputStream> downloadFile(Path path) {
-		try {
-			var channel = AsynchronousFileChannel.open(path);
-			var buffer = ByteBuffer.allocate(CAPACITY);
-			channel.read(buffer, 0, buffer, new CompletionHandler<>() {
-				@Override
-				public void completed(Integer result, ByteBuffer attachment) {
-					try {
-						if (channel.isOpen()) {
-							channel.close();
-						}
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
-
-				@Override
-				public void failed(Throwable exc, ByteBuffer attachment) {
-					exc.printStackTrace();
-				}
-			});
-
-			return Mono.just(new ByteArrayInputStream(buffer.array()));
-		} catch (IOException e) {
-			throw new RuntimeException();
-		}
-	}
-
-	@Override
-	public Path getZipPath() {
-		return ZIP_PATH;
 	}
 
 	@Test

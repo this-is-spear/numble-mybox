@@ -17,12 +17,6 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
-	private static final Path ZIP_PATH = Paths.get("./src/main/resources/tmp");
-
-	@Override
-	public Mono<String> getPath() {
-		return Mono.just(LOCAL_PATH.toString());
-	}
 
 	@Override
 	public Mono<File> getFile(String filename) {
@@ -46,19 +40,5 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 					throw new RuntimeException(e);
 				}
 			});
-	}
-
-	@Override
-	public Mono<InputStream> downloadFile(Path path) {
-		try {
-			return Mono.just(Files.newInputStream(path));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public Path getZipPath() {
-		return ZIP_PATH;
 	}
 }

@@ -34,6 +34,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.zeroturnaround:zt-zip:1.15'
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.1'
