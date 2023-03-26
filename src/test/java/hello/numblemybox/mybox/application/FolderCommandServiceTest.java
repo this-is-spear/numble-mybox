@@ -2,14 +2,8 @@ package hello.numblemybox.mybox.application;
 
 import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static reactor.test.StepVerifier.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.zeroturnaround.zip.ZipUtil;
 
 import hello.numblemybox.fake.FakeFileMyBoxRepository;
 import hello.numblemybox.fake.FakeFolderMongoRepository;
@@ -26,7 +19,7 @@ import hello.numblemybox.member.domain.Member;
 import hello.numblemybox.member.domain.MemberRepository;
 import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.mybox.compress.FolderCompressionTemplate;
-import hello.numblemybox.mybox.compress.LocalFolderCompressionTemplate;
+import hello.numblemybox.mybox.compress.LocalFolderCompression;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -50,7 +43,7 @@ class FolderCommandServiceTest {
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
 		memberRepository = new FakeMemberRepository();
 		myBoxStorage = new LocalMyBoxStorage();
-		FolderCompressionTemplate folderCompressionTemplate = new LocalFolderCompressionTemplate(folderMyBoxRepository,
+		FolderCompressionTemplate folderCompressionTemplate = new LocalFolderCompression(folderMyBoxRepository,
 			fileMyBoxRepository);
 		folderCommandService = new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage,
 			folderCompressionTemplate);

@@ -26,6 +26,7 @@ import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.dto.FolderResponse;
 import hello.numblemybox.mybox.infra.FileMyBoxMongoRepository;
 import hello.numblemybox.mybox.infra.FolderMyBoxMongoRepository;
+import hello.numblemybox.mybox.infra.ObjectMyBoxStorage;
 
 class AcceptanceTemplate extends SpringBootTemplate {
 	protected String 루트_식별자;
@@ -42,6 +43,8 @@ class AcceptanceTemplate extends SpringBootTemplate {
 	protected FileMyBoxMongoRepository fileMyBoxMongoRepository;
 	@Autowired
 	protected FolderMyBoxMongoRepository folderMyBoxRepository;
+	@Autowired
+	protected ObjectMyBoxStorage objectMyBoxStorage;
 
 	@BeforeEach
 	void setUp() {

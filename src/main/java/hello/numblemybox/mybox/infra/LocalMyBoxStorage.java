@@ -14,7 +14,6 @@ import hello.numblemybox.mybox.application.MyBoxStorage;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-@Service
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
 

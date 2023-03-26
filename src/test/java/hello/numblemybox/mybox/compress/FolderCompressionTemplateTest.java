@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,7 @@ class FolderCompressionTemplateTest {
 	void setUp() {
 		folderMyBoxRepository = new FakeFolderMongoRepository();
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
-		folderCompressionTemplate = new LocalFolderCompressionTemplate(folderMyBoxRepository, fileMyBoxRepository);
+		folderCompressionTemplate = new LocalFolderCompression(folderMyBoxRepository, fileMyBoxRepository);
 		memberRepository = new FakeMemberRepository();
 		var 사용자 = memberRepository.insert(Member.createMember("rjsckdd12@gmail.com", "1234")).block();
 		사용자_정보 = new UserInfo(사용자.getId(), 사용자.getUsername(), 사용자.getCapacity());
