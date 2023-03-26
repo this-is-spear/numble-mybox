@@ -52,8 +52,8 @@ public class FileCommandService {
 					return Mono.empty();
 				}).then();
 
-			var uploadFile = myBoxStorage.getPath().flatMap(path -> getMyFile(file, path, userInfo)
-					.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, myFile)))
+			var uploadFile = getMyFile(file, myBoxStorage.getPath(), userInfo)
+				.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, myFile))
 				.flatMap(myFile -> myBoxStorage.uploadFile(Mono.just(file), myFile.getId()))
 				.then();
 			return Mono.when(ensureCapacity, uploadFile);

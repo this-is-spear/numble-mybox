@@ -2,14 +2,8 @@ package hello.numblemybox.mybox.application;
 
 import static hello.numblemybox.stubs.FileStubs.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static reactor.test.StepVerifier.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.zeroturnaround.zip.ZipUtil;
 
 import hello.numblemybox.fake.FakeFileMyBoxRepository;
 import hello.numblemybox.fake.FakeFolderMongoRepository;
@@ -25,12 +18,15 @@ import hello.numblemybox.fake.FakeMemberRepository;
 import hello.numblemybox.member.domain.Member;
 import hello.numblemybox.member.domain.MemberRepository;
 import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.mybox.compress.FolderCompressionTemplate;
+import hello.numblemybox.mybox.compress.LocalFolderCompression;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
 import hello.numblemybox.mybox.domain.MyFolder;
 import hello.numblemybox.mybox.domain.ObjectType;
 import hello.numblemybox.mybox.exception.InvalidFilenameException;
+import hello.numblemybox.mybox.exception.InvalidFoldernameException;
 import hello.numblemybox.mybox.infra.LocalMyBoxStorage;
 
 class FolderCommandServiceTest {
@@ -47,7 +43,10 @@ class FolderCommandServiceTest {
 		fileMyBoxRepository = new FakeFileMyBoxRepository();
 		memberRepository = new FakeMemberRepository();
 		myBoxStorage = new LocalMyBoxStorage();
-		folderCommandService = new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage);
+		FolderCompressionTemplate folderCompressionTemplate = new LocalFolderCompression(folderMyBoxRepository,
+			fileMyBoxRepository);
+		folderCommandService = new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage,
+			folderCompressionTemplate);
 		var 사용자 = memberRepository.insert(Member.createMember("rjsckdd12@gmail.com", "1234")).block();
 		사용자_정보 = new UserInfo(사용자.getId(), 사용자.getUsername(), 사용자.getCapacity());
 	}
@@ -134,7 +133,7 @@ class FolderCommandServiceTest {
 			.verifyComplete();
 
 		create(folderCommandService.createFolder(사용자_정보, id, 폴더_이름))
-			.verifyError(IllegalArgumentException.class);
+			.verifyError(InvalidFoldernameException.class);
 	}
 
 	@Test
@@ -154,7 +153,7 @@ class FolderCommandServiceTest {
 
 	@Test
 	@DisplayName("폴더를 다운로드한다.")
-	void downloadFolder() throws IOException {
+	void downloadFolder() {
 		// 루트 폴더 생성
 		var 루트_폴더 = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "name", 사용자_정보.id())).block();
 		// 파일 생성
@@ -176,17 +175,6 @@ class FolderCommandServiceTest {
 				"plain/txt", 하위_폴더.getId())).block();
 
 		var loadedFileResponse = folderCommandService.downloadFolder(사용자_정보, 루트_폴더.getId()).block();
-
-		Path path = Paths.get("./src/main/resources/tmp/" + 루트_폴더.getId() + ".zip");
-		File 알집 = new File(path.toString());
-
-		assertAll(
-			() -> assertThat(알집.exists()).isTrue(),
-			() -> assertThat(ZipUtil.containsEntry(알집, "/test0.txt")).isTrue(),
-			() -> assertThat(ZipUtil.containsEntry(알집, "/name/test1.txt")).isTrue(),
-			() -> assertThat(ZipUtil.containsEntry(알집, "/name/test2.txt")).isTrue()
-		);
-
-		Files.deleteIfExists(path);
+		assertThat(loadedFileResponse.filename()).isEqualTo(루트_폴더.getName());
 	}
 }

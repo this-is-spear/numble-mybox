@@ -20,6 +20,8 @@ import hello.numblemybox.fake.FakeMyBoxStorage;
 import hello.numblemybox.member.domain.Member;
 import hello.numblemybox.member.domain.MemberRepository;
 import hello.numblemybox.member.dto.UserInfo;
+import hello.numblemybox.mybox.compress.FolderCompressionTemplate;
+import hello.numblemybox.mybox.compress.LocalFolderCompression;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -50,8 +52,11 @@ class FileCommandServiceTest {
 		사용자_정보 = new UserInfo(사용자.getId(), 사용자.getUsername(), 사용자.getCapacity());
 		ROOT = folderMyBoxRepository.save(MyFolder.createRootFolder(null, "root", 사용자_정보.id())).block();
 		myBoxStorage = new FakeMyBoxStorage();
+		FolderCompressionTemplate folderCompressionTemplate = new LocalFolderCompression(folderMyBoxRepository,
+			fileMyBoxRepository);
 		fileCommandService = new FileCommandService(myBoxStorage, fileMyBoxRepository,
-			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage));
+			new FolderCommandService(folderMyBoxRepository, fileMyBoxRepository, myBoxStorage,
+				folderCompressionTemplate));
 	}
 
 	@Test
