@@ -1,21 +1,15 @@
 package hello.numblemybox.mybox.application;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
-import org.zeroturnaround.zip.FileSource;
-import org.zeroturnaround.zip.ZipEntrySource;
-import org.zeroturnaround.zip.ZipUtil;
 
 import hello.numblemybox.member.dto.UserInfo;
 import hello.numblemybox.member.exception.InvalidMemberException;
+import hello.numblemybox.mybox.compress.FolderCompressionTemplate;
 import hello.numblemybox.mybox.domain.FileMyBoxRepository;
 import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFile;
@@ -32,11 +26,11 @@ import reactor.util.function.Tuple2;
 @RequiredArgsConstructor
 public class FolderCommandService {
 	private static final String ZIP_EXTENSION = ".zip";
-	private static final String EMPTY_PATH = "";
 	private static final String APPLICATION_ZIP = "application/zip";
 	private final FolderMyBoxRepository folderMyBoxRepository;
 	private final FileMyBoxRepository fileMyBoxRepository;
 	private final MyBoxStorage myBoxStorage;
+	private final FolderCompressionTemplate compressionTemplate;
 
 	/**
 	 * 1. 저장하려는 폴더 정보를 가져온다.
@@ -104,58 +98,20 @@ public class FolderCommandService {
 	 * @return 사용자에게 제공할 데이터
 	 */
 	public Mono<LoadedFileResponse> downloadFolder(UserInfo userInfo, String folderId) {
-		Path zipPath = myBoxStorage.ZIP_PATH;
-		var ensureFolder = folderMyBoxRepository.findById(folderId)
-			.map(myFile -> ensureMember(userInfo, myFile));
-		createZipFile(folderId, zipPath, ensureFolder);
-		var getInputStream = downloadFileInLocal(Mono.just(zipPath.resolve(folderId + ZIP_EXTENSION)));
-		return Mono.zip(ensureFolder, getInputStream).map(this::getLoadedFileResponse);
+		return folderMyBoxRepository.findById(folderId)
+			.map(myFolder -> ensureMember(userInfo, myFolder))
+			.flatMap(myFolder -> Mono.zip(Mono.just(myFolder), compressFolder(myFolder)))
+			.flatMap(objects -> Mono.zip(Mono.just(objects.getT1()), downloadZip(objects))
+				.map(tuples -> getLoadedFileResponse(tuples)));
 	}
 
-	private Mono<InputStream> downloadFileInLocal(Mono<Path> path) {
-		return path.publishOn(Schedulers.boundedElastic()).map(filePath -> {
-			try {
-				return Files.newInputStream(filePath);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
+	private Mono<InputStream> downloadZip(Tuple2<MyFolder, File> objects) {
+		return compressionTemplate.downloadFileInLocal(
+			Mono.just(Paths.get(objects.getT2().getPath())));
 	}
 
-	private void createZipFile(String folderId, Path path, Mono<MyFolder> ensureFolder) {
-		File zip = new File(path.resolve(folderId) + ZIP_EXTENSION);
-		ZipUtil.createEmpty(zip);
-
-		ensureFolder
-			.map(myFolder -> findFilesRecursive(EMPTY_PATH, myFolder))
-			.map(list -> {
-				var arr = list.toArray(new ZipEntrySource[] {});
-				ZipUtil.addEntries(zip, arr);
-				return arr;
-			}).subscribe();
-	}
-
-	private List<ZipEntrySource> findFilesRecursive(String path, MyFolder myFolder) {
-		List<ZipEntrySource> list = new ArrayList<>();
-		addFiles(path, myFolder, list);
-		findFolders(path, myFolder, list);
-		return list;
-	}
-
-	private void findFolders(String path, MyFolder myFolder, List<ZipEntrySource> list) {
-		folderMyBoxRepository.findByParentId(myFolder.getId())
-			.subscribe(
-				nextFolder -> list.addAll(findFilesRecursive(resolvePath(path, myFolder.getName()), nextFolder)));
-	}
-
-	private void addFiles(String path, MyFolder myFolder, List<ZipEntrySource> list) {
-		fileMyBoxRepository.findByParentId(myFolder.getId())
-			.subscribe(myFile -> list.add(new FileSource(resolvePath(path, myFile.getName()),
-				new File(resolvePath(myFile.getPath(), myFile.getId())))));
-	}
-
-	private String resolvePath(String path, String filename) {
-		return String.format("%s/%s", path, filename);
+	private Mono<File> compressFolder(MyFolder myFolder) {
+		return compressionTemplate.compressFolderInLocal(myFolder, myBoxStorage.ZIP_PATH);
 	}
 
 	private MyFolder ensureMember(UserInfo userInfo, MyFolder myFolder) {
