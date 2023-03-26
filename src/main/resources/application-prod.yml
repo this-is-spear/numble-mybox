@@ -1,7 +1,0 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://this-is-spear:zxcvbn12@mybox.3ennj2q.mongodb.net/mybox?retryWrites=true&w=majority
-logging:
-  level:
-    root: debug
