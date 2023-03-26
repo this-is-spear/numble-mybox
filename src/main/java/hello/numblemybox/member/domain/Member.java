@@ -16,7 +16,7 @@ import lombok.ToString;
  * 서비스를 사용하는 사용자의 정보를 저장합니다. 사용자가 사용할 수 있는 스토리지 허용량은 30GB입니다.
  */
 @Getter
-@Document
+@Document("member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
