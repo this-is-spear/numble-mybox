@@ -1,0 +1,319 @@
+{
+	"info": {
+		"_postman_id": "2749a22f-23e0-400d-ba56-f7bcb3641ae7",
+		"name": "numble mybox",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register member",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"rjsc4kdd112@gmail.com\",\n\t\"name\":\"tis\",\n\t\"password\" : \"1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/members/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"members",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"rjsc4kdd112@gmail.com\",\n\t\"password\" : \"1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/members/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"members",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "members me",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/members/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"members",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Root Folder Metadata",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/mybox/folders/root",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"mybox",
+						"folders",
+						"root"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create Foolder in Root",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634?foldername=newfolder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"mybox",
+						"folders",
+						"641ff44800cdef2fda737634"
+					],
+					"query": [
+						{
+							"key": "foldername",
+							"value": "newfolder"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Folders in Root Folder",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/folders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"mybox",
+						"folders",
+						"641ff44800cdef2fda737634",
+						"folders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload File",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/Users/keonchanglee/Desktop/건창/using blockchain.png"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/Users/keonchanglee/Desktop/건창/3.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"mybox",
+						"folders",
+						"641ff44800cdef2fda737634",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download File",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/download/641ff73d00cdef2fda737637",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"mybox",
+						"folders",
+						"641ff44800cdef2fda737634",
+						"download",
+						"641ff73d00cdef2fda737637"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download Folder",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "SESSION",
+						"value": "a003b90c-a8bb-4164-9b37-0e8d9421c08a",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/zip",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/download",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"mybox",
+						"folders",
+						"641ff44800cdef2fda737634",
+						"download"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

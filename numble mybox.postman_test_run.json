@@ -1,0 +1,216 @@
+{
+	"id": "a674b01c-8943-44bc-82d7-59783f75da8d",
+	"name": "numble mybox",
+	"timestamp": "2023-03-26T07:48:49.033Z",
+	"collection_id": "16520898-2749a22f-23e0-400d-ba56-f7bcb3641ae7",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 0,
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "0f683c3f-9bef-4a76-9582-5bc84ed5364b",
+			"name": "register member",
+			"url": "http://localhost:8080/members/register",
+			"time": 23,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				23
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "6d0e4800-e1e9-49e9-b51f-b46d2afddb71",
+			"name": "login",
+			"url": "http://localhost:8080/members/login",
+			"time": 34,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				34
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "bff61b6b-6454-4395-8e03-b1d020183f7c",
+			"name": "members me",
+			"url": "http://localhost:8080/members/me",
+			"time": 11,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				11
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "86b9c979-0f5b-46da-bffc-34ed0c6a7ee5",
+			"name": "Get Root Folder Metadata",
+			"url": "http://localhost:8080/mybox/folders/root",
+			"time": 49,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				49
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "ff41a4ae-b9ba-4e49-b6d4-407d073e7020",
+			"name": "create Foolder in Root",
+			"url": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634?foldername=newfolder",
+			"time": 37,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				37
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "5fda9b23-6986-4bf8-bc56-0f38372f31b7",
+			"name": "Get Folders in Root Folder",
+			"url": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/folders",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				20
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "472a2447-d239-4cd7-80f8-6b33e14bb7d9",
+			"name": "Upload File",
+			"url": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/upload",
+			"time": 7,
+			"responseCode": {
+				"code": 415,
+				"name": "Unsupported Media Type"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				7
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "88d7070f-1133-4130-963a-05b28322abde",
+			"name": "Download File",
+			"url": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/download/641ff73d00cdef2fda737637",
+			"time": 201,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				201
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "b1bcd4f8-099f-4708-83ee-b116e706797a",
+			"name": "Download Folder",
+			"url": "http://localhost:8080/mybox/folders/641ff44800cdef2fda737634/download",
+			"time": 37,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				37
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 419,
+	"collection": {
+		"requests": [
+			{
+				"id": "0f683c3f-9bef-4a76-9582-5bc84ed5364b",
+				"method": "POST"
+			},
+			{
+				"id": "6d0e4800-e1e9-49e9-b51f-b46d2afddb71",
+				"method": "POST"
+			},
+			{
+				"id": "bff61b6b-6454-4395-8e03-b1d020183f7c",
+				"method": "GET"
+			},
+			{
+				"id": "86b9c979-0f5b-46da-bffc-34ed0c6a7ee5",
+				"method": "GET"
+			},
+			{
+				"id": "ff41a4ae-b9ba-4e49-b6d4-407d073e7020",
+				"method": "POST"
+			},
+			{
+				"id": "5fda9b23-6986-4bf8-bc56-0f38372f31b7",
+				"method": "GET"
+			},
+			{
+				"id": "472a2447-d239-4cd7-80f8-6b33e14bb7d9",
+				"method": "POST"
+			},
+			{
+				"id": "88d7070f-1133-4130-963a-05b28322abde",
+				"method": "POST"
+			},
+			{
+				"id": "b1bcd4f8-099f-4708-83ee-b116e706797a",
+				"method": "POST"
+			}
+		]
+	}
+}
