@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 public interface MyBoxStorage {
 	Path ZIP_PATH = Paths.get("./src/main/resources/tmp");
 
-	Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
+	String getPath();
 
 	/**
 	 * 파일 정보를 조회한다. 이름에 맞는 파일 정보가 없으면 예외가 발생합니다.

@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.application.MyBoxStorage;
 import reactor.core.publisher.Mono;
@@ -16,6 +15,11 @@ import reactor.core.scheduler.Schedulers;
 
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
+
+	@Override
+	public String getPath() {
+		return LOCAL_PATH.toString();
+	}
 
 	@Override
 	public Mono<File> getFile(String filename) {

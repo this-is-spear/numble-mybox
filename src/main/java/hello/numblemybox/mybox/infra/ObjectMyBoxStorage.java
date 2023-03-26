@@ -34,6 +34,11 @@ public class ObjectMyBoxStorage implements MyBoxStorage {
 		.build();
 
 	@Override
+	public String getPath() {
+		return String.format("%s/%s", ENDPOINT, BUCKET);
+	}
+
+	@Override
 	public Mono<File> getFile(String filename) {
 		return null;
 	}

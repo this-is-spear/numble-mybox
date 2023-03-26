@@ -11,8 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.codec.multipart.FilePart;
@@ -25,7 +23,11 @@ import reactor.core.scheduler.Schedulers;
 public class FakeMyBoxStorage implements MyBoxStorage {
 
 	private static final int CAPACITY = 1024 * 1024 * 10;
-	private static final Path ZIP_PATH = Paths.get("./src/main/resources/tmp");
+
+	@Override
+	public String getPath() {
+		return 업로드할_사진의_경로.toString();
+	}
 
 	@Override
 	public Mono<File> getFile(String filename) {

@@ -151,8 +151,6 @@ class FolderCommandServiceTest {
 			.verifyError(InvalidFilenameException.class);
 	}
 
-
-
 	@Test
 	@DisplayName("폴더를 다운로드한다.")
 	void downloadFolder() {
