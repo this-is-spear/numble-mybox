@@ -103,7 +103,7 @@ class FileCommandServiceTest {
 		String fileId = "1234";
 		Files.deleteIfExists(업로드할_사진의_경로.resolve(fileId));
 		var 사진 = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
-		create(myBoxStorage.uploadFile(Mono.just(사진), fileId)).verifyComplete();
+		create(myBoxStorage.uploadFile(사진, fileId)).verifyComplete();
 
 		// when & then
 		create(myBoxStorage.getFile(fileId))

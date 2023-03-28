@@ -8,11 +8,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.stereotype.Service;
 
 import hello.numblemybox.mybox.application.MyBoxStorage;
+import lombok.SneakyThrows;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+@Service
 public class LocalMyBoxStorage implements MyBoxStorage {
 	private static final Path LOCAL_PATH = Paths.get("./src/main/resources/upload");
 
@@ -27,21 +30,29 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<Void> uploadFile(Mono<FilePart> file, String fileId) {
-		return file
-			.flatMap(filePart -> filePart.transferTo(LOCAL_PATH.resolve(fileId)))
-			.then();
+	public Mono<Void> uploadFile(FilePart file, String fileId) {
+		return Mono.defer(() -> file.transferTo(LOCAL_PATH.resolve(fileId)))
+			.subscribeOn(Schedulers.boundedElastic());
 	}
 
 	@Override
-	public Mono<InputStream> downloadFile(Mono<String> fileId) {
-		return fileId
-			.publishOn(Schedulers.boundedElastic()).map(id -> {
+	public Mono<InputStream> downloadFile(String fileId) {
+		return Mono.fromCallable(
+			() -> {
 				try {
-					return Files.newInputStream(LOCAL_PATH.resolve(id));
+					return Files.newInputStream(LOCAL_PATH.resolve(fileId));
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
-			});
+			}
+		).subscribeOn(Schedulers.boundedElastic());
+	}
+
+	@Override
+	@SneakyThrows
+	public Mono<Void> deleteFile(String fileId) {
+		return Mono.fromCallable(() -> Files.deleteIfExists(LOCAL_PATH.resolve(fileId)))
+			.subscribeOn(Schedulers.boundedElastic())
+			.then();
 	}
 }

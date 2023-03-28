@@ -9,8 +9,6 @@ import java.io.InputStream;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.stereotype.Service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -24,8 +22,8 @@ import com.amazonaws.util.IOUtils;
 import hello.numblemybox.mybox.application.MyBoxStorage;
 import lombok.SneakyThrows;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-@Service
 public class ObjectMyBoxStorage implements MyBoxStorage {
 
 	private static final AmazonS3 S3 = AmazonS3ClientBuilder.standard()
@@ -49,9 +47,12 @@ public class ObjectMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<Void> uploadFile(Mono<FilePart> file, String fileId) {
-		return file.flatMapMany(Part::content)
-			.flatMap(dataBuffer -> Mono.just(S3.putObject(getPutObjectRequest(fileId, dataBuffer))))
+	public Mono<Void> uploadFile(FilePart file, String fileId) {
+		return file.content()
+			.flatMap(dataBuffer -> Mono
+				.fromCallable(() -> S3.putObject(getPutObjectRequest(fileId, dataBuffer)))
+				//.. 왜... Flux 반환이지..?
+				.subscribeOn(Schedulers.boundedElastic()))
 			.then();
 	}
 
@@ -65,7 +66,9 @@ public class ObjectMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<InputStream> downloadFile(Mono<String> filename) {
-		return filename.map(objectName -> S3.getObject(BUCKET, objectName).getObjectContent());
+	public Mono<InputStream> downloadFile(String filename) {
+		return Mono.fromCallable(() -> (InputStream) S3.getObject(BUCKET, filename).getObjectContent())
+			.subscribeOn(Schedulers.boundedElastic());
 	}
+
 }

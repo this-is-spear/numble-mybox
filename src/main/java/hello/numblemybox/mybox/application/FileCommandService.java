@@ -32,14 +32,29 @@ public class FileCommandService {
 		return Objects.requireNonNull(file.headers().getContentType()).toString();
 	}
 
+	/**
+	 * 다운로드할 파일의 데이터를 전송한다.
+	 *
+	 * @param userInfo 사용자 정보
+	 * @param folderId 폴더 식별자
+	 * @param fileId 파일 식별자
+	 * @return 파일 메타데이터와 파일 데이터
+	 */
 	public Mono<LoadedFileResponse> downloadFileById(UserInfo userInfo, String folderId, String fileId) {
 		var fileMono = fileMyBoxRepository.findByIdAndParentId(fileId, folderId)
 			.map(myFile -> ensureMember(userInfo, myFile));
-		var findId = fileMono.map(MyFile::getId);
-		var inputStreamMono = myBoxStorage.downloadFile(findId);
+		var inputStreamMono = fileMono.flatMap(myFile -> myBoxStorage.downloadFile(myFile.getId()));
 		return Mono.zip(fileMono, inputStreamMono).map(this::getLoadedFileResponse);
 	}
 
+	/**
+	 * 새로운 스레드로 내부 동작을 진행한다.
+	 *
+	 * @param userInfo 사용자 정보
+	 * @param folderId 폴더 식별자
+	 * @param filePart 파일 데이터
+	 * @return 반환값 없음
+	 */
 	public Mono<Void> upload(UserInfo userInfo, String folderId, Flux<FilePart> filePart) {
 		return filePart.publishOn(Schedulers.boundedElastic()).flatMap(file -> {
 			var ensureCapacity = fileMyBoxRepository.findByUserId(userInfo.id())
@@ -54,7 +69,7 @@ public class FileCommandService {
 
 			var uploadFile = getMyFile(file, myBoxStorage.getPath(), userInfo)
 				.flatMap(myFile -> folderCommandService.addFileInFolder(folderId, myFile))
-				.flatMap(myFile -> myBoxStorage.uploadFile(Mono.just(file), myFile.getId()))
+				.flatMap(myFile -> myBoxStorage.uploadFile(file, myFile.getId()))
 				.then();
 			return Mono.when(ensureCapacity, uploadFile);
 		}).then();

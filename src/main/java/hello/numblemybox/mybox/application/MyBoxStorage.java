@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Flow;
 
 import org.springframework.http.codec.multipart.FilePart;
 
@@ -28,7 +29,7 @@ public interface MyBoxStorage {
 	 * @param file 원본 파일
 	 * @return Void
 	 */
-	Mono<Void> uploadFile(Mono<FilePart> file, String fileId);
+	Mono<Void> uploadFile(FilePart file, String fileId);
 
 	/**
 	 * 저장소에 있는 파일을 다운로드합니다.
@@ -36,5 +37,7 @@ public interface MyBoxStorage {
 	 * @param filename 저장된 파일 이름
 	 * @return 파일 내부 정보
 	 */
-	Mono<InputStream> downloadFile(Mono<String> filename);
+	Mono<InputStream> downloadFile(String filename);
+
+	Mono<Void> deleteFile(String fileId);
 }

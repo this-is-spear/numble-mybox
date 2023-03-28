@@ -39,7 +39,8 @@ public abstract class FolderCompressionTemplate {
 	 * @return 파일 데이터
 	 */
 	public Mono<InputStream> downloadFileInLocal(Mono<Path> path) {
-		return path.publishOn(Schedulers.boundedElastic()).map(this::getInputStream);
+		return path.publishOn(Schedulers.boundedElastic())
+			.map(this::getInputStream);
 	}
 
 	protected abstract File createZip(String folderId, Path path);

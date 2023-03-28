@@ -7,12 +7,14 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Mono;
 
+@Disabled
 class ObjectMyBoxStorageTest {
 	ObjectMyBoxStorage objectMyBoxStorage = new ObjectMyBoxStorage();
 
@@ -21,9 +23,9 @@ class ObjectMyBoxStorageTest {
 	void name() throws IOException {
 		var path = Paths.get("./src/test/resources/uplaod/test-text.txt");
 		var fileId = "object-storage-test";
-		objectMyBoxStorage.uploadFile(Mono.just(new FilePartStub(path)), fileId).subscribe();
+		objectMyBoxStorage.uploadFile(new FilePartStub(path), fileId).subscribe();
 
-		var stream = objectMyBoxStorage.downloadFile(Mono.just(fileId)).block();
+		var stream = objectMyBoxStorage.downloadFile(fileId).block();
 		StringBuilder textBuilder = new StringBuilder();
 		try (Reader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
 			int c;
