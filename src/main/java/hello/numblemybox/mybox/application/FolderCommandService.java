@@ -25,7 +25,6 @@ import reactor.util.function.Tuple2;
 @Service
 @RequiredArgsConstructor
 public class FolderCommandService {
-	private static final String ZIP_EXTENSION = ".zip";
 	private static final String APPLICATION_ZIP = "application/zip";
 	private final FolderMyBoxRepository folderMyBoxRepository;
 	private final FileMyBoxRepository fileMyBoxRepository;
@@ -69,7 +68,7 @@ public class FolderCommandService {
 	}
 
 	/**
-	 * 폴더 이름을 수정한다.
+	 * 폴더 이름을 수정한다. 롤더 생성은 새로운 Execution Chain 을 만들어 동작하게 한다.
 	 *
 	 * @param userInfo   현재 접속한 사용자의 정보
 	 * @param folderId   수정하려는 폴더의 식별자
@@ -79,9 +78,8 @@ public class FolderCommandService {
 	public Mono<Void> updateFolder(UserInfo userInfo, String folderId, String foldername) {
 		return folderMyBoxRepository.findById(folderId)
 			.map(myFolder -> ensureMember(userInfo, myFolder))
-			.map(myFolder -> myFolder.updateName(foldername))
 			.publishOn(Schedulers.boundedElastic())
-			.map(myFolder -> folderMyBoxRepository.save(myFolder).subscribe())
+			.map(myFolder -> folderMyBoxRepository.save(myFolder.updateName(foldername)).subscribe())
 			.then();
 	}
 
@@ -102,7 +100,7 @@ public class FolderCommandService {
 			.map(myFolder -> ensureMember(userInfo, myFolder))
 			.flatMap(myFolder -> Mono.zip(Mono.just(myFolder), compressFolder(myFolder)))
 			.flatMap(objects -> Mono.zip(Mono.just(objects.getT1()), downloadZip(objects))
-				.map(tuples -> getLoadedFileResponse(tuples)));
+				.map(this::getLoadedFileResponse));
 	}
 
 	private Mono<InputStream> downloadZip(Tuple2<MyFolder, File> objects) {
