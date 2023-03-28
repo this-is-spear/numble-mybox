@@ -37,7 +37,7 @@ class LocalMyBoxStorageTest {
 		Files.deleteIfExists(LOCAL_PATH.resolve(업로드할_사진));
 		Files.copy(테스트할_사진의_경로.resolve(업로드할_사진), LOCAL_PATH.resolve(업로드할_사진));
 
-		create(localMyBoxStorage.downloadFile(Mono.just(업로드할_사진)))
+		create(localMyBoxStorage.downloadFile(업로드할_사진))
 			.expectNextCount(1)
 			.verifyComplete();
 		Files.deleteIfExists(LOCAL_PATH.resolve(업로드할_사진));

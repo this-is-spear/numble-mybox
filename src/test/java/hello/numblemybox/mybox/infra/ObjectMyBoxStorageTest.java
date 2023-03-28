@@ -25,7 +25,7 @@ class ObjectMyBoxStorageTest {
 		var fileId = "object-storage-test";
 		objectMyBoxStorage.uploadFile(new FilePartStub(path), fileId).subscribe();
 
-		var stream = objectMyBoxStorage.downloadFile(Mono.just(fileId)).block();
+		var stream = objectMyBoxStorage.downloadFile(fileId).block();
 		StringBuilder textBuilder = new StringBuilder();
 		try (Reader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
 			int c;

@@ -9,8 +9,6 @@ import java.io.InputStream;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.stereotype.Service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -52,11 +50,12 @@ public class ObjectMyBoxStorage implements MyBoxStorage {
 	public Mono<Void> uploadFile(FilePart file, String fileId) {
 		return file.content()
 			.flatMap(dataBuffer -> Mono
-				.fromCallable(()->S3.putObject(getPutObjectRequest(fileId, dataBuffer)))
+				.fromCallable(() -> S3.putObject(getPutObjectRequest(fileId, dataBuffer)))
 				//.. 왜... Flux 반환이지..?
 				.subscribeOn(Schedulers.boundedElastic()))
 			.then();
 	}
+
 	@SneakyThrows(IOException.class)
 	private PutObjectRequest getPutObjectRequest(String fileId, DataBuffer dataBuffer) {
 		var bytes = IOUtils.toByteArray(dataBuffer.asInputStream());
@@ -67,7 +66,9 @@ public class ObjectMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<InputStream> downloadFile(Mono<String> filename) {
-		return filename.map(objectName -> S3.getObject(BUCKET, objectName).getObjectContent());
+	public Mono<InputStream> downloadFile(String filename) {
+		return Mono.fromCallable(() -> (InputStream) S3.getObject(BUCKET, filename).getObjectContent())
+			.subscribeOn(Schedulers.boundedElastic());
 	}
+
 }

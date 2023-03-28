@@ -48,7 +48,7 @@ public final class ObjectStorageCompression extends FolderCompressionTemplate {
 
 	private void addFiles(String path, MyFolder myFolder, List<ZipEntrySource> list) {
 		fileMyBoxRepository.findByParentId(myFolder.getId())
-			.subscribe(myFile -> objectMyBoxStorage.downloadFile(Mono.just(myFile.getId()))
+			.subscribe(myFile -> objectMyBoxStorage.downloadFile(myFile.getId())
 				.subscribe(inputStream -> {
 					try {
 						list.add(new ByteSource(resolvePath(path, myFile.getName()), inputStream.readAllBytes()));

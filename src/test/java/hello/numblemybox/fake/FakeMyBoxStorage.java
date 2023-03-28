@@ -43,12 +43,11 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<InputStream> downloadFile(Mono<String> fileId) {
-		return fileId
-			.publishOn(Schedulers.boundedElastic())
-			.map(id -> {
+	public Mono<InputStream> downloadFile(String fileId) {
+		return Mono.fromCallable(
+			() -> {
 				try {
-					var channel = AsynchronousFileChannel.open(업로드할_사진의_경로.resolve(id));
+					var channel = AsynchronousFileChannel.open(업로드할_사진의_경로.resolve(fileId));
 					var buffer = ByteBuffer.allocate(CAPACITY);
 					channel.read(buffer, 0, buffer, new CompletionHandler<>() {
 						@Override
@@ -68,11 +67,12 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 						}
 					});
 
-					return new ByteArrayInputStream(buffer.array());
+					return (InputStream)new ByteArrayInputStream(buffer.array());
 				} catch (IOException e) {
 					throw new RuntimeException();
 				}
-			});
+			}
+		).subscribeOn(Schedulers.boundedElastic());
 	}
 
 	@Override

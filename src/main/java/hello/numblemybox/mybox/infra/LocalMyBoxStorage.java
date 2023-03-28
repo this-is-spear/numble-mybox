@@ -36,15 +36,16 @@ public class LocalMyBoxStorage implements MyBoxStorage {
 	}
 
 	@Override
-	public Mono<InputStream> downloadFile(Mono<String> fileId) {
-		return fileId
-			.publishOn(Schedulers.boundedElastic()).map(id -> {
+	public Mono<InputStream> downloadFile(String fileId) {
+		return Mono.fromCallable(
+			() -> {
 				try {
-					return Files.newInputStream(LOCAL_PATH.resolve(id));
+					return Files.newInputStream(LOCAL_PATH.resolve(fileId));
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
-			});
+			}
+		).subscribeOn(Schedulers.boundedElastic());
 	}
 
 	@Override

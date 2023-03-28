@@ -37,7 +37,7 @@ public interface MyBoxStorage {
 	 * @param filename 저장된 파일 이름
 	 * @return 파일 내부 정보
 	 */
-	Mono<InputStream> downloadFile(Mono<String> filename);
+	Mono<InputStream> downloadFile(String filename);
 
 	Mono<Void> deleteFile(String fileId);
 }
