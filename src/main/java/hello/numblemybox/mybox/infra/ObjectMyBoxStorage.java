@@ -25,7 +25,6 @@ import hello.numblemybox.mybox.application.MyBoxStorage;
 import lombok.SneakyThrows;
 import reactor.core.publisher.Mono;
 
-@Service
 public class ObjectMyBoxStorage implements MyBoxStorage {
 
 	private static final AmazonS3 S3 = AmazonS3ClientBuilder.standard()

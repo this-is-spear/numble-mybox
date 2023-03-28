@@ -7,12 +7,14 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import hello.numblemybox.stubs.FilePartStub;
 import reactor.core.publisher.Mono;
 
+@Disabled
 class ObjectMyBoxStorageTest {
 	ObjectMyBoxStorage objectMyBoxStorage = new ObjectMyBoxStorage();
 

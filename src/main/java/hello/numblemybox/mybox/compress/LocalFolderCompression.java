@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
 import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipEntrySource;
 
@@ -13,6 +14,7 @@ import hello.numblemybox.mybox.domain.FolderMyBoxRepository;
 import hello.numblemybox.mybox.domain.MyFolder;
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public final class LocalFolderCompression extends FolderCompressionTemplate {
 	private final FolderMyBoxRepository folderMyBoxRepository;

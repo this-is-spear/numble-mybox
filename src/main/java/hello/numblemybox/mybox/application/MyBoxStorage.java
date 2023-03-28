@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Flow;
 
 import org.springframework.http.codec.multipart.FilePart;
 
@@ -37,4 +38,6 @@ public interface MyBoxStorage {
 	 * @return 파일 내부 정보
 	 */
 	Mono<InputStream> downloadFile(Mono<String> filename);
+
+	Mono<Void> deleteFile(String 파일_식별자);
 }

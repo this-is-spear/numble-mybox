@@ -74,6 +74,13 @@ public class FakeMyBoxStorage implements MyBoxStorage {
 			});
 	}
 
+	@Override
+	public Mono<Void> deleteFile(String fileId) {
+		return Mono.fromCallable(() -> Files.deleteIfExists(업로드할_사진의_경로.resolve(fileId)))
+			.subscribeOn(Schedulers.boundedElastic())
+			.then();
+	}
+
 	@Test
 	void uploadFile() throws IOException {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));

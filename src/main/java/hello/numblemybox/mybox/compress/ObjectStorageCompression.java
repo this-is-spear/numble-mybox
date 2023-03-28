@@ -17,7 +17,6 @@ import hello.numblemybox.mybox.infra.ObjectMyBoxStorage;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
-@Service
 @RequiredArgsConstructor
 public final class ObjectStorageCompression extends FolderCompressionTemplate {
 	private final FolderMyBoxRepository folderMyBoxRepository;
