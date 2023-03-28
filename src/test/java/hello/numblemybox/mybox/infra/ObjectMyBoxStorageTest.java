@@ -23,7 +23,7 @@ class ObjectMyBoxStorageTest {
 	void name() throws IOException {
 		var path = Paths.get("./src/test/resources/uplaod/test-text.txt");
 		var fileId = "object-storage-test";
-		objectMyBoxStorage.uploadFile(Mono.just(new FilePartStub(path)), fileId).subscribe();
+		objectMyBoxStorage.uploadFile(new FilePartStub(path), fileId).subscribe();
 
 		var stream = objectMyBoxStorage.downloadFile(Mono.just(fileId)).block();
 		StringBuilder textBuilder = new StringBuilder();

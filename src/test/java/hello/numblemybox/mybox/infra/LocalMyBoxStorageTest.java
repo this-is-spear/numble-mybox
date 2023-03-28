@@ -24,7 +24,7 @@ class LocalMyBoxStorageTest {
 	void uploadFile() throws IOException {
 		var filePart = new FilePartStub(테스트할_사진의_경로.resolve(업로드할_사진));
 		String fileId = "12344444";
-		create(localMyBoxStorage.uploadFile(Mono.just(filePart), fileId))
+		create(localMyBoxStorage.uploadFile(filePart, fileId))
 			.verifyComplete();
 
 		assertThat(Files.exists(LOCAL_PATH.resolve(fileId))).isTrue();

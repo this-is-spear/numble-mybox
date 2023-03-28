@@ -29,7 +29,7 @@ public interface MyBoxStorage {
 	 * @param file 원본 파일
 	 * @return Void
 	 */
-	Mono<Void> uploadFile(Mono<FilePart> file, String fileId);
+	Mono<Void> uploadFile(FilePart file, String fileId);
 
 	/**
 	 * 저장소에 있는 파일을 다운로드합니다.
@@ -39,5 +39,5 @@ public interface MyBoxStorage {
 	 */
 	Mono<InputStream> downloadFile(Mono<String> filename);
 
-	Mono<Void> deleteFile(String 파일_식별자);
+	Mono<Void> deleteFile(String fileId);
 }
